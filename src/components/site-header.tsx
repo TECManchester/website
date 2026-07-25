@@ -45,9 +45,13 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
+                // Active state from the design template: green text with a
+                // 2px green rule beneath.
                 className={cn(
-                  "hover:text-brand-green rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  active ? "text-brand-green" : "text-foreground/80",
+                  "hover:text-brand-green-ink border-b-2 px-3 py-2 text-sm font-medium transition-colors",
+                  active
+                    ? "text-brand-green-ink border-brand-green"
+                    : "text-foreground/80 border-transparent",
                 )}
               >
                 {item.label}

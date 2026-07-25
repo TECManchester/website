@@ -22,7 +22,7 @@ export default function HomePage() {
           className="bg-brand-green/20 pointer-events-none absolute -top-32 -right-32 size-96 rounded-full blur-3xl"
         />
         <div className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
-          <p className="eyebrow mb-4">{church.tagline}</p>
+          <p className="eyebrow-on-navy mb-4">{church.tagline}</p>
           <h1 className="max-w-4xl text-4xl font-semibold text-balance sm:text-6xl">
             Welcome to Elevation Church Manchester
           </h1>

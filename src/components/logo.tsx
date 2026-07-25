@@ -40,7 +40,12 @@ export function Logo({
           className="bg-brand-green h-px w-3 shrink-0"
         />
       </span>
-      <span className="wordmark text-brand-green mt-0.5 text-[0.55rem] font-semibold sm:text-[0.6rem]">
+      <span
+        className={cn(
+          "wordmark mt-0.5 text-[0.55rem] font-semibold sm:text-[0.6rem]",
+          tone === "white" ? "text-brand-green" : "text-brand-green-ink",
+        )}
+      >
         Manchester
       </span>
     </span>

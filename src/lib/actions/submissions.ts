@@ -4,8 +4,20 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { contact as contactDetails } from "@/lib/church";
 
+/**
+ * Master switch for form submission.
+ *
+ * Off by design while the destination for submissions is still being decided —
+ * database, email, a church management system, or some combination. Everything
+ * downstream (validation, Supabase insert, RLS) is built and tested; flipping
+ * this to `true` is the only change needed to turn it on.
+ *
+ * While off, nothing is written anywhere and the UI says so plainly.
+ */
+const FORMS_ENABLED = false;
+
 export type FormState = {
-  status: "idle" | "success" | "error";
+  status: "idle" | "success" | "error" | "disabled";
   message: string;
   fieldErrors?: Record<string, string>;
 };
@@ -32,6 +44,14 @@ function notConfigured(): FormState {
   };
 }
 
+function formsDisabled(): FormState {
+  return {
+    status: "disabled",
+    message:
+      "This form isn't live yet, so nothing has been sent. Please speak to us on a Sunday in the meantime.",
+  };
+}
+
 export async function submitPrayerRequest(
   _prev: FormState,
   data: FormData,
@@ -50,6 +70,7 @@ export async function submitPrayerRequest(
     return { status: "error", message: "Please check the form.", fieldErrors };
   }
 
+  if (!FORMS_ENABLED) return formsDisabled();
   if (!isSupabaseConfigured) return notConfigured();
 
   const { error } = await createAdminClient()
@@ -99,6 +120,7 @@ export async function submitContactMessage(
     return { status: "error", message: "Please check the form.", fieldErrors };
   }
 
+  if (!FORMS_ENABLED) return formsDisabled();
   if (!isSupabaseConfigured) return notConfigured();
 
   const { error } = await createAdminClient()

@@ -1,171 +1,520 @@
-/**
- * Database types.
- *
- * Hand-written to mirror supabase/migrations/20260725000000_initial_schema.sql
- * so the app type-checks before the project is linked. Once credentials are in
- * place, replace this file wholesale with the generated version:
- *
- *   npm run db:types
- *
- * If the two ever disagree, the generated output is the truth.
- */
-
-export type SubmissionStatus = "new" | "in_progress" | "done" | "archived";
-
-type Timestamps = {
-  created_at: string;
-  updated_at: string;
-};
-
-export type SermonSeries = {
-  id: string;
-  slug: string;
-  title: string;
-  description: string | null;
-  image_url: string | null;
-} & Timestamps;
-
-export type Sermon = {
-  id: string;
-  slug: string;
-  title: string;
-  speaker: string | null;
-  series_id: string | null;
-  youtube_id: string | null;
-  description: string | null;
-  preached_on: string | null;
-  duration_mins: number | null;
-  is_published: boolean;
-} & Timestamps;
-
-export type ChurchEvent = {
-  id: string;
-  slug: string;
-  title: string;
-  summary: string | null;
-  description: string | null;
-  starts_at: string;
-  ends_at: string | null;
-  venue: string | null;
-  image_url: string | null;
-  cta_label: string | null;
-  cta_url: string | null;
-  is_featured: boolean;
-  is_published: boolean;
-} & Timestamps;
-
-export type ConnectGroup = {
-  id: string;
-  slug: string;
-  name: string;
-  description: string | null;
-  category: string | null;
-  area: string | null;
-  meeting_day: string | null;
-  meeting_time: string | null;
-  leader_name: string | null;
-  is_accepting_members: boolean;
-  is_published: boolean;
-} & Timestamps;
-
-export type PrayerRequest = {
-  id: string;
-  name: string | null;
-  email: string | null;
-  phone: string | null;
-  request: string;
-  share_with_team: boolean;
-  is_urgent: boolean;
-  status: SubmissionStatus;
-  created_at: string;
-};
-
-export type ContactMessage = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string | null;
-  subject: string | null;
-  message: string;
-  status: SubmissionStatus;
-  created_at: string;
-};
-
-export type VisitPlan = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string | null;
-  planned_date: string | null;
-  adults: number;
-  children: number;
-  children_ages: string | null;
-  notes: string | null;
-  status: SubmissionStatus;
-  created_at: string;
-};
-
-export type GroupJoinRequest = {
-  id: string;
-  group_id: string;
-  name: string;
-  email: string;
-  phone: string | null;
-  message: string | null;
-  status: SubmissionStatus;
-  created_at: string;
-};
-
-export type NewsletterSubscriber = {
-  id: string;
-  email: string;
-  name: string | null;
-  confirmed_at: string | null;
-  unsubscribed_at: string | null;
-  created_at: string;
-};
-
-/** Columns the database fills in for us. */
-type Generated = "id" | "created_at" | "updated_at";
-
-/**
- * `Relationships` is required — supabase-js resolves a table to `never` without
- * it, which surfaces as a confusing "does not exist in type 'never[]'" error at
- * the call site rather than here.
- */
-type Table<Row, Optional extends keyof Row = never> = {
-  Row: Row;
-  Insert: Omit<Row, (Generated & keyof Row) | Optional> &
-    Partial<Pick<Row, (Generated & keyof Row) | Optional>>;
-  Update: Partial<Row>;
-  Relationships: [];
-};
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
-      sermon_series: Table<SermonSeries>;
-      sermons: Table<Sermon, "is_published">;
-      events: Table<ChurchEvent, "is_featured" | "is_published">;
-      connect_groups: Table<
-        ConnectGroup,
-        "is_accepting_members" | "is_published"
-      >;
-      prayer_requests: Table<
-        PrayerRequest,
-        "share_with_team" | "is_urgent" | "status"
-      >;
-      contact_messages: Table<ContactMessage, "status">;
-      visit_plans: Table<VisitPlan, "adults" | "children" | "status">;
-      group_join_requests: Table<GroupJoinRequest, "status">;
-      newsletter_subscribers: Table<
-        NewsletterSubscriber,
-        "confirmed_at" | "unsubscribed_at"
-      >;
-    };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: { submission_status: SubmissionStatus };
-    CompositeTypes: Record<string, never>;
-  };
-};
+      connect_groups: {
+        Row: {
+          area: string | null
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_accepting_members: boolean
+          is_published: boolean
+          leader_name: string | null
+          meeting_day: string | null
+          meeting_time: string | null
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          area?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_accepting_members?: boolean
+          is_published?: boolean
+          leader_name?: string | null
+          meeting_day?: string | null
+          meeting_time?: string | null
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          area?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_accepting_members?: boolean
+          is_published?: boolean
+          leader_name?: string | null
+          meeting_day?: string | null
+          meeting_time?: string | null
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          phone: string | null
+          status: Database["public"]["Enums"]["submission_status"]
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          phone?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          created_at: string
+          cta_label: string | null
+          cta_url: string | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          is_featured: boolean
+          is_published: boolean
+          slug: string
+          starts_at: string
+          summary: string | null
+          title: string
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          is_published?: boolean
+          slug: string
+          starts_at: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          is_published?: boolean
+          slug?: string
+          starts_at?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
+      group_join_requests: {
+        Row: {
+          created_at: string
+          email: string
+          group_id: string
+          id: string
+          message: string | null
+          name: string
+          phone: string | null
+          status: Database["public"]["Enums"]["submission_status"]
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          group_id: string
+          id?: string
+          message?: string | null
+          name: string
+          phone?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          group_id?: string
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_join_requests_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "connect_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      newsletter_subscribers: {
+        Row: {
+          confirmed_at: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string | null
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          confirmed_at?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name?: string | null
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          confirmed_at?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string | null
+          unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
+      prayer_requests: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_urgent: boolean
+          name: string | null
+          phone: string | null
+          request: string
+          share_with_team: boolean
+          status: Database["public"]["Enums"]["submission_status"]
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_urgent?: boolean
+          name?: string | null
+          phone?: string | null
+          request: string
+          share_with_team?: boolean
+          status?: Database["public"]["Enums"]["submission_status"]
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_urgent?: boolean
+          name?: string | null
+          phone?: string | null
+          request?: string
+          share_with_team?: boolean
+          status?: Database["public"]["Enums"]["submission_status"]
+        }
+        Relationships: []
+      }
+      sermon_series: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sermons: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_mins: number | null
+          id: string
+          is_published: boolean
+          preached_on: string | null
+          series_id: string | null
+          slug: string
+          speaker: string | null
+          title: string
+          updated_at: string
+          youtube_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_mins?: number | null
+          id?: string
+          is_published?: boolean
+          preached_on?: string | null
+          series_id?: string | null
+          slug: string
+          speaker?: string | null
+          title: string
+          updated_at?: string
+          youtube_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_mins?: number | null
+          id?: string
+          is_published?: boolean
+          preached_on?: string | null
+          series_id?: string | null
+          slug?: string
+          speaker?: string | null
+          title?: string
+          updated_at?: string
+          youtube_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sermons_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "sermon_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      visit_plans: {
+        Row: {
+          adults: number
+          children: number
+          children_ages: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          planned_date: string | null
+          status: Database["public"]["Enums"]["submission_status"]
+        }
+        Insert: {
+          adults?: number
+          children?: number
+          children_ages?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          planned_date?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+        }
+        Update: {
+          adults?: number
+          children?: number
+          children_ages?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          planned_date?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      submission_status: "new" | "in_progress" | "done" | "archived"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      submission_status: ["new", "in_progress", "done", "archived"],
+    },
+  },
+} as const

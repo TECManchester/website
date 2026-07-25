@@ -11,6 +11,7 @@
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-display);
   --color-brand-green: var(--brand-green);
+  --color-brand-green-ink: var(--brand-green-ink);
   --color-brand-navy: var(--brand-navy);
   --color-brand-green-soft: var(--brand-green-soft);
   --color-brand-navy-soft: var(--brand-navy-soft);
@@ -53,9 +54,12 @@
 }
 
 :root {
-  /* Brand — Green #84C224, Ink/Navy #0E0E2C */
-  --brand-green: oklch(0.744 0.188 129.8);
-  --brand-navy: oklch(0.185 0.059 279.3);
+  /* Brand — from the approved design template.
+     #84C224 is a glow/fill green only: on white it lands at 2.4:1, so it must
+     never carry text. #6FA61C is the text-safe counterpart. */
+  --brand-green: oklch(0.744 0.188 129.8); /* #84C224 — fills, glows, rules */
+  --brand-green-ink: oklch(0.662 0.169 130.1); /* #6FA61C — links, small text */
+  --brand-navy: oklch(0.185 0.059 279.3); /* #0E0E2C */
   --brand-green-soft: oklch(0.955 0.045 129.8);
   --brand-navy-soft: oklch(0.28 0.055 279.3);
 
@@ -71,7 +75,7 @@
   --secondary: oklch(0.968 0.006 279.3);
   --secondary-foreground: oklch(0.185 0.059 279.3);
   --muted: oklch(0.968 0.006 279.3);
-  --muted-foreground: oklch(0.505 0.022 279.3);
+  --muted-foreground: oklch(0.427 0.016 266); /* #4B4F58 — template body grey */
   /* Green accent — pairs with navy text at 8.7:1. Never white text on green (2.2:1). */
   --accent: oklch(0.744 0.188 129.8);
   --accent-foreground: oklch(0.185 0.059 279.3);
@@ -162,7 +166,13 @@
   }
 }
 
+/* Small uppercase text, so it uses the text-safe green. */
 @utility eyebrow {
+  @apply text-brand-green-ink text-xs font-semibold tracking-[0.18em] uppercase;
+}
+
+/* On navy the light green is the readable one — 9.8:1. */
+@utility eyebrow-on-navy {
   @apply text-brand-green text-xs font-semibold tracking-[0.18em] uppercase;
 }
 

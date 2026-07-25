@@ -42,7 +42,16 @@ export function SectionHeading({
 }) {
   return (
     <div className={cn("max-w-3xl", align === "center" && "mx-auto text-center")}>
-      {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
+      {eyebrow && (
+        <p
+          className={cn(
+            "mb-3",
+            tone === "onNavy" ? "eyebrow-on-navy" : "eyebrow",
+          )}
+        >
+          {eyebrow}
+        </p>
+      )}
       <h2 className="text-3xl font-semibold text-balance sm:text-4xl">
         {title}
       </h2>
@@ -73,7 +82,7 @@ export function PageHeader({
   return (
     <div className="bg-brand-navy text-white">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-        {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
+        {eyebrow && <p className="eyebrow-on-navy mb-3">{eyebrow}</p>}
         <h1 className="text-4xl font-semibold text-balance sm:text-5xl">
           {title}
         </h1>
