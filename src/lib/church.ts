@@ -64,31 +64,33 @@ export const contact = {
   ukPhone: null as string | null, // CONFIRM
 } as const;
 
+/**
+ * The church's official accounts — confirmed 26 July 2026.
+ *
+ * This is the complete list. Anything not here (the old Linktree, the raw
+ * YouTube channel-ID URL) has been removed deliberately; don't reintroduce a
+ * social link without confirming it.
+ */
 export const socials = [
+  {
+    name: "YouTube",
+    handle: "@TheElevationChurchManchester",
+    href: "https://www.youtube.com/@TheElevationChurchManchester",
+  },
   {
     name: "Instagram",
     handle: "@elevationmanchester",
-    href: "https://instagram.com/elevationmanchester",
+    href: "https://www.instagram.com/elevationmanchester/",
   },
   {
     name: "Facebook",
     handle: "@elevationmanchester",
-    href: "https://facebook.com/elevationmanchester",
-  },
-  {
-    name: "YouTube",
-    handle: "The Elevation Church Manchester",
-    href: "https://www.youtube.com/channel/UCQ96VzcFQzUAUTTTEcPJ17w",
+    href: "https://www.facebook.com/elevationmanchester",
   },
   {
     name: "X",
     handle: "@elevationmanche",
     href: "https://x.com/elevationmanche",
-  },
-  {
-    name: "Linktree",
-    handle: "linktr.ee/elevationmanchester",
-    href: "https://linktr.ee/elevationmanchester",
   },
 ] as const;
 
@@ -261,22 +263,17 @@ export const giving = {
 } as const;
 
 export const brand = {
-  /**
-   * Flip to true once the real artwork is in /public/brand — see the README
-   * there for the exact filenames. Until then the Logo component falls back to
-   * a typographic stand-in rather than 404-ing three images on every page.
-   */
-  hasLogoFiles: false,
+  hasLogoFiles: true,
   logo: {
-    /** Blue mark + blue wordmark. For white/light backgrounds. */
-    colour: "/brand/logo-colour.svg",
-    /** All-white. For the ink footer, dark hero and mobile menu. */
-    white: "/brand/logo-white.svg",
-    /** Solid navy. For light backgrounds needing more contrast than the blue. */
-    navy: "/brand/logo-navy.svg",
+    /** Full colour — blue wordmark, blue/green swirl. The primary mark. */
+    colour: "/brand/logo-colour.png",
+    /** All white, for the ink footer, dark hero and mobile menu. */
+    white: "/brand/logo-white.png",
+    /** Single-colour navy, for light backgrounds. */
+    navy: "/brand/logo-navy.png",
   },
-  /** Natural aspect ratio of the supplied lockups (~3.3:1). */
-  logoAspect: { width: 190, height: 58 },
+  /** Intrinsic size of the supplied artwork (938 × 307, ~3.05:1). */
+  logoAspect: { width: 938, height: 307 },
 } as const;
 
 /**

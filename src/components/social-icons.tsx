@@ -38,27 +38,9 @@ export function XIcon({ className }: IconProps) {
   );
 }
 
-export function LinkIcon({ className }: IconProps) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      className={className}
-      aria-hidden
-    >
-      <path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.5 1.5" />
-      <path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7L12 19" />
-    </svg>
-  );
-}
-
 export const socialIcons = {
+  YouTube: YouTubeIcon,
   Instagram: InstagramIcon,
   Facebook: FacebookIcon,
-  YouTube: YouTubeIcon,
   X: XIcon,
-  Linktree: LinkIcon,
 } as const;

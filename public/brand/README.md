@@ -1,32 +1,28 @@
 # Brand assets
 
-Drop the official Elevation Church Manchester logo files here, then set
-`brand.hasLogoFiles = true` in `src/lib/church.ts`. Nothing else needs to change
-— every logo on the site reads from there.
+The official Elevation Church Manchester logo, in three variants. Every logo on
+the site reads from `brand` in `src/lib/church.ts` — change the paths there, not
+in components.
 
-## Required files
+| File               | Variant                          | Used on                              |
+| ------------------ | -------------------------------- | ------------------------------------ |
+| `logo-colour.png`  | Full colour (blue + green swirl) | Header, and any light background      |
+| `logo-white.png`   | All white                        | Footer, mobile menu, OG image         |
+| `logo-navy.png`    | Single-colour navy               | Spare, for light backgrounds          |
 
-| Filename          | What it is                          | Used on                                    |
-| ----------------- | ----------------------------------- | ------------------------------------------ |
-| `logo-colour.svg` | Blue mark + blue wordmark           | Header, and any white/light background     |
-| `logo-white.svg`  | All white                           | Footer, dark hero, mobile menu             |
-| `logo-navy.svg`   | Solid navy                          | Light backgrounds needing extra contrast   |
+Source artwork: 938 × 307 PNG with transparency.
 
-## Format
+## Derived assets
 
-**SVG is strongly preferred** — the logo is line art with fine detail in the
-swirl and the letterspaced wordmark, and it renders at everything from 38px in
-the header to full width on a retina display. SVG stays sharp at every size and
-is a fraction of the file size.
+Generated from these files — regenerate if the logo ever changes:
 
-If only raster is available, supply PNG with transparency at **3x** the largest
-display size (so at least 1140 × 348) and name them `.png` instead, updating the
-paths in `src/lib/church.ts`.
+- `src/app/icon.png` / `apple-icon.png` — the swirl mark alone, cropped to its
+  bounding box and centred on white
+- `src/app/opengraph-image.png` / `twitter-image.png` — the white lockup on ink
+  at 1200 × 630
 
-Do not use JPEG — it has no transparency and will show a white box on the dark
-footer.
+## Note on format
 
-## Also useful
-
-- `favicon` source at 512 × 512 (the mark alone, no wordmark)
-- `og-image.png` at 1200 × 630 for link previews on social media
+These are PNG. SVG would be better — the swirl has fine linework and the
+wordmark is widely letterspaced, so at large sizes on retina the PNG will
+soften. If a vector original exists, drop it in and update the paths.

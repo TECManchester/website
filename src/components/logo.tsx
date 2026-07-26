@@ -29,7 +29,12 @@ export function Logo({
         width={brand.logoAspect.width}
         height={brand.logoAspect.height}
         priority={priority}
-        className={cn("h-[46px] w-auto", className)}
+        /*
+         * The supplied lockup is stacked over three lines at ~3:1, so it needs
+         * real height — below about 44px the "MANCHESTER" line stops being
+         * legible. Sized up on desktop where there's room.
+         */
+        className={cn("h-11 w-auto sm:h-[52px]", className)}
       />
     );
   }

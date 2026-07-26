@@ -50,7 +50,7 @@ export function SiteHeader() {
           scrolled && "shadow-[0_6px_24px_rgb(14_14_44_/_0.07)]",
         )}
       >
-        <div className="wrap flex h-[74px] items-center justify-between">
+        <div className="wrap flex h-[76px] items-center justify-between sm:h-22">
           <Link
             href="/"
             aria-label="Elevation Church Manchester — home"
