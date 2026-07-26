@@ -56,7 +56,7 @@ export function SiteHeader() {
             aria-label="Elevation Church Manchester — home"
             className="rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-600"
           >
-            <Logo />
+            <Logo priority />
           </Link>
 
           <nav aria-label="Main" className="hidden lg:block">

@@ -260,6 +260,25 @@ export const giving = {
   giftAidAvailable: true,
 } as const;
 
+export const brand = {
+  /**
+   * Flip to true once the real artwork is in /public/brand — see the README
+   * there for the exact filenames. Until then the Logo component falls back to
+   * a typographic stand-in rather than 404-ing three images on every page.
+   */
+  hasLogoFiles: false,
+  logo: {
+    /** Blue mark + blue wordmark. For white/light backgrounds. */
+    colour: "/brand/logo-colour.svg",
+    /** All-white. For the ink footer, dark hero and mobile menu. */
+    white: "/brand/logo-white.svg",
+    /** Solid navy. For light backgrounds needing more contrast than the blue. */
+    navy: "/brand/logo-navy.svg",
+  },
+  /** Natural aspect ratio of the supplied lockups (~3.3:1). */
+  logoAspect: { width: 190, height: 58 },
+} as const;
+
 /**
  * Site-wide announcement bar. Change `id` when the message changes so it
  * re-appears for anyone who dismissed the previous one.
