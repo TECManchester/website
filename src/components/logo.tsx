@@ -1,52 +1,43 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Typographic stand-in for the TEC wordmark.
+ * Wordmark with the gradient mark from the design mockup.
  *
- * TODO: replace with the real artwork once the files land in /public:
- *   logo-colour.svg (blue + green), logo-white.svg, logo-navy.svg
- * Then swap this for <Image src={...} alt="Elevation Church Manchester" /> and
- * keep the same `tone` prop so every call site keeps working.
+ * TODO: swap the mark for the real TEC swirl emblem once the artwork lands in
+ * /public (logo-colour.svg, logo-white.svg, logo-navy.svg). The layout and the
+ * `tone` prop stay the same, so no call site has to change.
  */
 export function Logo({
-  tone = "navy",
+  tone = "ink",
   className,
 }: {
-  tone?: "navy" | "white";
+  tone?: "ink" | "white";
   className?: string;
 }) {
   return (
-    <span
-      className={cn(
-        "flex flex-col items-start leading-none",
-        tone === "white" ? "text-white" : "text-brand-navy",
-        className,
-      )}
-    >
-      <span className="wordmark text-[0.5rem] opacity-70 sm:text-[0.55rem]">
-        The
+    <span className={cn("flex items-center gap-[11px]", className)}>
+      <span className="from-green to-green-600 grid size-[38px] shrink-0 place-items-center rounded-[11px] bg-linear-135 shadow-[0_6px_16px_rgb(132_194_36_/_0.4)]">
+        <svg viewBox="0 0 24 24" className="size-[22px]" aria-hidden>
+          <path d="M12 2L4 8v13h5v-7h6v7h5V8z" fill="#0E0E2C" />
+        </svg>
       </span>
-      <span className="wordmark text-base leading-tight font-semibold sm:text-lg">
-        Elevation
-      </span>
-      <span className="flex items-center gap-1.5">
+      <span className="leading-none">
         <span
-          aria-hidden
-          className="bg-brand-green h-px w-3 shrink-0"
-        />
-        <span className="wordmark text-[0.6rem] sm:text-[0.65rem]">Church</span>
+          className={cn(
+            "font-heading block text-lg font-extrabold tracking-[-0.02em]",
+            tone === "white" ? "text-white" : "text-ink",
+          )}
+        >
+          Elevation
+        </span>
         <span
-          aria-hidden
-          className="bg-brand-green h-px w-3 shrink-0"
-        />
-      </span>
-      <span
-        className={cn(
-          "wordmark mt-0.5 text-[0.55rem] font-semibold sm:text-[0.6rem]",
-          tone === "white" ? "text-brand-green" : "text-brand-green-ink",
-        )}
-      >
-        Manchester
+          className={cn(
+            "mt-px block text-[10px] font-semibold tracking-[0.18em] uppercase",
+            tone === "white" ? "text-white/60" : "text-grey-500",
+          )}
+        >
+          Manchester
+        </span>
       </span>
     </span>
   );

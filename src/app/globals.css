@@ -15,6 +15,23 @@
   --color-brand-navy: var(--brand-navy);
   --color-brand-green-soft: var(--brand-green-soft);
   --color-brand-navy-soft: var(--brand-navy-soft);
+
+  /* Palette lifted verbatim from the approved mockup. Kept as hex so nothing
+     shifts in colour-space conversion. */
+  --color-green: #84c224;
+  --color-green-600: #6fa61c;
+  --color-green-100: #eaf6d6;
+  --color-ink: #0e0e2c;
+  --color-ink-800: #1b1f29;
+  --color-grey-50: #f7f8f5;
+  --color-grey-100: #f1f1ef;
+  --color-grey-300: #d7d9d6;
+  --color-grey-500: #676767;
+  --color-grey-700: #4b4f58;
+  --color-gold: #e6a700;
+
+  --shadow-card: 0 10px 30px rgb(14 14 44 / 0.08);
+  --shadow-card-lg: 0 24px 60px rgb(14 14 44 / 0.16);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -143,20 +160,21 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white font-sans leading-relaxed text-grey-700;
   }
   html {
-    @apply font-sans;
     scroll-behavior: smooth;
   }
-  /* Anchored sections (/about#leadership) must clear the sticky header. */
+  /* Anchored sections must clear the sticky header. */
   :target {
-    scroll-margin-top: 6rem;
+    scroll-margin-top: 7rem;
   }
+  /* Mockup: Sora, tight leading, slight negative tracking. */
   h1,
   h2,
-  h3 {
-    @apply font-heading tracking-tight;
+  h3,
+  h4 {
+    @apply font-heading leading-[1.1] tracking-[-0.02em] text-ink;
   }
 }
 
@@ -166,17 +184,53 @@
   }
 }
 
-/* Small uppercase text, so it uses the text-safe green. */
+/* Page gutter — 1240px max, 24px sides. */
+@utility wrap {
+  @apply mx-auto w-full max-w-[1240px] px-6;
+}
+
 @utility eyebrow {
-  @apply text-brand-green-ink text-xs font-semibold tracking-[0.18em] uppercase;
+  @apply font-heading text-green-600 text-xs font-bold tracking-[0.14em] uppercase;
 }
 
-/* On navy the light green is the readable one — 9.8:1. */
-@utility eyebrow-on-navy {
-  @apply text-brand-green text-xs font-semibold tracking-[0.18em] uppercase;
+/* On ink, the lighter green is the readable one. */
+@utility eyebrow-on-ink {
+  @apply font-heading text-green text-xs font-bold tracking-[0.14em] uppercase;
 }
 
-/* Echoes the logo's letterspaced wordmark. */
 @utility wordmark {
-  @apply font-heading tracking-[0.22em] uppercase;
+  @apply font-heading tracking-[0.18em] uppercase;
+}
+
+/* Soft radial brand glow used on every dark section. */
+@utility brand-glow {
+  @apply pointer-events-none absolute rounded-full;
+  background: radial-gradient(
+    circle,
+    rgb(132 194 36 / 0.3),
+    transparent 65%
+  );
+}
+
+/*
+ * Scroll reveal. Content starts visible and is only hidden once JS marks the
+ * document ready — so with JS disabled, or before hydration, nothing is
+ * invisible. Also fully disabled under reduced-motion.
+ */
+@utility reveal {
+  @apply opacity-100;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal-ready="true"] .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s ease;
+  }
+  [data-reveal-ready="true"] .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { MonitorPlay } from "lucide-react";
-import { ButtonLink } from "@/components/button-link";
-import { PageHeader, Section, SectionHeading } from "@/components/section";
+import { BtnLink } from "@/components/btn";
+import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { location, service, socials } from "@/lib/church";
 
@@ -24,7 +24,7 @@ const featuredSermons: { id: string; title: string; date: string }[] = [];
 export default function WatchPage() {
   return (
     <>
-      <PageHeader
+      <PageHero
         eyebrow="Messages"
         title="Watch and catch up"
         lead={`Missed a ${service.day}? Every message goes up on our YouTube channel.`}
@@ -47,7 +47,7 @@ export default function WatchPage() {
                 </div>
                 <CardContent>
                   <h2 className="text-lg font-semibold">{sermon.title}</h2>
-                  <p className="text-muted-foreground mt-1 text-sm">
+                  <p className="text-grey-500 mt-1 text-sm">
                     {sermon.date}
                   </p>
                 </CardContent>
@@ -57,41 +57,41 @@ export default function WatchPage() {
         ) : (
           <Card className="mx-auto max-w-2xl text-center">
             <CardContent className="py-14">
-              <MonitorPlay className="text-brand-green mx-auto size-10" />
+              <MonitorPlay className="text-green-600 mx-auto size-10" />
               <h2 className="mt-6 text-2xl font-semibold">
                 Every message, on our channel
               </h2>
-              <p className="text-muted-foreground mx-auto mt-3 max-w-md leading-relaxed">
+              <p className="text-grey-500 mx-auto mt-3 max-w-md leading-relaxed">
                 Full services and recent messages are on YouTube. Subscribe and
                 you&apos;ll know the moment a new one lands.
               </p>
-              <ButtonLink
+              <BtnLink variant="navy"
                 href={youtube.href}
                 external
                 size="lg"
                 className="mt-8"
               >
                 <MonitorPlay className="size-5" /> Watch on YouTube
-              </ButtonLink>
+              </BtnLink>
             </CardContent>
           </Card>
         )}
       </Section>
 
-      <Section tone="navy">
+      <Section tone="ink">
         <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
           <SectionHeading
             title="Better in the room"
             lead={`Online is good. In person is better. ${service.day}s at ${service.startTime}, ${location.full}.`}
-            tone="onNavy"
+            tone="onInk"
           />
-          <ButtonLink
+          <BtnLink
             href="/im-new"
-            size="lg"
-            className="bg-brand-green text-brand-navy hover:bg-brand-green/90 shrink-0"
+            variant="green"
+            className="shrink-0"
           >
             Plan a visit
-          </ButtonLink>
+          </BtnLink>
         </div>
       </Section>
     </>

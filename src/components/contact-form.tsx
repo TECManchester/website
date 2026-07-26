@@ -20,12 +20,12 @@ export function ContactForm() {
 
   if (state.status === "success") {
     return (
-      <div className="border-brand-green/50 bg-brand-green-soft rounded-xl border p-8 text-center">
-        <CheckCircle2 className="text-brand-green mx-auto size-10" />
+      <div className="border-green/50 bg-green-100 rounded-xl border p-8 text-center">
+        <CheckCircle2 className="text-green-600 mx-auto size-10" />
         <h2 className="font-heading mt-4 text-2xl font-semibold">
           Message received
         </h2>
-        <p className="text-muted-foreground mt-3 leading-relaxed">
+        <p className="text-grey-500 mt-3 leading-relaxed">
           {state.message}
         </p>
       </div>

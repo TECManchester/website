@@ -20,12 +20,12 @@ export function PrayerForm() {
 
   if (state.status === "success") {
     return (
-      <div className="border-brand-green/50 bg-brand-green-soft rounded-xl border p-8 text-center">
-        <CheckCircle2 className="text-brand-green mx-auto size-10" />
+      <div className="border-green/50 bg-green-100 rounded-xl border p-8 text-center">
+        <CheckCircle2 className="text-green-600 mx-auto size-10" />
         <h2 className="font-heading mt-4 text-2xl font-semibold">
           We&apos;re praying
         </h2>
-        <p className="text-muted-foreground mt-3 leading-relaxed">
+        <p className="text-grey-500 mt-3 leading-relaxed">
           {state.message}
         </p>
       </div>
@@ -38,7 +38,7 @@ export function PrayerForm() {
         <div className="space-y-2">
           <Label htmlFor="name">Your name</Label>
           <Input id="name" name="name" autoComplete="name" />
-          <p className="text-muted-foreground text-xs">
+          <p className="text-grey-500 text-xs">
             Optional — you&apos;re welcome to stay anonymous.
           </p>
         </div>
@@ -55,7 +55,7 @@ export function PrayerForm() {
             }
           />
           <FieldError id="email-error" message={state.fieldErrors?.email} />
-          <p className="text-muted-foreground text-xs">
+          <p className="text-grey-500 text-xs">
             Only if you&apos;d like us to follow up.
           </p>
         </div>
@@ -89,11 +89,11 @@ export function PrayerForm() {
           <input
             type="checkbox"
             name="share_with_team"
-            className="border-input text-brand-green focus-visible:ring-ring mt-0.5 size-4 rounded focus-visible:ring-2"
+            className="border-input text-green-600 focus-visible:ring-ring mt-0.5 size-4 rounded focus-visible:ring-2"
           />
           <span>
             Share this with our wider prayer team.
-            <span className="text-muted-foreground block text-xs">
+            <span className="text-grey-500 block text-xs">
               Leave unticked and only the pastoral team will see it.
             </span>
           </span>
@@ -102,7 +102,7 @@ export function PrayerForm() {
           <input
             type="checkbox"
             name="is_urgent"
-            className="border-input text-brand-green focus-visible:ring-ring mt-0.5 size-4 rounded focus-visible:ring-2"
+            className="border-input text-green-600 focus-visible:ring-ring mt-0.5 size-4 rounded focus-visible:ring-2"
           />
           <span>This is urgent.</span>
         </label>

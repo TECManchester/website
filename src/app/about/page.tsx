@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
-import { ButtonLink } from "@/components/button-link";
-import { PageHeader, Section, SectionHeading } from "@/components/section";
+import { BtnLink } from "@/components/btn";
+import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { church, leadership, personality, values } from "@/lib/church";
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <PageHeader
+      <PageHero
         eyebrow="About us"
         title="A church family with one mandate"
         lead={church.mission}
@@ -25,7 +25,7 @@ export default function AboutPage() {
       <Section id="our-story">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
           <SectionHeading eyebrow="Our story" title="How we got here" />
-          <div className="text-muted-foreground space-y-5 text-lg leading-relaxed text-pretty">
+          <div className="text-grey-500 space-y-5 text-lg leading-relaxed text-pretty">
             <p>
               The Elevation Church began in Lagos, Nigeria, on 10 October 2010 —
               10.10.10 — founded by Pastor Godman Akinlabi in response to a
@@ -35,7 +35,7 @@ export default function AboutPage() {
             <p>
               What started as one gathering has grown into a global family of
               churches — we call them{" "}
-              <span className="text-foreground font-medium">expressions</span> —
+              <span className="text-ink font-medium">expressions</span> —
               across Nigeria, the UK, Europe and the US.
             </p>
             <p>
@@ -47,7 +47,7 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      <Section id="vision-values" tone="muted">
+      <Section id="vision-values" tone="grey">
         <SectionHeading
           eyebrow="Vision & values"
           title="What we're built on"
@@ -58,7 +58,7 @@ export default function AboutPage() {
           {values.map((v) => (
             <Card key={v.letter}>
               <CardContent className="flex items-baseline gap-4">
-                <span className="font-heading text-brand-green text-4xl font-semibold">
+                <span className="font-heading text-green-600 text-4xl font-semibold">
                   {v.letter}
                 </span>
                 <span className="text-lg font-medium">{v.name}</span>
@@ -95,7 +95,7 @@ export default function AboutPage() {
                   {person.name}
                 </h3>
                 <p className="eyebrow mt-2">{person.role}</p>
-                <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+                <p className="text-grey-500 mt-3 text-sm leading-relaxed">
                   {person.bio}
                 </p>
               </CardContent>
@@ -104,20 +104,20 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      <Section tone="navy">
+      <Section tone="ink">
         <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
           <SectionHeading
             title="What we believe"
             lead="The convictions underneath everything above — set out plainly, with the scripture behind each one."
-            tone="onNavy"
+            tone="onInk"
           />
-          <ButtonLink
+          <BtnLink
             href="/about/what-we-believe"
-            size="lg"
-            className="bg-brand-green text-brand-navy hover:bg-brand-green/90 shrink-0"
+            variant="green"
+            className="shrink-0"
           >
             Read our statement of faith <ArrowRight className="size-4" />
-          </ButtonLink>
+          </BtnLink>
         </div>
       </Section>
     </>

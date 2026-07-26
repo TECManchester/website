@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { HeartHandshake, Users } from "lucide-react";
-import { ButtonLink } from "@/components/button-link";
-import { PageHeader, Section, SectionHeading } from "@/components/section";
+import { BtnLink } from "@/components/btn";
+import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default function GetInvolvedPage() {
   return (
     <>
-      <PageHeader
+      <PageHero
         eyebrow="Belong here"
         title="Get involved"
         lead="Sunday is the front door, not the whole house. This is where church stops being an event and starts being a family."
@@ -37,17 +37,17 @@ export default function GetInvolvedPage() {
               lead="Connect Groups are our small-group system and the main way we care for one another through the week. Some are based on where you live, others on a shared season or interest — families, young couples, professionals, fitness and more."
             />
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/contact">Find a group</ButtonLink>
+              <BtnLink variant="navy" href="/contact">Find a group</BtnLink>
             </div>
             {/* TODO: replace with the live directory once connect_groups is populated. */}
           </div>
-          <Card className="bg-brand-green-soft border-brand-green/40">
+          <Card className="bg-green-100 border-green/40">
             <CardContent>
-              <Users className="text-brand-navy size-7" />
+              <Users className="text-ink size-7" />
               <h3 className="font-heading mt-4 text-xl font-semibold">
                 What actually happens
               </h3>
-              <ul className="text-muted-foreground mt-4 space-y-3 text-sm leading-relaxed">
+              <ul className="text-grey-500 mt-4 space-y-3 text-sm leading-relaxed">
                 <li>Food, usually. Always conversation.</li>
                 <li>
                   Working through what was taught on Sunday, in a room small
@@ -64,7 +64,7 @@ export default function GetInvolvedPage() {
       </Section>
 
       {/* G-Squad */}
-      <Section id="serve" tone="muted">
+      <Section id="serve" tone="grey">
         <SectionHeading
           eyebrow="G-Squad"
           title="Serve on the Greatness Squad"
@@ -80,7 +80,7 @@ export default function GetInvolvedPage() {
           ))}
         </ul>
         <div className="mt-10">
-          <ButtonLink href="/contact">Join the G-Squad</ButtonLink>
+          <BtnLink variant="navy" href="/contact">Join the G-Squad</BtnLink>
         </div>
       </Section>
 
@@ -98,7 +98,7 @@ export default function GetInvolvedPage() {
                   {group.name}
                 </h3>
                 <p className="eyebrow mt-2">{group.forWho}</p>
-                <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+                <p className="text-grey-500 mt-3 text-sm leading-relaxed">
                   {group.body}
                 </p>
               </CardContent>
@@ -108,7 +108,7 @@ export default function GetInvolvedPage() {
       </Section>
 
       {/* Support ministries */}
-      <Section id="support" tone="muted">
+      <Section id="support" tone="grey">
         <SectionHeading
           eyebrow="Support"
           title="When you need more than a Sunday"
@@ -118,9 +118,9 @@ export default function GetInvolvedPage() {
           {supportMinistries.map((ministry) => (
             <Card key={ministry.name} className="h-full">
               <CardContent>
-                <HeartHandshake className="text-brand-green size-6" />
+                <HeartHandshake className="text-green-600 size-6" />
                 <h3 className="mt-4 text-lg font-semibold">{ministry.name}</h3>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                <p className="text-grey-500 mt-2 text-sm leading-relaxed">
                   {ministry.body}
                 </p>
               </CardContent>
@@ -138,15 +138,15 @@ export default function GetInvolvedPage() {
         />
         <ol className="mt-12 grid gap-8 md:grid-cols-2">
           {growthTrack.map((step) => (
-            <li key={step.step} className="border-brand-green border-l-4 pl-6">
-              <span className="font-heading text-brand-green text-2xl font-semibold">
+            <li key={step.step} className="border-green-600 border-l-4 pl-6">
+              <span className="font-heading text-green-600 text-2xl font-semibold">
                 {step.step}
               </span>
               <h3 className="mt-1 text-xl font-semibold">{step.title}</h3>
-              <p className="text-muted-foreground mt-2 leading-relaxed">
+              <p className="text-grey-500 mt-2 leading-relaxed">
                 {step.body}
               </p>
-              <p className="text-muted-foreground/70 mt-3 text-sm">
+              <p className="text-grey-500/70 mt-3 text-sm">
                 {step.scripture}
               </p>
             </li>
@@ -154,20 +154,20 @@ export default function GetInvolvedPage() {
         </ol>
       </Section>
 
-      <Section tone="navy">
+      <Section tone="ink">
         <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
           <SectionHeading
             title="Not sure where you'd fit?"
             lead="Tell us a bit about yourself and we'll point you somewhere sensible."
-            tone="onNavy"
+            tone="onInk"
           />
-          <ButtonLink
+          <BtnLink
             href="/contact"
-            size="lg"
-            className="bg-brand-green text-brand-navy hover:bg-brand-green/90 shrink-0"
+            variant="green"
+            className="shrink-0"
           >
             Talk to us
-          </ButtonLink>
+          </BtnLink>
         </div>
       </Section>
     </>

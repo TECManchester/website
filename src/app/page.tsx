@@ -1,228 +1,430 @@
 import Link from "next/link";
-import { ArrowRight, Clock, MapPin, Sparkles } from "lucide-react";
-import { ButtonLink } from "@/components/button-link";
+import {
+  ArrowRight,
+  Baby,
+  Clock,
+  Compass,
+  Home,
+  MapPin,
+  Play,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import { BtnLink } from "@/components/btn";
+import { NewsletterForm } from "@/components/newsletter-form";
 import { Section, SectionHeading } from "@/components/section";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   church,
-  growthTrack,
-  kidsAndYouth,
+  giving,
   location,
   service,
-  values,
+  socials,
 } from "@/lib/church";
+
+const youtube = socials.find((s) => s.name === "YouTube")!;
+const instagram = socials.find((s) => s.name === "Instagram")!;
+
+const newHereCards = [
+  {
+    icon: Home,
+    title: "What to expect",
+    body: "Passionate worship, a practical message from the Bible, and time to pray. Come as you are — nobody is checking what you're wearing.",
+    href: "/im-new#what-to-expect",
+    cta: "Learn more",
+  },
+  {
+    icon: MapPin,
+    title: "Times & location",
+    body: `${service.day}s at ${service.startTime} in the ${location.venue} on the ${location.campus} campus. We'll help you find your way in.`,
+    href: "/im-new#find-us",
+    cta: "Get directions",
+  },
+  {
+    icon: Baby,
+    title: "Kids & teens",
+    body: "The Seeds runs every Sunday for children, including a baby class, and 412 Nation is for teenagers. They're in good hands.",
+    href: "/im-new#kids",
+    cta: "See their spaces",
+  },
+];
+
+const involveCards = [
+  {
+    icon: Users,
+    title: "Connect Groups",
+    body: "Small groups across Manchester. Big enough to receive you, small enough to know you.",
+    href: "/get-involved#connect-groups",
+  },
+  {
+    icon: Sparkles,
+    title: "Serve on the G-Squad",
+    body: "Worship, welcome, kids, tech, production — more than forty teams to join.",
+    href: "/get-involved#serve",
+  },
+  {
+    icon: Baby,
+    title: "The Seeds & 412 Nation",
+    body: "Safe, joyful spaces for children and teenagers, every single Sunday.",
+    href: "/get-involved#kids-and-teens",
+  },
+  {
+    icon: Compass,
+    title: "Next steps",
+    body: "The Growth Track — from your first Sunday to living out your purpose.",
+    href: "/get-involved#next-steps",
+  },
+];
+
+const stats = [
+  { value: "10:30", unit: "AM", label: "Every Sunday" },
+  { value: "May", unit: " 2023", label: "Manchester launched" },
+  { value: "2", unit: "", label: "Kids & teens ministries" },
+  { value: "+25", unit: "%", label: "Gift Aid on your giving" },
+];
 
 export default function HomePage() {
   return (
     <>
-      {/* Hero */}
-      <div className="bg-brand-navy relative overflow-hidden text-white">
+      {/* ===== Hero ===== */}
+      <section className="bg-ink relative flex min-h-[78vh] items-center overflow-hidden">
+        {/*
+          TODO: swap this gradient for real congregation photography once we
+          have it. Deliberately not using stock imagery of a different church.
+        */}
         <div
           aria-hidden
-          className="bg-brand-green/20 pointer-events-none absolute -top-32 -right-32 size-96 rounded-full blur-3xl"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_-10%,#26265c_0%,transparent_55%),radial-gradient(ellipse_at_90%_110%,#1a1a3f_0%,transparent_50%)]"
         />
-        <div className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
-          <p className="eyebrow-on-navy mb-4">{church.tagline}</p>
-          <h1 className="max-w-4xl text-4xl font-semibold text-balance sm:text-6xl">
-            Welcome to Elevation Church Manchester
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-white/80 sm:text-xl">
-            We&apos;re a Spirit-filled family in the heart of Manchester on one
-            mission: making greatness common. Wherever you&apos;re coming from,
-            there&apos;s a place for you here.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <ButtonLink
-              href="/im-new"
-              size="lg"
-              className="bg-brand-green text-brand-navy hover:bg-brand-green/90"
-            >
-              Plan your visit <ArrowRight className="size-4" />
-            </ButtonLink>
-            <ButtonLink
-              href="/watch"
-              size="lg"
-              variant="outline"
-              className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
-            >
-              Watch a service
-            </ButtonLink>
+        <span className="brand-glow top-[-160px] right-[-120px] size-[600px] blur-[20px]" />
+
+        <div className="wrap relative z-2 py-15">
+          <div className="max-w-[760px]">
+            <p className="font-heading mb-6 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/12 px-4 py-2 text-[13.5px] font-semibold text-white backdrop-blur-md">
+              <span className="bg-green size-2 rounded-full shadow-[0_0_0_4px_rgb(132_194_36_/_0.3)]" />
+              Gathering {service.day}s · {service.startTime} · {location.campus}
+            </p>
+
+            <h1 className="mb-5 text-[clamp(42px,6vw,76px)] font-extrabold text-white">
+              Making greatness <span className="text-green">common.</span>
+            </h1>
+
+            <p className="mb-8 max-w-[560px] text-[clamp(17px,2vw,20px)] text-pretty text-white/82">
+              We&apos;re a Spirit-filled family in the heart of Manchester on one
+              mission. Wherever you&apos;re coming from, there&apos;s a place for
+              you here.
+            </p>
+
+            <div className="flex flex-wrap gap-3.5">
+              <BtnLink href="/im-new" variant="green" size="lg">
+                Plan your visit <ArrowRight className="size-4" />
+              </BtnLink>
+              <BtnLink href="/watch" variant="ghostOnDark" size="lg">
+                <Play className="size-4 fill-current" /> Watch online
+              </BtnLink>
+            </div>
+
+            <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-5">
+              {[
+                {
+                  icon: Clock,
+                  k: `${service.day}s ${service.startTime}`,
+                  v: service.timeConfirmed
+                    ? `Doors from ${service.doorsOpen}`
+                    : "Come a little early for a coffee",
+                },
+                {
+                  icon: MapPin,
+                  k: location.venue,
+                  v: `${location.campus} · ${location.postcode}`,
+                },
+                {
+                  icon: Users,
+                  k: "Kids & teens",
+                  v: "The Seeds and 412 Nation every week",
+                },
+              ].map(({ icon: Icon, k, v }) => (
+                <li key={k}>
+                  <p className="font-heading flex items-center gap-2 text-[15px] font-bold text-white">
+                    <Icon className="text-green size-[18px]" />
+                    {k}
+                  </p>
+                  <p className="mt-0.5 pl-[26px] text-[13.5px] text-white/65">
+                    {v}
+                  </p>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Service details */}
-      <div className="border-b">
-        <div className="mx-auto grid max-w-6xl px-4 sm:px-6 md:grid-cols-3">
-          <div className="flex items-start gap-4 py-8 md:pr-8">
-            <Clock className="text-brand-green mt-1 size-5 shrink-0" />
-            <div>
-              <h2 className="font-semibold">Sunday service</h2>
-              <p className="text-muted-foreground mt-1 text-sm">
-                {service.day}s at {service.startTime}
-                {service.timeConfirmed && (
-                  <>
-                    <br />
-                    Doors {service.doorsOpen} · {service.approxDuration}
-                  </>
-                )}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 py-8 md:px-8">
-            <MapPin className="text-brand-green mt-1 size-5 shrink-0" />
-            <div>
-              <h2 className="font-semibold">Where we meet</h2>
-              <p className="text-muted-foreground mt-1 text-sm">
-                {location.venue}, {location.campus}
-                <br />
-                {location.city} {location.postcode}
-              </p>
-              <Link
-                href={location.mapsUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-brand-navy mt-2 inline-block text-sm font-medium underline underline-offset-4"
-              >
-                Get directions
-              </Link>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 py-8 md:pl-8">
-            <Sparkles className="text-brand-green mt-1 size-5 shrink-0" />
-            <div>
-              <h2 className="font-semibold">First time?</h2>
-              <p className="text-muted-foreground mt-1 text-sm">
-                Come as you are. We&apos;ll save you a seat and show you around.
-              </p>
-              <Link
-                href="/im-new"
-                className="text-brand-navy mt-2 inline-block text-sm font-medium underline underline-offset-4"
-              >
-                What to expect
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mission */}
-      <Section>
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          <SectionHeading
-            eyebrow="Our mission"
-            title="Making greatness common"
-            lead={church.mission}
-          />
-          <figure className="border-brand-green border-l-4 pl-6">
-            <blockquote className="font-heading text-2xl leading-snug text-balance sm:text-3xl">
-              &ldquo;{church.bedrockScripture.text}&rdquo;
-            </blockquote>
-            <figcaption className="text-muted-foreground mt-4 text-sm font-medium">
-              {church.bedrockScripture.reference}
-            </figcaption>
-            <div className="mt-8">
-              <p className="eyebrow mb-3">Our values — ASHLIE</p>
-              <ul className="grid gap-2 sm:grid-cols-2">
-                {values.map((v) => (
-                  <li key={v.letter} className="flex items-baseline gap-3">
-                    <span className="font-heading text-brand-green w-4 text-lg font-semibold">
-                      {v.letter}
-                    </span>
-                    <span className="text-sm">{v.name}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </figure>
-        </div>
-      </Section>
-
-      {/* Growth Track */}
-      <Section tone="muted">
+      {/* ===== I'm new ===== */}
+      <Section id="imnew">
         <SectionHeading
-          eyebrow="Your next steps"
-          title="The Growth Track"
-          lead="Four steps that take you from your first Sunday to living out your purpose."
+          eyebrow="First time?"
+          title="We'd love to meet you"
+          lead="Coming to a new church can feel like a big step. Here's everything you need to feel at home before you even arrive."
+          align="center"
+          className="reveal"
         />
-        <ol className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {growthTrack.map((step) => (
-            <li key={step.step}>
-              <Card className="h-full">
-                <CardContent>
-                  <span className="font-heading text-brand-green text-3xl font-semibold">
-                    {step.step}
-                  </span>
-                  <h3 className="mt-3 text-lg font-semibold">{step.title}</h3>
-                  <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                    {step.body}
-                  </p>
-                  <p className="text-muted-foreground/70 mt-4 text-xs">
-                    {step.scripture}
-                  </p>
-                </CardContent>
-              </Card>
-            </li>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {newHereCards.map(({ icon: Icon, title, body, href, cta }) => (
+            <Link
+              key={title}
+              href={href}
+              className="reveal group border-grey-100 hover:shadow-card-lg relative overflow-hidden rounded-2xl border bg-white p-8 transition duration-250 hover:-translate-y-1.5 hover:border-transparent"
+            >
+              <span className="bg-green-100 group-hover:bg-green mb-5 grid size-[54px] place-items-center rounded-[14px] transition-colors duration-250">
+                <Icon className="text-green-600 group-hover:text-ink size-[26px] transition-colors duration-250" />
+              </span>
+              <h3 className="mb-2 text-[21px] font-bold">{title}</h3>
+              <p className="text-grey-500 mb-4 text-[15px]">{body}</p>
+              <span className="font-heading text-green-600 inline-flex items-center gap-1.5 text-sm font-semibold transition-all group-hover:gap-2.5">
+                {cta} <ArrowRight className="size-4" />
+              </span>
+            </Link>
           ))}
-        </ol>
-        <div className="mt-10">
-          <ButtonLink href="/get-involved" variant="outline">
-            Explore getting involved <ArrowRight className="size-4" />
-          </ButtonLink>
+        </div>
+
+        <div className="reveal mt-11 text-center">
+          <BtnLink href="/im-new" variant="navy" size="lg">
+            Plan my visit — everything you need to know
+          </BtnLink>
         </div>
       </Section>
 
-      {/* Kids & youth */}
+      {/* ===== Watch ===== */}
+      <Section tone="grey">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.3fr_1fr]">
+          <Link
+            href={youtube.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Watch on our YouTube channel"
+            className="reveal group bg-ink-800 shadow-card-lg relative grid aspect-video place-items-center overflow-hidden rounded-2xl"
+          >
+            <span
+              aria-hidden
+              className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,#2a2a5e_0%,transparent_60%)]"
+            />
+            <span className="font-heading bg-ink/70 absolute top-4 left-4 rounded-lg px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md">
+              Every message, on YouTube
+            </span>
+            <span className="group-hover:bg-green relative grid size-[82px] place-items-center rounded-full bg-white/92 shadow-[0_10px_30px_rgb(0_0_0_/_0.3)] transition duration-250 group-hover:scale-108">
+              <Play className="text-ink ml-1 size-[30px] fill-current" />
+            </span>
+          </Link>
+
+          <div className="reveal">
+            <p className="eyebrow">Messages</p>
+            <h2 className="mt-3 mb-3.5 text-[34px] font-bold">
+              Missed a Sunday?
+            </h2>
+            <p className="mb-6 text-pretty">
+              Full services and recent messages go up on our YouTube channel.
+              Subscribe and you&apos;ll know the moment a new one lands.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <BtnLink href={youtube.href} external variant="green">
+                Watch on YouTube
+              </BtnLink>
+              <BtnLink href="/watch" variant="ghost">
+                All messages
+              </BtnLink>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ===== What's on ===== */}
       <Section>
-        <SectionHeading
-          eyebrow="For the whole family"
-          title="Your children are in good hands"
-          lead="Every Sunday we run dedicated, safe and joyful spaces for children and teenagers."
-        />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {kidsAndYouth.map((group) => (
-            <Card key={group.name} className="h-full">
-              <CardContent>
-                <h3 className="font-heading text-xl font-semibold">
-                  {group.name}
+        <div className="reveal mb-13 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="eyebrow">What&apos;s on</p>
+            <h2 className="mt-3.5 text-[clamp(30px,4vw,46px)] font-bold">
+              This week at Elevation
+            </h2>
+          </div>
+          <BtnLink href="/events" variant="ghost">
+            View all <ArrowRight className="size-4" />
+          </BtnLink>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {/* The Sunday gathering is the one genuinely recurring fixture, so it
+              leads. Other events populate from Supabase once they exist. */}
+          <article className="reveal border-grey-100 hover:shadow-card-lg overflow-hidden rounded-2xl border bg-white transition duration-250 hover:-translate-y-1.5 md:col-span-2">
+            <div className="from-ink to-ink-800 relative aspect-16/10 bg-linear-to-br md:aspect-auto md:h-full md:min-h-[220px]">
+              <span className="brand-glow top-[-80px] right-[-60px] size-[280px]" />
+              <div className="relative flex h-full flex-col justify-end p-7">
+                <p className="eyebrow-on-ink">Every week</p>
+                <h3 className="mt-2 text-[26px] font-bold text-white">
+                  Sunday Gathering
                 </h3>
-                <p className="eyebrow mt-2">{group.forWho}</p>
-                <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-                  {group.body}
+                <p className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-white/70">
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="text-green size-4" />
+                    {service.startTime}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="text-green size-4" />
+                    {location.venue}, {location.postcode}
+                  </span>
                 </p>
-              </CardContent>
-            </Card>
+                <div className="mt-5">
+                  <BtnLink href="/im-new" variant="green">
+                    Plan your visit
+                  </BtnLink>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article className="reveal border-grey-100 flex flex-col justify-center rounded-2xl border bg-white p-8">
+            <span className="bg-green-100 mb-5 grid size-[54px] place-items-center rounded-[14px]">
+              <Sparkles className="text-green-600 size-[26px]" />
+            </span>
+            <h3 className="mb-2 text-[21px] font-bold">More coming soon</h3>
+            <p className="text-grey-500 mb-5 text-[15px]">
+              Conferences, socials and midweek gatherings get announced on
+              Instagram first.
+            </p>
+            <div>
+              <BtnLink href={instagram.href} external variant="ghost">
+                Follow along
+              </BtnLink>
+            </div>
+          </article>
+        </div>
+      </Section>
+
+      {/* ===== Get involved (dark) ===== */}
+      <Section tone="ink" id="involve">
+        <SectionHeading
+          eyebrow="Community"
+          title="Don't do life alone"
+          lead="Church is more than a Sunday. Find your people, use your gifts, and grow."
+          tone="onInk"
+          className="reveal"
+        />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {involveCards.map(({ icon: Icon, title, body, href }) => (
+            <Link
+              key={title}
+              href={href}
+              className="reveal hover:border-green/40 rounded-2xl border border-white/10 bg-white/4 p-7 transition duration-250 hover:-translate-y-1.5 hover:bg-white/8"
+            >
+              <span className="bg-green/16 mb-4.5 grid size-[50px] place-items-center rounded-[13px]">
+                <Icon className="text-green size-6" />
+              </span>
+              <h3 className="mb-1.5 text-[19px] font-bold text-white">
+                {title}
+              </h3>
+              <p className="text-sm text-white/60">{body}</p>
+            </Link>
           ))}
         </div>
       </Section>
 
-      {/* Closing CTA */}
-      <Section tone="navy">
-        <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
-          <SectionHeading
-            title="We'd love to meet you this Sunday"
-            lead={`${service.day}s at ${service.startTime} — ${location.full}.`}
-            tone="onNavy"
-          />
-          <div className="flex shrink-0 flex-wrap gap-3">
-            <ButtonLink
-              href="/im-new"
+      {/* ===== Give ===== */}
+      <section className="from-green to-green-600 relative overflow-hidden bg-linear-120 py-16 sm:py-24">
+        <div className="wrap grid items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
+          <div className="reveal">
+            <p className="font-heading text-ink text-xs font-bold tracking-[0.14em] uppercase">
+              Generosity
+            </p>
+            <h2 className="text-ink mt-3.5 mb-4 text-[clamp(30px,4vw,44px)] font-bold">
+              Fuel greatness in Manchester
+            </h2>
+            <p className="text-ink/72 mb-6.5 max-w-[480px] text-lg text-pretty">
+              Every gift goes towards Sunday gatherings, our children&apos;s and
+              teens&apos; work, and practical care for people who need it.
+            </p>
+            <BtnLink href="/give" variant="navy" size="lg">
+              Ways to give <ArrowRight className="size-4" />
+            </BtnLink>
+          </div>
+
+          <div className="reveal shadow-card-lg rounded-[20px] bg-white p-7.5">
+            <h3 className="mb-4.5 text-lg font-bold">Give in seconds</h3>
+            <p className="text-grey-500 mb-5 text-[15px]">
+              Card, PayPal, Apple Pay or Google Pay — no account needed.
+            </p>
+            <div className="bg-grey-50 text-grey-700 mb-4 flex items-center gap-2.5 rounded-[11px] px-3.5 py-3 text-[13px]">
+              <span className="bg-green grid size-5.5 shrink-0 place-items-center rounded-md">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="3"
+                  className="size-3.5"
+                  aria-hidden
+                >
+                  <path d="M5 12l5 5L20 7" />
+                </svg>
+              </span>
+              <span>
+                <b className="text-ink">Gift Aid it</b> — UK taxpayers add 25% at
+                no extra cost.
+              </span>
+            </div>
+            <BtnLink
+              href={giving.paypalUrl}
+              external
+              variant="green"
               size="lg"
-              className="bg-brand-green text-brand-navy hover:bg-brand-green/90"
+              block
             >
-              Plan your visit
-            </ButtonLink>
-            <ButtonLink
-              href="/prayer"
-              size="lg"
-              variant="outline"
-              className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
-            >
-              Request prayer
-            </ButtonLink>
+              Give securely
+            </BtnLink>
+            <p className="text-grey-500 mt-3 text-center text-xs">
+              🔒 Registered charity no. {church.charityNumber}
+            </p>
           </div>
         </div>
-      </Section>
+      </section>
+
+      {/* ===== Stats ===== */}
+      <section className="py-14">
+        <div className="wrap">
+          <dl className="border-grey-100 grid grid-cols-2 gap-6 border-y py-8 text-center lg:grid-cols-4">
+            {stats.map((s) => (
+              <div key={s.label} className="reveal">
+                <dt className="sr-only">{s.label}</dt>
+                <dd>
+                  <span className="font-heading text-ink block text-[clamp(30px,4vw,46px)] font-extrabold tracking-[-0.03em]">
+                    {s.value}
+                    <span className="text-green">{s.unit}</span>
+                  </span>
+                  <span className="text-grey-500 mt-0.5 block text-sm">
+                    {s.label}
+                  </span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* ===== Newsletter ===== */}
+      <section className="pb-16 sm:pb-24">
+        <div className="wrap">
+          <div className="bg-ink reveal relative overflow-hidden rounded-[26px] px-6 py-14 text-center sm:p-14">
+            <span className="brand-glow top-[-160px] right-[-80px] size-[420px]" />
+            <div className="relative">
+              <h2 className="mb-3 text-[clamp(28px,4vw,40px)] font-bold text-white">
+                Stay in the loop
+              </h2>
+              <p className="mx-auto mb-7 max-w-[480px] text-white/66">
+                Service reminders, event invites and the latest message, straight
+                to your inbox.
+              </p>
+              <NewsletterForm />
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

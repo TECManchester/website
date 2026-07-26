@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter, Sora } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { AnnouncementBar } from "@/components/announcement-bar";
+import { RevealProvider } from "@/components/reveal";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { church, location, service } from "@/lib/church";
+import { announcement, church, location, service } from "@/lib/church";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -74,11 +76,25 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <AnnouncementBar
+          announcement={{
+            id: announcement.id,
+            text: (
+              <>
+                <b className="text-green">{announcement.headline}</b>{" "}
+                {announcement.body}
+              </>
+            ),
+            href: announcement.href,
+            linkLabel: announcement.linkLabel,
+          }}
+        />
         <SiteHeader />
         <main id="main" className="flex-1">
           {children}
         </main>
         <SiteFooter />
+        <RevealProvider />
         <Toaster />
       </body>
     </html>

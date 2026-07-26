@@ -99,6 +99,42 @@ export async function submitPrayerRequest(
   };
 }
 
+export async function subscribeToNewsletter(
+  _prev: FormState,
+  data: FormData,
+): Promise<FormState> {
+  const email = text(data, "email");
+
+  if (!email || !EMAIL_RE.test(email)) {
+    return {
+      status: "error",
+      message: "Please enter a valid email address.",
+      fieldErrors: { email: "Please enter a valid email address." },
+    };
+  }
+
+  if (!FORMS_ENABLED) return formsDisabled();
+  if (!isSupabaseConfigured) return notConfigured();
+
+  // Re-subscribing shouldn't error on the unique index.
+  const { error } = await createAdminClient()
+    .from("newsletter_subscribers")
+    .upsert({ email, name: text(data, "name") || null }, { onConflict: "email" });
+
+  if (error) {
+    console.error("newsletter_subscribers upsert failed", error);
+    return {
+      status: "error",
+      message: "Something went wrong our end. Please try again shortly.",
+    };
+  }
+
+  return {
+    status: "success",
+    message: "You're on the list — check your inbox to confirm.",
+  };
+}
+
 export async function submitContactMessage(
   _prev: FormState,
   data: FormData,

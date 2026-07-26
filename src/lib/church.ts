@@ -260,6 +260,20 @@ export const giving = {
   giftAidAvailable: true,
 } as const;
 
+/**
+ * Site-wide announcement bar. Change `id` when the message changes so it
+ * re-appears for anyone who dismissed the previous one.
+ *
+ * Kept factual — no invented events.
+ */
+export const announcement = {
+  id: "2026-visit-us",
+  headline: "New here?",
+  body: "Join us Sundays at 10:30am — Mary Seacole Building, University of Salford.",
+  href: "/im-new",
+  linkLabel: "Plan your visit",
+} as const;
+
 export const nav = [
   { label: "I'm New", href: "/im-new" },
   {

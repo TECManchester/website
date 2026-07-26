@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Baby, Car, Clock, Shirt, Users } from "lucide-react";
-import { ButtonLink } from "@/components/button-link";
-import { PageHeader, Section, SectionHeading } from "@/components/section";
+import { BtnLink } from "@/components/btn";
+import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { kidsAndYouth, location, service } from "@/lib/church";
 
@@ -45,7 +45,7 @@ const expectations = [
 export default function ImNewPage() {
   return (
     <>
-      <PageHeader
+      <PageHero
         eyebrow="Plan a visit"
         title="Your first Sunday, made simple"
         lead="Walking into a new church can feel like a lot. Here's everything you need so that it doesn't."
@@ -60,9 +60,9 @@ export default function ImNewPage() {
           {expectations.map(({ icon: Icon, title, body }) => (
             <Card key={title} className="h-full">
               <CardContent>
-                <Icon className="text-brand-green size-6" />
+                <Icon className="text-green-600 size-6" />
                 <h3 className="mt-4 text-lg font-semibold">{title}</h3>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                <p className="text-grey-500 mt-2 text-sm leading-relaxed">
                   {body}
                 </p>
               </CardContent>
@@ -71,7 +71,7 @@ export default function ImNewPage() {
         </div>
       </Section>
 
-      <Section tone="muted">
+      <Section tone="grey">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <SectionHeading
@@ -87,12 +87,12 @@ export default function ImNewPage() {
               </p>
             </address>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href={location.mapsUrl} external>
+              <BtnLink variant="navy" href={location.mapsUrl} external>
                 Open in Google Maps
-              </ButtonLink>
-              <ButtonLink href="/contact" variant="outline">
+              </BtnLink>
+              <BtnLink href="/contact" variant="ghost">
                 Ask us a question
-              </ButtonLink>
+              </BtnLink>
             </div>
           </div>
           <div className="overflow-hidden rounded-xl border shadow-sm">
@@ -121,7 +121,7 @@ export default function ImNewPage() {
                   {group.name}
                 </h3>
                 <p className="eyebrow mt-2">{group.forWho}</p>
-                <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+                <p className="text-grey-500 mt-3 text-sm leading-relaxed">
                   {group.body}
                 </p>
               </CardContent>
@@ -130,20 +130,20 @@ export default function ImNewPage() {
         </div>
       </Section>
 
-      <Section tone="navy">
+      <Section tone="ink">
         <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
           <SectionHeading
             title="Still have a question?"
             lead="Send it over before you come. No question is too small."
-            tone="onNavy"
+            tone="onInk"
           />
-          <ButtonLink
+          <BtnLink
             href="/contact"
-            size="lg"
-            className="bg-brand-green text-brand-navy hover:bg-brand-green/90 shrink-0"
+            variant="green"
+            className="shrink-0"
           >
             Get in touch
-          </ButtonLink>
+          </BtnLink>
         </div>
       </Section>
     </>

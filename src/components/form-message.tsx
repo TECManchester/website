@@ -11,7 +11,7 @@ export function FormMessage({ state }: { state: FormState }) {
     return (
       <p
         role="status"
-        className="text-muted-foreground bg-secondary flex items-start gap-2 rounded-lg p-4 text-sm"
+        className="text-grey-500 bg-grey-50 flex items-start gap-2 rounded-lg p-4 text-sm"
       >
         <Info className="mt-0.5 size-4 shrink-0" />
         {state.message}

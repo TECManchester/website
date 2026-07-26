@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { ButtonLink } from "@/components/button-link";
-import { PageHeader, Section, SectionHeading } from "@/components/section";
+import { BtnLink } from "@/components/btn";
+import { PageHero, Section, SectionHeading } from "@/components/section";
 import {
   Accordion,
   AccordionContent,
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function WhatWeBelievePage() {
   return (
     <>
-      <PageHeader
+      <PageHero
         eyebrow="Statement of faith"
         title="What we believe"
         lead="We're a Pentecostal church — Bible-centred and Spirit-filled. Here's what that actually means, in plain English."
@@ -38,10 +38,10 @@ export default function WhatWeBelievePage() {
                   {belief.title}
                 </AccordionTrigger>
                 <AccordionContent>
-                  <p className="text-muted-foreground text-base leading-relaxed">
+                  <p className="text-grey-500 text-base leading-relaxed">
                     {belief.body}
                   </p>
-                  <p className="text-brand-green mt-3 text-sm font-medium">
+                  <p className="text-green-600 mt-3 text-sm font-medium">
                     {belief.scripture}
                   </p>
                 </AccordionContent>
@@ -51,7 +51,7 @@ export default function WhatWeBelievePage() {
         </div>
       </Section>
 
-      <Section tone="muted">
+      <Section tone="grey">
         <SectionHeading
           eyebrow="Your next steps"
           title="The Growth Track"
@@ -59,15 +59,15 @@ export default function WhatWeBelievePage() {
         />
         <ol className="mt-12 grid gap-8 md:grid-cols-2">
           {growthTrack.map((step) => (
-            <li key={step.step} className="border-brand-green border-l-4 pl-6">
-              <span className="font-heading text-brand-green text-2xl font-semibold">
+            <li key={step.step} className="border-green-600 border-l-4 pl-6">
+              <span className="font-heading text-green-600 text-2xl font-semibold">
                 {step.step}
               </span>
               <h3 className="mt-1 text-xl font-semibold">{step.title}</h3>
-              <p className="text-muted-foreground mt-2 leading-relaxed">
+              <p className="text-grey-500 mt-2 leading-relaxed">
                 {step.body}
               </p>
-              <p className="text-muted-foreground/70 mt-3 text-sm">
+              <p className="text-grey-500/70 mt-3 text-sm">
                 {step.scripture}
               </p>
             </li>
@@ -75,29 +75,26 @@ export default function WhatWeBelievePage() {
         </ol>
       </Section>
 
-      <Section tone="navy">
+      <Section tone="ink">
         <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
           <SectionHeading
             title="Questions are welcome here"
             lead="If something above raised a question rather than answered one, that's a good sign. Come and ask."
-            tone="onNavy"
+            tone="onInk"
           />
           <div className="flex shrink-0 flex-wrap gap-3">
-            <ButtonLink
+            <BtnLink
               href="/im-new"
-              size="lg"
-              className="bg-brand-green text-brand-navy hover:bg-brand-green/90"
+              variant="green"
             >
               Plan a visit
-            </ButtonLink>
-            <ButtonLink
+            </BtnLink>
+            <BtnLink
               href="/contact"
-              size="lg"
-              variant="outline"
-              className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              variant="ghostOnDark"
             >
               Contact us
-            </ButtonLink>
+            </BtnLink>
           </div>
         </div>
       </Section>
