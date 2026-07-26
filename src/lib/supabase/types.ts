@@ -149,6 +149,69 @@ export type Database = {
         }
         Relationships: []
       }
+      gift_aid_declarations: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          cancelled_at: string | null
+          city: string | null
+          covers_future_donations: boolean
+          covers_past_four_years: boolean
+          created_at: string
+          declaration_accepted: boolean
+          declaration_text: string
+          declaration_version: string
+          declared_at: string
+          email: string | null
+          first_name: string
+          id: string
+          last_name: string
+          phone: string | null
+          postcode: string
+          title: string | null
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          cancelled_at?: string | null
+          city?: string | null
+          covers_future_donations?: boolean
+          covers_past_four_years?: boolean
+          created_at?: string
+          declaration_accepted?: boolean
+          declaration_text: string
+          declaration_version: string
+          declared_at?: string
+          email?: string | null
+          first_name: string
+          id?: string
+          last_name: string
+          phone?: string | null
+          postcode: string
+          title?: string | null
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          cancelled_at?: string | null
+          city?: string | null
+          covers_future_donations?: boolean
+          covers_past_four_years?: boolean
+          created_at?: string
+          declaration_accepted?: boolean
+          declaration_text?: string
+          declaration_version?: string
+          declared_at?: string
+          email?: string | null
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string | null
+          postcode?: string
+          title?: string | null
+        }
+        Relationships: []
+      }
       group_join_requests: {
         Row: {
           created_at: string

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Building2, HandCoins, Mail, ShieldCheck } from "lucide-react";
 import { BtnLink } from "@/components/btn";
+import { GiftAidForm } from "@/components/gift-aid-form";
 import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -67,9 +68,11 @@ export default function GivePage() {
                 {church.legalName} is a registered charity in England and Wales,
                 no. {church.charityNumber}.
               </p>
-              <p className="text-green/80 mt-4 text-xs">
-                TODO: add the Gift Aid declaration form before launch.
-              </p>
+              <div className="mt-6">
+                <BtnLink href="#gift-aid" variant="green">
+                  Make your declaration
+                </BtnLink>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -132,7 +135,28 @@ export default function GivePage() {
         </div>
       </Section>
 
-      <Section tone="grey">
+      {/* Gift Aid declaration */}
+      <Section id="gift-aid" tone="grey">
+        <div className="mx-auto max-w-3xl">
+          <SectionHeading
+            eyebrow="Gift Aid"
+            title="Add 25% to your giving, at no cost to you"
+            lead="If you pay UK tax, Gift Aid lets us reclaim 25p for every £1 you give — so £10 becomes £12.50. You only need to do this once; it covers your future giving and the past four years."
+            align="center"
+            className="mx-auto text-center"
+          />
+          <div className="border-grey-100 shadow-card rounded-2xl border bg-white p-6 sm:p-10">
+            <GiftAidForm />
+          </div>
+          <p className="text-grey-500 mx-auto mt-6 max-w-xl text-center text-xs leading-relaxed">
+            We store your declaration securely and use it only to claim Gift Aid
+            on your giving. HMRC requires us to keep it for as long as you give,
+            and for six years afterwards.
+          </p>
+        </div>
+      </Section>
+
+      <Section>
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-2xl font-semibold">
             Thank you

@@ -3,18 +3,30 @@
 import { createAdminClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { contact as contactDetails } from "@/lib/church";
+import {
+  DECLARATION_STATEMENT,
+  DECLARATION_VERSION,
+  UK_POSTCODE_RE,
+  normalisePostcode,
+} from "@/lib/gift-aid";
 
 /**
- * Master switch for form submission.
+ * Per-form switches.
  *
- * Off by design while the destination for submissions is still being decided —
- * database, email, a church management system, or some combination. Everything
- * downstream (validation, Supabase insert, RLS) is built and tested; flipping
- * this to `true` is the only change needed to turn it on.
+ * Prayer, contact and newsletter are off while the destination for those
+ * submissions is still being decided — database, email, a church management
+ * system, or some combination. While off, nothing is written anywhere and the
+ * UI says so plainly rather than faking success.
  *
- * While off, nothing is written anywhere and the UI says so plainly.
+ * Gift Aid is on: the declaration is the record the church needs in order to
+ * claim, so there's no value in collecting it and throwing it away.
  */
-const FORMS_ENABLED = false;
+const FORMS_ENABLED = {
+  prayer: false,
+  contact: false,
+  newsletter: false,
+  giftAid: true,
+} as const;
 
 export type FormState = {
   status: "idle" | "success" | "error" | "disabled";
@@ -70,7 +82,7 @@ export async function submitPrayerRequest(
     return { status: "error", message: "Please check the form.", fieldErrors };
   }
 
-  if (!FORMS_ENABLED) return formsDisabled();
+  if (!FORMS_ENABLED.prayer) return formsDisabled();
   if (!isSupabaseConfigured) return notConfigured();
 
   const { error } = await createAdminClient()
@@ -113,7 +125,7 @@ export async function subscribeToNewsletter(
     };
   }
 
-  if (!FORMS_ENABLED) return formsDisabled();
+  if (!FORMS_ENABLED.newsletter) return formsDisabled();
   if (!isSupabaseConfigured) return notConfigured();
 
   // Re-subscribing shouldn't error on the unique index.
@@ -132,6 +144,109 @@ export async function subscribeToNewsletter(
   return {
     status: "success",
     message: "You're on the list — check your inbox to confirm.",
+  };
+}
+
+/**
+ * Gift Aid declaration.
+ *
+ * Validation here mirrors what HMRC will reject at audit rather than what's
+ * merely convenient: full forename (not an initial), a home address with house
+ * name/number, a full postcode, and an explicitly ticked declaration. A record
+ * missing any of these is not a claimable declaration, so it's better to stop
+ * it at the form than to store something unusable.
+ */
+export async function submitGiftAidDeclaration(
+  _prev: FormState,
+  data: FormData,
+): Promise<FormState> {
+  const firstName = text(data, "first_name");
+  const lastName = text(data, "last_name");
+  const addressLine1 = text(data, "address_line1");
+  const postcodeRaw = text(data, "postcode");
+  const email = text(data, "email");
+  const accepted = data.get("declaration_accepted") === "on";
+
+  const fieldErrors: Record<string, string> = {};
+
+  if (!firstName) {
+    fieldErrors.first_name = "Please give your first name.";
+  } else if (firstName.replace(/[.\s]/g, "").length < 2) {
+    // HMRC does not accept initials.
+    fieldErrors.first_name =
+      "HMRC needs your full first name, not an initial.";
+  }
+
+  if (!lastName || lastName.length < 2) {
+    fieldErrors.last_name = "Please give your surname.";
+  }
+
+  if (!addressLine1) {
+    fieldErrors.address_line1 =
+      "Please give your home address, including house name or number.";
+  } else if (!/\d/.test(addressLine1) && addressLine1.length < 4) {
+    fieldErrors.address_line1 =
+      "Please include your house name or number — HMRC requires it.";
+  }
+
+  if (!postcodeRaw) {
+    fieldErrors.postcode = "Please give your full postcode.";
+  } else if (!UK_POSTCODE_RE.test(postcodeRaw)) {
+    fieldErrors.postcode = "That doesn't look like a full UK postcode.";
+  }
+
+  if (email && !EMAIL_RE.test(email)) {
+    fieldErrors.email = "That doesn't look like a valid email address.";
+  }
+
+  if (!accepted) {
+    fieldErrors.declaration_accepted =
+      "Please confirm the declaration so we can claim Gift Aid.";
+  }
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return {
+      status: "error",
+      message: "Please check the highlighted fields.",
+      fieldErrors,
+    };
+  }
+
+  if (!FORMS_ENABLED.giftAid) return formsDisabled();
+  if (!isSupabaseConfigured) return notConfigured();
+
+  const { error } = await createAdminClient()
+    .from("gift_aid_declarations")
+    .insert({
+      title: text(data, "title") || null,
+      first_name: firstName,
+      last_name: lastName,
+      address_line1: addressLine1,
+      address_line2: text(data, "address_line2") || null,
+      city: text(data, "city") || null,
+      postcode: normalisePostcode(postcodeRaw),
+      email: email || null,
+      phone: text(data, "phone") || null,
+      declaration_accepted: true,
+      covers_past_four_years: true,
+      covers_future_donations: true,
+      // Stored verbatim so an audit can show exactly what was agreed to.
+      declaration_text: DECLARATION_STATEMENT,
+      declaration_version: DECLARATION_VERSION,
+    });
+
+  if (error) {
+    console.error("gift_aid_declarations insert failed", error);
+    return {
+      status: "error",
+      message: `We couldn't save your declaration. Please email ${contactDetails.email} and we'll sort it out.`,
+    };
+  }
+
+  return {
+    status: "success",
+    message:
+      "Thank you — your Gift Aid declaration is recorded. Every £10 you give is now worth £12.50 to the church, at no extra cost to you.",
   };
 }
 
@@ -156,7 +271,7 @@ export async function submitContactMessage(
     return { status: "error", message: "Please check the form.", fieldErrors };
   }
 
-  if (!FORMS_ENABLED) return formsDisabled();
+  if (!FORMS_ENABLED.contact) return formsDisabled();
   if (!isSupabaseConfigured) return notConfigured();
 
   const { error } = await createAdminClient()
