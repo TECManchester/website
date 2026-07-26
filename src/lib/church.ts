@@ -100,21 +100,28 @@ export const socials = [
   },
 ] as const;
 
+/**
+ * Portraits live in /public/leadership, cropped to a consistent 4:5 so the
+ * cards line up regardless of the source framing.
+ */
 export const leadership = [
   {
     name: "Pastor Tosin Babalola",
     role: "Resident Pastor, Manchester",
     bio: "Pastor Tosin leads the Manchester expression of The Elevation Church, which launched on 1 May 2023.",
+    photo: "/leadership/pastor-tosin-babalola.jpg",
   },
   {
     name: "Pastor Godman Akinlabi",
     role: "Lead Pastor & Founder",
     bio: "Pastor Godman founded The Elevation Church in Lagos, Nigeria on 10 October 2010, and leads the global family of expressions alongside Pastor Bola Akinlabi.",
+    photo: "/leadership/pastor-godman-akinlabi.jpg",
   },
   {
     name: "Pastor Bola Akinlabi",
     role: "Founding Pastor",
     bio: "Pastor Bola serves alongside Pastor Godman in leading The Elevation Church globally.",
+    photo: "/leadership/pastor-bola-akinlabi.jpg",
   },
 ] as const;
 

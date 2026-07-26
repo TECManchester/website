@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { BtnLink } from "@/components/btn";
+import { LeadershipGrid } from "@/components/leadership-grid";
 import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { church, leadership, personality, values } from "@/lib/church";
+import { church, personality, values } from "@/lib/church";
 
 export const metadata: Metadata = {
   title: "About",
@@ -86,22 +87,7 @@ export default function AboutPage() {
           eyebrow="Leadership"
           title="The people who serve this house"
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {leadership.map((person) => (
-            <Card key={person.name} className="h-full">
-              <CardContent>
-                {/* TODO: add portraits to /public/leadership and render with next/image */}
-                <h3 className="font-heading text-xl font-semibold">
-                  {person.name}
-                </h3>
-                <p className="eyebrow mt-2">{person.role}</p>
-                <p className="text-grey-500 mt-3 text-sm leading-relaxed">
-                  {person.bio}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <LeadershipGrid />
       </Section>
 
       <Section tone="ink">
