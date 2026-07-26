@@ -20,7 +20,8 @@ export const church = {
     text: "He who is greatest among you shall be your servant.",
   },
   launched: "1 May 2023",
-  charityNumber: "1195403", // CONFIRM: that Manchester gives under this entity
+  // Confirmed 26 July 2026 — Manchester claims under this entity.
+  charityNumber: "1195403",
   registeredOffice:
     "Crown House, 27 Old Gloucester Street, London WC1N 3AX",
 } as const;
