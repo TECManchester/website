@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Clock, Mail, MapPin } from "lucide-react";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { socialIcons } from "@/components/social-icons";
 import { church, contact, location, service, socials } from "@/lib/church";
@@ -101,6 +101,13 @@ export function SiteFooter() {
           >
             <Mail className="size-[18px]" />
             {contact.email}
+          </a>
+          <a
+            href={`tel:${contact.phone.tel}`}
+            className="hover:text-green flex items-center gap-2.5 text-sm transition-colors"
+          >
+            <Phone className="size-[18px]" />
+            {contact.phone.label}
           </a>
         </div>
 

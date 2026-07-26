@@ -5,9 +5,6 @@
  * hidden entirely rather than being guessed. Fill them in here and the whole site updates.
  */
 
-/** Set to false to hide anything still awaiting confirmation from the live site. */
-export const SHOW_UNCONFIRMED = true;
-
 export const church = {
   name: "Elevation Church Manchester",
   legalName: "The Elevation Church UK",
@@ -28,10 +25,16 @@ export const church = {
 
 export const service = {
   day: "Sunday",
+  /** Confirmed 26 July 2026. */
   startTime: "10:30am",
-  doorsOpen: "10:00am", // CONFIRM
-  approxDuration: "about 90 minutes", // CONFIRM
-  timeConfirmed: false, // CONFIRM doors + end time, then set true
+  /**
+   * No end time, by decision — service length varies week to week, and
+   * publishing one would set an expectation we can't reliably keep.
+   *
+   * doorsOpen is still unconfirmed, so it stays null and nothing renders.
+   * Set it to a string like "10:00am" to show it everywhere at once.
+   */
+  doorsOpen: null as string | null,
 } as const;
 
 export const location = {
@@ -56,13 +59,15 @@ export const location = {
   },
 } as const;
 
+/** All confirmed 26 July 2026. */
 export const contact = {
-  /** CONFIRM: Manchester inbox. Global fallback used until confirmed. */
-  email: "info@elevationng.org",
-  emailConfirmed: false,
-  /** Global helpline. CONFIRM: a UK/Manchester number. */
-  helpline: { label: "0700 ELEVATE", tel: "+2347003538283" },
-  ukPhone: null as string | null, // CONFIRM
+  email: "info@elevationmanchester.org",
+  phone: {
+    /** How it's shown on the page. */
+    label: "07469 062220",
+    /** tel: link — E.164, so it dials correctly from abroad. */
+    tel: "+447469062220",
+  },
 } as const;
 
 /**

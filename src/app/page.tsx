@@ -128,7 +128,7 @@ export default function HomePage() {
                 {
                   icon: Clock,
                   k: `${service.day}s ${service.startTime}`,
-                  v: service.timeConfirmed
+                  v: service.doorsOpen
                     ? `Doors from ${service.doorsOpen}`
                     : "Come a little early for a coffee",
                 },

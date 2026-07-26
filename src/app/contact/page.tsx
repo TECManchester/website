@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Clock, Mail, MapPin } from "lucide-react";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
 import { PageHero, Section } from "@/components/section";
 import { contact, location, service, socials } from "@/lib/church";
@@ -69,12 +69,19 @@ export default function ContactPage() {
               >
                 {contact.email}
               </a>
-              {!contact.emailConfirmed && (
-                <p className="text-grey-500 mt-2 text-xs">
-                  TODO: this is the global inbox — swap in the Manchester
-                  address once confirmed.
-                </p>
-              )}
+            </div>
+
+            <div>
+              <h2 className="font-heading flex items-center gap-2 text-lg font-semibold">
+                <Phone className="text-green-600 size-5" />
+                Phone
+              </h2>
+              <a
+                href={`tel:${contact.phone.tel}`}
+                className="text-ink mt-3 inline-block text-sm font-medium underline underline-offset-4"
+              >
+                {contact.phone.label}
+              </a>
             </div>
 
             <div>

@@ -58,7 +58,7 @@ export default function EventsPage() {
                 <p className="flex items-center gap-2">
                   <Clock className="size-4 shrink-0" />
                   {service.day}s at {service.startTime}
-                  {service.timeConfirmed && ` · doors ${service.doorsOpen}`}
+                  {service.doorsOpen && ` · doors ${service.doorsOpen}`}
                 </p>
                 <p className="flex items-center gap-2">
                   <MapPin className="size-4 shrink-0" />

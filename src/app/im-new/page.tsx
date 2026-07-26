@@ -15,9 +15,10 @@ export const metadata: Metadata = {
 const expectations = [
   {
     icon: Clock,
-    title: "How long is a service?",
-    body: service.timeConfirmed
-      ? `Doors open at ${service.doorsOpen} and the service runs for ${service.approxDuration}. Stay afterwards for coffee — we'd genuinely love to meet you.`
+    title: "When should I arrive?",
+    // No end time published — services vary in length week to week.
+    body: service.doorsOpen
+      ? `Doors open at ${service.doorsOpen} and we start at ${service.startTime}. Come a little early if you'd like to say hello, and stay afterwards for coffee — we'd genuinely love to meet you.`
       : `We start at ${service.startTime}. Come a little early if you'd like to say hello, and stay afterwards for coffee — we'd genuinely love to meet you.`,
   },
   {
