@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -11,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { BtnLink } from "@/components/btn";
+import { HomeWatchSection } from "@/components/home-watch-section";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { Section, SectionHeading } from "@/components/section";
 import {
@@ -21,7 +23,6 @@ import {
   socials,
 } from "@/lib/church";
 
-const youtube = socials.find((s) => s.name === "YouTube")!;
 const instagram = socials.find((s) => s.name === "Instagram")!;
 
 const newHereCards = [
@@ -81,6 +82,25 @@ const stats = [
   { value: "2", unit: "", label: "Kids & teens ministries" },
   { value: "+25", unit: "%", label: "Gift Aid on your giving" },
 ];
+
+/**
+ * Placeholder while the YouTube band loads. Suspense keeps the rest of the
+ * homepage static and instant — only this strip waits on the API.
+ */
+function WatchSkeleton() {
+  return (
+    <Section tone="grey">
+      <div className="grid items-center gap-12 lg:grid-cols-[1.3fr_1fr]">
+        <div className="bg-grey-100 aspect-video animate-pulse rounded-2xl" />
+        <div className="space-y-4">
+          <div className="bg-grey-100 h-4 w-24 animate-pulse rounded" />
+          <div className="bg-grey-100 h-9 w-3/4 animate-pulse rounded" />
+          <div className="bg-grey-100 h-16 w-full animate-pulse rounded" />
+        </div>
+      </div>
+    </Section>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -194,48 +214,10 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* ===== Watch ===== */}
-      <Section tone="grey">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.3fr_1fr]">
-          <Link
-            href={youtube.href}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Watch on our YouTube channel"
-            className="reveal group bg-ink-800 shadow-card-lg relative grid aspect-video place-items-center overflow-hidden rounded-2xl"
-          >
-            <span
-              aria-hidden
-              className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,#2a2a5e_0%,transparent_60%)]"
-            />
-            <span className="font-heading bg-ink/70 absolute top-4 left-4 rounded-lg px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md">
-              Every message, on YouTube
-            </span>
-            <span className="group-hover:bg-green relative grid size-[82px] place-items-center rounded-full bg-white/92 shadow-[0_10px_30px_rgb(0_0_0_/_0.3)] transition duration-250 group-hover:scale-108">
-              <Play className="text-ink ml-1 size-[30px] fill-current" />
-            </span>
-          </Link>
-
-          <div className="reveal">
-            <p className="eyebrow">Messages</p>
-            <h2 className="mt-3 mb-3.5 text-[34px] font-bold">
-              Missed a Sunday?
-            </h2>
-            <p className="mb-6 text-pretty">
-              Full services and recent messages go up on our YouTube channel.
-              Subscribe and you&apos;ll know the moment a new one lands.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <BtnLink href={youtube.href} external variant="green">
-                Watch on YouTube
-              </BtnLink>
-              <BtnLink href="/watch" variant="ghost">
-                All messages
-              </BtnLink>
-            </div>
-          </div>
-        </div>
-      </Section>
+      {/* ===== Watch — live stream or latest message from YouTube ===== */}
+      <Suspense fallback={<WatchSkeleton />}>
+        <HomeWatchSection />
+      </Suspense>
 
       {/* ===== What's on ===== */}
       <Section>

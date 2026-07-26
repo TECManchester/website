@@ -1,80 +1,104 @@
 import type { Metadata } from "next";
 import { MonitorPlay } from "lucide-react";
 import { BtnLink } from "@/components/btn";
+import { LivePlayer, UpcomingStream } from "@/components/live-player";
 import { PageHero, Section, SectionHeading } from "@/components/section";
-import { Card, CardContent } from "@/components/ui/card";
-import { location, service, socials } from "@/lib/church";
+import { VideoCard } from "@/components/video-card";
+import { location, service } from "@/lib/church";
+import {
+  CHANNEL_URL,
+  getLiveNow,
+  getPastMessages,
+  getUpcomingStream,
+  isYouTubeConfigured,
+} from "@/lib/youtube";
 
 export const metadata: Metadata = {
   title: "Watch",
   description:
-    "Catch up on messages from Elevation Church Manchester, or join us live on a Sunday.",
+    "Watch Elevation Church Manchester live on Sundays at 10:30am, or catch up on recent messages.",
   alternates: { canonical: "/watch" },
 };
 
-const youtube = socials.find((s) => s.name === "YouTube")!;
-
 /**
- * TODO: wire up the YouTube Data API (or paste video IDs here) to list recent
- * messages. Needs a YOUTUBE_API_KEY and the channel ID already in socials.
- * Until then this page points people at the channel rather than faking a feed.
+ * Revalidate every minute so a stream going live shows up quickly. The
+ * underlying fetches are cached at the same interval and cost 2 API units, so
+ * this stays well inside the daily quota.
  */
-const featuredSermons: { id: string; title: string; date: string }[] = [];
+export const revalidate = 60;
 
-export default function WatchPage() {
+export default async function WatchPage() {
+  const [live, upcoming, messages] = await Promise.all([
+    getLiveNow(),
+    getUpcomingStream(),
+    getPastMessages(12),
+  ]);
+
   return (
     <>
       <PageHero
         eyebrow="Messages"
-        title="Watch and catch up"
-        lead={`Missed a ${service.day}? Every message goes up on our YouTube channel.`}
+        title={live ? "We're live right now" : "Watch & grow"}
+        lead={
+          live
+            ? "Join the service from wherever you are."
+            : `Catch this week's message or dig into the archive. Live every ${service.day} at ${service.startTime}.`
+        }
       />
 
-      <Section>
-        {featuredSermons.length > 0 ? (
-          <div className="grid gap-8 md:grid-cols-2">
-            {featuredSermons.map((sermon) => (
-              <Card key={sermon.id} className="overflow-hidden pt-0">
-                <div className="aspect-video">
-                  <iframe
-                    title={sermon.title}
-                    src={`https://www.youtube-nocookie.com/embed/${sermon.id}`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    loading="lazy"
-                    className="size-full"
-                  />
-                </div>
-                <CardContent>
-                  <h2 className="text-lg font-semibold">{sermon.title}</h2>
-                  <p className="text-grey-500 mt-1 text-sm">
-                    {sermon.date}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <Card className="mx-auto max-w-2xl text-center">
-            <CardContent className="py-14">
-              <MonitorPlay className="text-green-600 mx-auto size-10" />
-              <h2 className="mt-6 text-2xl font-semibold">
-                Every message, on our channel
-              </h2>
-              <p className="text-grey-500 mx-auto mt-3 max-w-md leading-relaxed">
-                Full services and recent messages are on YouTube. Subscribe and
-                you&apos;ll know the moment a new one lands.
-              </p>
-              <BtnLink variant="navy"
-                href={youtube.href}
-                external
-                size="lg"
-                className="mt-8"
-              >
-                <MonitorPlay className="size-5" /> Watch on YouTube
+      {live && (
+        <Section>
+          <LivePlayer video={live} />
+        </Section>
+      )}
+
+      {!live && upcoming && (
+        <Section>
+          <UpcomingStream video={upcoming} />
+        </Section>
+      )}
+
+      <Section tone={live || upcoming ? "grey" : "default"}>
+        {messages.length > 0 ? (
+          <>
+            <SectionHeading
+              eyebrow="Catch up"
+              title="Recent messages"
+              lead="Straight from our YouTube channel — this list updates itself."
+              className="reveal"
+            />
+            <div className="grid gap-6.5 sm:grid-cols-2 lg:grid-cols-3">
+              {messages.map((video) => (
+                <VideoCard key={video.id} video={video} className="reveal" />
+              ))}
+            </div>
+            <div className="mt-12">
+              <BtnLink href={CHANNEL_URL} external variant="ghost">
+                See everything on YouTube
               </BtnLink>
-            </CardContent>
-          </Card>
+            </div>
+          </>
+        ) : (
+          /*
+           * Shown when the key is missing or the API is unreachable — the page
+           * still sends people somewhere useful rather than looking broken.
+           */
+          <div className="border-grey-100 mx-auto max-w-2xl rounded-2xl border bg-white p-12 text-center">
+            <MonitorPlay className="text-green-600 mx-auto size-10" />
+            <h2 className="mt-6 text-2xl font-bold">
+              Every message, on our channel
+            </h2>
+            <p className="text-grey-500 mx-auto mt-3 max-w-md leading-relaxed">
+              {isYouTubeConfigured
+                ? "We couldn't load the archive just now. It's all on YouTube in the meantime."
+                : "Full services and recent messages are on YouTube. Subscribe and you'll know the moment a new one lands."}
+            </p>
+            <div className="mt-8 flex justify-center">
+              <BtnLink href={CHANNEL_URL} external variant="green" size="lg">
+                Watch on YouTube
+              </BtnLink>
+            </div>
+          </div>
         )}
       </Section>
 
@@ -88,6 +112,7 @@ export default function WatchPage() {
           <BtnLink
             href="/im-new"
             variant="green"
+            size="lg"
             className="shrink-0"
           >
             Plan a visit

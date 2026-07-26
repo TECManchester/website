@@ -7,6 +7,13 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(import.meta.dirname),
   },
+  images: {
+    remotePatterns: [
+      // YouTube video thumbnails.
+      { protocol: "https", hostname: "i.ytimg.com" },
+      { protocol: "https", hostname: "yt3.ggpht.com" },
+    ],
+  },
 };
 
 export default nextConfig;
