@@ -83,7 +83,8 @@ export function HeroSlideshow({ slides }: { slides: readonly HeroSlide[] }) {
                 // First slide is the LCP element; the second is next up.
                 priority={i === 0}
                 loading={i <= 1 ? "eager" : "lazy"}
-                quality={82}
+                // No `quality` override: Next only serves qualities listed in
+                // images.qualities (default [75]) and 400s on anything else.
                 className={cn(
                   "object-cover",
                   // Focal point keeps the subject in frame as the crop
@@ -102,19 +103,31 @@ export function HeroSlideshow({ slides }: { slides: readonly HeroSlide[] }) {
       </div>
 
       {/*
-       * Scrims. Two directions on purpose: a left-to-right wash keeps the
-       * headline legible on desktop, and a bottom-up wash does the same on
-       * phones where the text sits over the middle of the photo.
+       * Scrims.
+       *
+       * Images supplied with a gradient already burned in only need a light
+       * touch — stacking a second full-strength wash over them darkens the
+       * subject, not just the background. Untreated images get the full
+       * left-to-right wash so the headline stays legible.
+       *
+       * The bottom-up wash applies either way: on phones the crop is portrait
+       * and the text sits over the middle of the photo, where no left-to-right
+       * gradient can help.
        */}
       {hasSlides && (
         <>
           <div
             aria-hidden
-            className="from-ink/95 via-ink/70 absolute inset-0 bg-linear-to-r to-transparent"
+            className={cn(
+              "absolute inset-0 bg-linear-to-r to-transparent",
+              slides[index]?.preTreated
+                ? "from-ink/45 via-ink/10"
+                : "from-ink/95 via-ink/70",
+            )}
           />
           <div
             aria-hidden
-            className="from-ink absolute inset-0 bg-linear-to-t via-transparent to-transparent opacity-90 sm:opacity-60"
+            className="from-ink absolute inset-0 bg-linear-to-t via-transparent to-transparent opacity-90 sm:opacity-55"
           />
         </>
       )}

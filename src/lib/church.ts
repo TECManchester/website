@@ -288,6 +288,12 @@ export type HeroSlide = {
    * e.g. "object-[70%_35%]", "object-right", "object-top".
    */
   focal?: string;
+  /**
+   * True when the image already has a dark gradient baked into the left side.
+   * The component then skips its own left scrim — stacking both would crush
+   * the subject rather than just the background.
+   */
+  preTreated?: boolean;
 };
 
 /**
@@ -296,7 +302,26 @@ export type HeroSlide = {
  * Empty renders the gradient alone, so the hero is never broken. Drop files in
  * /public/hero and add them here — see public/hero/README.md for the spec.
  */
-export const heroSlides: HeroSlide[] = [];
+export const heroSlides: HeroSlide[] = [
+  {
+    src: "/hero/hero-worship.jpg",
+    alt: "Members of the congregation worshipping with hands raised on a Sunday morning",
+    focal: "object-[62%_32%]",
+    preTreated: true,
+  },
+  {
+    src: "/hero/hero-welcome.jpg",
+    alt: "Two young members smiling and making a heart shape with their hands in the foyer",
+    focal: "object-[66%_32%]",
+    preTreated: true,
+  },
+  {
+    src: "/hero/hero-city.jpg",
+    alt: "A member standing outside the venue on the University of Salford campus",
+    focal: "object-[70%_34%]",
+    preTreated: true,
+  },
+];
 
 export const brand = {
   hasLogoFiles: true,
