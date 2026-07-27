@@ -28,7 +28,7 @@ export function EventCard({
       )}
     >
       <Link href={`/events/${event.slug}`} className="block">
-        <div className="bg-ink relative aspect-16/10 overflow-hidden">
+        <div className="bg-ink relative aspect-video overflow-hidden">
           {event.image_url ? (
             <Image
               src={event.image_url}
