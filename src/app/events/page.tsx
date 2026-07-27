@@ -35,8 +35,12 @@ export default async function EventsPage() {
     time: formatEventTime(event),
   }));
 
-  const now = new Date();
-  const initialMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  // Open on the month of the next event, not today's. Landing on an empty
+  // month makes the calendar look broken when everything is weeks away.
+  const initialMonth = (upcoming[0]
+    ? londonDateKey(upcoming[0].starts_at)
+    : londonDateKey(new Date().toISOString())
+  ).slice(0, 7);
 
   return (
     <>

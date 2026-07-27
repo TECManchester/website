@@ -126,8 +126,16 @@ export function formatEventShortDate(event: ChurchEvent): string {
   return dayMonth.format(new Date(event.starts_at));
 }
 
-/** "7:00 pm" or "7:00 pm – 9:30 pm" when an end time is set. */
+/**
+ * "7:00 pm", or "7:00 pm – 9:30 pm" when an end time is set.
+ *
+ * Returns a placeholder when time_tbc is set: starts_at still carries the
+ * date for ordering, but the time in it was never confirmed and must not be
+ * shown as though it were.
+ */
 export function formatEventTime(event: ChurchEvent): string {
+  if (event.time_tbc) return "Time to be confirmed";
+
   const start = timeOnly.format(new Date(event.starts_at));
   if (!event.ends_at) return start;
 

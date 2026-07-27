@@ -109,6 +109,7 @@ export type Database = {
           slug: string
           starts_at: string
           summary: string | null
+          time_tbc: boolean
           title: string
           updated_at: string
           venue: string | null
@@ -126,6 +127,7 @@ export type Database = {
           slug: string
           starts_at: string
           summary?: string | null
+          time_tbc?: boolean
           title: string
           updated_at?: string
           venue?: string | null
@@ -143,6 +145,7 @@ export type Database = {
           slug?: string
           starts_at?: string
           summary?: string | null
+          time_tbc?: boolean
           title?: string
           updated_at?: string
           venue?: string | null
