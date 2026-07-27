@@ -306,19 +306,19 @@ export const heroSlides: HeroSlide[] = [
   {
     src: "/hero/hero-worship.jpg",
     alt: "Members of the congregation worshipping together on a Sunday morning",
-    focal: "object-[62%_32%]",
+    focal: "object-[62%_30%]",
     preTreated: true,
   },
   {
     src: "/hero/hero-welcome.jpg",
-    alt: "Two young members smiling and making a heart shape with their hands in the foyer",
-    focal: "object-[66%_32%]",
+    alt: "Two young members smiling and making a heart shape with their hands",
+    focal: "object-[64%_28%]",
     preTreated: true,
   },
   {
     src: "/hero/hero-kids.jpg",
     alt: "Two children from The Seeds smiling together on a Sunday morning",
-    focal: "object-[66%_30%]",
+    focal: "object-[66%_32%]",
     preTreated: true,
   },
   {
@@ -330,7 +330,7 @@ export const heroSlides: HeroSlide[] = [
   {
     src: "/hero/hero-city.jpg",
     alt: "A member standing outside our venue on the University of Salford campus",
-    focal: "object-[70%_34%]",
+    focal: "object-[70%_26%]",
     preTreated: true,
   },
 ];
