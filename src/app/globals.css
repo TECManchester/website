@@ -184,6 +184,17 @@
   }
 }
 
+/* Slow drift on the hero image — enough to feel alive, not enough to distract.
+   Only ever applied behind a motion-safe guard. */
+@keyframes kenburns {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.07) translate3d(0, -1%, 0);
+  }
+}
+
 /* Page gutter — 1240px max, 24px sides. */
 @utility wrap {
   @apply mx-auto w-full max-w-[1240px] px-6;

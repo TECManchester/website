@@ -12,12 +12,14 @@ import {
   Users,
 } from "lucide-react";
 import { BtnLink } from "@/components/btn";
+import { HeroSlideshow } from "@/components/hero-slideshow";
 import { HomeWatchSection } from "@/components/home-watch-section";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { Section, SectionHeading } from "@/components/section";
 import {
   church,
   giving,
+  heroSlides,
   location,
   service,
   socials,
@@ -107,17 +109,10 @@ export default function HomePage() {
     <>
       {/* ===== Hero ===== */}
       <section className="bg-ink relative flex min-h-[78vh] items-center overflow-hidden">
-        {/*
-          TODO: swap this gradient for real congregation photography once we
-          have it. Deliberately not using stock imagery of a different church.
-        */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_-10%,#26265c_0%,transparent_55%),radial-gradient(ellipse_at_90%_110%,#1a1a3f_0%,transparent_50%)]"
-        />
+        <HeroSlideshow slides={heroSlides} />
         <span className="brand-glow top-[-160px] right-[-120px] size-[600px] blur-[20px]" />
 
-        <div className="wrap relative z-2 py-15">
+        <div className="wrap relative z-2 pt-15 pb-24">
           <div className="max-w-[760px]">
             <p className="font-heading mb-6 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/12 px-4 py-2 text-[13.5px] font-semibold text-white backdrop-blur-md">
               <span className="bg-green size-2 rounded-full shadow-[0_0_0_4px_rgb(132_194_36_/_0.3)]" />

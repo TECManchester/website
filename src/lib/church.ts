@@ -275,6 +275,29 @@ export const giving = {
   giftAidAvailable: true,
 } as const;
 
+export type HeroSlide = {
+  src: string;
+  /**
+   * Describe what's happening, for screen readers. "Worship at our Sunday
+   * gathering", not "hero image 1".
+   */
+  alt: string;
+  /**
+   * Tailwind object-position class. The hero crops hard on phones, so point
+   * this at whatever must stay in frame — usually faces.
+   * e.g. "object-[70%_35%]", "object-right", "object-top".
+   */
+  focal?: string;
+};
+
+/**
+ * Homepage hero slideshow.
+ *
+ * Empty renders the gradient alone, so the hero is never broken. Drop files in
+ * /public/hero and add them here — see public/hero/README.md for the spec.
+ */
+export const heroSlides: HeroSlide[] = [];
+
 export const brand = {
   hasLogoFiles: true,
   logo: {
