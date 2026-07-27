@@ -1,136 +1,104 @@
 import type { Metadata } from "next";
 import { CalendarDays, Clock, MapPin } from "lucide-react";
 import { BtnLink } from "@/components/btn";
+import { EventCalendar, type CalendarEvent } from "@/components/event-calendar";
+import { EventCard } from "@/components/event-card";
 import { PageHero, Section, SectionHeading } from "@/components/section";
-import { Card, CardContent } from "@/components/ui/card";
 import { location, service, socials } from "@/lib/church";
+import {
+  formatEventTime,
+  getAllEvents,
+  getUpcomingEvents,
+  londonDateKey,
+} from "@/lib/events";
 
 export const metadata: Metadata = {
   title: "Events",
   description:
-    "What's coming up at Elevation Church Manchester — Sunday services and everything else in the diary.",
+    "What's coming up at Elevation Church Manchester — Sunday gatherings, conferences and everything else in the diary.",
   alternates: { canonical: "/events" },
 };
 
-type ChurchEvent = {
-  title: string;
-  /** ISO date, e.g. 2026-08-09 */
-  date: string;
-  time?: string;
-  venue?: string;
-  description: string;
-  href?: string;
-};
+/** Staff can publish an event without waiting for a rebuild. */
+export const revalidate = 300;
 
-/**
- * TODO: no event data was supplied in the brief. Add entries here, or swap this
- * for a CMS / Google Calendar feed once one is chosen. The page renders an
- * honest empty state rather than inventing events.
- */
-const upcomingEvents: ChurchEvent[] = [];
+export default async function EventsPage() {
+  const [upcoming, all] = await Promise.all([
+    getUpcomingEvents(24),
+    getAllEvents(),
+  ]);
 
-const dateFormatter = new Intl.DateTimeFormat("en-GB", {
-  weekday: "long",
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-  timeZone: "Europe/London",
-});
+  const calendarEvents: CalendarEvent[] = all.map((event) => ({
+    slug: event.slug,
+    title: event.title,
+    dateKey: londonDateKey(event.starts_at),
+    time: formatEventTime(event),
+  }));
 
-export default function EventsPage() {
+  const now = new Date();
+  const initialMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
   return (
     <>
       <PageHero
         eyebrow="What's on"
-        title="Events"
-        lead="Sundays are the heartbeat. Here's everything else in the diary."
+        title="Events & gatherings"
+        lead="There's always something happening. Find your next step, from Sunday gatherings to city-wide conferences."
       />
 
       <Section>
-        <Card className="border-green/40 bg-green-100">
-          <CardContent className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="eyebrow">Every week</p>
-              <h2 className="font-heading mt-2 text-2xl font-semibold">
-                Sunday Service
-              </h2>
-              <div className="text-grey-500 mt-4 space-y-1.5 text-sm">
-                <p className="flex items-center gap-2">
-                  <Clock className="size-4 shrink-0" />
-                  {service.day}s at {service.startTime}
-                  {service.doorsOpen && ` · doors ${service.doorsOpen}`}
-                </p>
-                <p className="flex items-center gap-2">
-                  <MapPin className="size-4 shrink-0" />
-                  {location.full}
-                </p>
-              </div>
+        {/* The Sunday gathering is the fixture everything else sits around. */}
+        <div className="border-green/40 bg-green-100 mb-14 flex flex-col gap-6 rounded-2xl border p-7 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="eyebrow">Every week</p>
+            <h2 className="font-heading mt-2 text-2xl font-bold">
+              Sunday Gathering
+            </h2>
+            <div className="text-grey-500 mt-3.5 space-y-1.5 text-sm">
+              <p className="flex items-center gap-2">
+                <Clock className="text-green-600 size-4 shrink-0" />
+                {service.day}s at {service.startTime}
+              </p>
+              <p className="flex items-center gap-2">
+                <MapPin className="text-green-600 size-4 shrink-0" />
+                {location.full}
+              </p>
             </div>
-            <BtnLink variant="navy" href="/im-new" size="lg" className="shrink-0">
-              Plan your visit
-            </BtnLink>
-          </CardContent>
-        </Card>
+          </div>
+          <BtnLink href="/im-new" variant="navy" className="shrink-0">
+            Plan your visit
+          </BtnLink>
+        </div>
 
-        <div className="mt-16">
-          <SectionHeading eyebrow="Coming up" title="Upcoming events" />
+        <div className="grid gap-12 lg:grid-cols-[1fr_340px] lg:gap-14">
+          <div>
+            <SectionHeading
+              eyebrow="Coming up"
+              title="Upcoming events"
+              className="mb-8"
+            />
 
-          {upcomingEvents.length > 0 ? (
-            <ul className="mt-10 grid gap-6 md:grid-cols-2">
-              {upcomingEvents.map((event) => (
-                <li key={`${event.title}-${event.date}`}>
-                  <Card className="h-full">
-                    <CardContent>
-                      <p className="eyebrow">
-                        {dateFormatter.format(new Date(event.date))}
-                      </p>
-                      <h3 className="font-heading mt-2 text-xl font-semibold">
-                        {event.title}
-                      </h3>
-                      <p className="text-grey-500 mt-3 text-sm leading-relaxed">
-                        {event.description}
-                      </p>
-                      <div className="text-grey-500 mt-4 space-y-1 text-sm">
-                        {event.time && (
-                          <p className="flex items-center gap-2">
-                            <Clock className="size-4 shrink-0" />
-                            {event.time}
-                          </p>
-                        )}
-                        <p className="flex items-center gap-2">
-                          <MapPin className="size-4 shrink-0" />
-                          {event.venue ?? location.full}
-                        </p>
-                      </div>
-                      {event.href && (
-                        <BtnLink
-                          href={event.href}
-                          variant="ghost"
-                          className="mt-6"
-                        >
-                          Find out more
-                        </BtnLink>
-                      )}
-                    </CardContent>
-                  </Card>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <Card className="mt-10">
-              <CardContent className="py-14 text-center">
+            {upcoming.length > 0 ? (
+              <div className="grid gap-6 sm:grid-cols-2">
+                {upcoming.map((event) => (
+                  <EventCard key={event.id} event={event} className="reveal" />
+                ))}
+              </div>
+            ) : (
+              <div className="border-grey-100 rounded-2xl border bg-white p-12 text-center">
                 <CalendarDays className="text-green-600 mx-auto size-10" />
-                <h3 className="mt-6 text-xl font-semibold">
+                <h3 className="mt-5 text-xl font-bold">
                   Nothing else in the diary just yet
                 </h3>
                 <p className="text-grey-500 mx-auto mt-3 max-w-md leading-relaxed">
-                  Our Sunday gathering runs every week. For everything else,
-                  Instagram is where things get announced first.
+                  Our Sunday gathering runs every week. Everything else gets
+                  announced on Instagram first.
                 </p>
-                <div className="mt-8 flex flex-wrap justify-center gap-3">
-                  <BtnLink variant="navy"
+                <div className="mt-7 flex flex-wrap justify-center gap-3">
+                  <BtnLink
                     href={socials.find((s) => s.name === "Instagram")!.href}
                     external
+                    variant="green"
                   >
                     Follow on Instagram
                   </BtnLink>
@@ -138,9 +106,19 @@ export default function EventsPage() {
                     Ask what&apos;s coming up
                   </BtnLink>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              </div>
+            )}
+          </div>
+
+          <aside className="lg:sticky lg:top-28 lg:self-start">
+            <EventCalendar
+              events={calendarEvents}
+              initialMonth={initialMonth}
+            />
+            <p className="text-grey-500 mt-4 px-1 text-xs leading-relaxed">
+              Dates with a marker have something on. Tap one to see what.
+            </p>
+          </aside>
         </div>
       </Section>
     </>

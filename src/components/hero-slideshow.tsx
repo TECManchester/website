@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { HeroSlide } from "@/lib/church";
 import { cn } from "@/lib/utils";
 
@@ -33,11 +32,6 @@ export function HeroSlideshow({ slides }: { slides: readonly HeroSlide[] }) {
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  const go = useCallback(
-    (next: number) => setIndex(((next % slides.length) + slides.length) % slides.length),
-    [slides.length],
-  );
-
   // Auto-advance. Never runs for a single slide, when paused, or when the user
   // has asked for reduced motion.
   useEffect(() => {
@@ -58,7 +52,6 @@ export function HeroSlideshow({ slides }: { slides: readonly HeroSlide[] }) {
   }, []);
 
   const hasSlides = slides.length > 0;
-  const multiple = slides.length > 1;
 
   return (
     <>
@@ -83,8 +76,9 @@ export function HeroSlideshow({ slides }: { slides: readonly HeroSlide[] }) {
                 // First slide is the LCP element; the second is next up.
                 priority={i === 0}
                 loading={i <= 1 ? "eager" : "lazy"}
-                // No `quality` override: Next only serves qualities listed in
-                // images.qualities (default [75]) and 400s on anything else.
+                // 90, not the default 75. Must also be listed in
+                // images.qualities in next.config or the optimiser 400s.
+                quality={90}
                 className={cn(
                   "object-cover",
                   // Focal point keeps the subject in frame as the crop
@@ -132,62 +126,6 @@ export function HeroSlideshow({ slides }: { slides: readonly HeroSlide[] }) {
         </>
       )}
 
-      {/* Controls */}
-      {multiple && (
-        <div className="absolute right-0 bottom-6 left-0 z-3">
-          <div className="wrap flex items-center justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => setPaused((p) => !p)}
-              aria-label={paused ? "Resume slideshow" : "Pause slideshow"}
-              className="focus-visible:outline-green grid size-9 place-items-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2"
-            >
-              {paused ? (
-                <Play className="size-4 fill-current" />
-              ) : (
-                <Pause className="size-4 fill-current" />
-              )}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => go(index - 1)}
-              aria-label="Previous image"
-              className="focus-visible:outline-green grid size-9 place-items-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2"
-            >
-              <ChevronLeft className="size-4" />
-            </button>
-
-            <ul className="mx-1 flex items-center gap-2">
-              {slides.map((slide, i) => (
-                <li key={slide.src}>
-                  <button
-                    type="button"
-                    onClick={() => setIndex(i)}
-                    aria-label={`Show image ${i + 1} of ${slides.length}`}
-                    aria-current={i === index}
-                    className={cn(
-                      "focus-visible:outline-green block h-2 rounded-full transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-4",
-                      i === index
-                        ? "bg-green w-7"
-                        : "w-2 bg-white/45 hover:bg-white/70",
-                    )}
-                  />
-                </li>
-              ))}
-            </ul>
-
-            <button
-              type="button"
-              onClick={() => go(index + 1)}
-              aria-label="Next image"
-              className="focus-visible:outline-green grid size-9 place-items-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2"
-            >
-              <ChevronRight className="size-4" />
-            </button>
-          </div>
-        </div>
-      )}
     </>
   );
 }

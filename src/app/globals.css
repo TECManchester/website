@@ -191,7 +191,7 @@
     transform: scale(1) translate3d(0, 0, 0);
   }
   to {
-    transform: scale(1.07) translate3d(0, -1%, 0);
+    transform: scale(1.03) translate3d(0, -0.5%, 0);
   }
 }
 

@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
     root: path.resolve(import.meta.dirname),
   },
   images: {
+    /*
+     * Next only serves qualities listed here and 400s on anything else; the
+     * default is [75] alone. 90 is for the hero, which is full-bleed and gets
+     * upscaled by the browser on high-DPI screens — 75 on top of the source
+     * JPEG's own compression was visibly soft.
+     */
+    qualities: [75, 90],
     remotePatterns: [
       // YouTube video thumbnails.
       { protocol: "https", hostname: "i.ytimg.com" },
