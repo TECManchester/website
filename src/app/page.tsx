@@ -33,7 +33,7 @@ const newHereCards = [
     body: "Passionate worship, a practical message from the Bible, and a genuinely warm welcome. Come as you are — nobody is checking what you're wearing.",
     href: "/im-new#what-to-expect",
     cta: "Learn more",
-    image: null as string | null,
+    image: "/im-new/what-to-expect.jpg" as string | null,
   },
   {
     icon: MapPin,
@@ -41,7 +41,7 @@ const newHereCards = [
     body: `${service.day}s at ${service.startTime} in the ${location.venue} on the ${location.campus} campus. We'll help you find your way in.`,
     href: "/im-new#find-us",
     cta: "Get directions",
-    image: null as string | null,
+    image: "/im-new/times-and-location.jpg" as string | null,
   },
   {
     icon: Baby,
@@ -49,7 +49,7 @@ const newHereCards = [
     body: "The Seeds runs every Sunday for children, including a baby class, and 412 Nation is for teenagers. They're in good hands.",
     href: "/im-new#kids",
     cta: "See their spaces",
-    image: null as string | null,
+    image: "/im-new/kids-and-teens.jpg" as string | null,
   },
 ];
 
@@ -200,37 +200,43 @@ export default function HomePage() {
             <Link
               key={title}
               href={href}
-              className="reveal group border-grey-100 hover:shadow-card-lg flex flex-col overflow-hidden rounded-2xl border bg-white transition duration-250 hover:-translate-y-1.5"
+              /*
+               * No overflow-hidden on the card: the icon badge straddles the
+               * image edge, and clipping here would slice it in half. The
+               * image gets its own clipping container instead.
+               */
+              className="reveal group border-grey-100 hover:shadow-card-lg relative flex flex-col rounded-2xl border bg-white transition duration-250 hover:-translate-y-1.5"
             >
-              {/* Image, or a tinted panel with the icon until one exists. */}
-              <div className="bg-green-100 relative aspect-4/3 overflow-hidden">
-                {image ? (
-                  <>
-                    <Image
-                      src={image}
-                      alt=""
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+              <div className="relative">
+                <div className="bg-green-100 relative aspect-4/3 overflow-hidden rounded-t-2xl">
+                  {image ? (
+                    <>
+                      <Image
+                        src={image}
+                        alt=""
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <span
+                        aria-hidden
+                        className="from-ink/35 absolute inset-0 bg-linear-to-t to-transparent"
+                      />
+                    </>
+                  ) : (
                     <span
                       aria-hidden
-                      className="from-ink/45 absolute inset-0 bg-linear-to-t to-transparent"
+                      className="from-green-100 to-green/35 absolute inset-0 bg-linear-to-br"
                     />
-                  </>
-                ) : (
-                  <span
-                    aria-hidden
-                    className="from-green-100 to-green/35 absolute inset-0 bg-linear-to-br"
-                  />
-                )}
-                {/* Icon badge straddling the image edge. */}
+                  )}
+                </div>
+                {/* Sits outside the clipping container so it can overhang. */}
                 <span className="bg-green shadow-card absolute bottom-0 left-6 grid size-14 translate-y-1/2 place-items-center rounded-2xl">
                   <Icon className="text-ink size-6" />
                 </span>
               </div>
 
-              <div className="flex flex-1 flex-col p-6 pt-11">
+              <div className="flex flex-1 flex-col p-6 pt-12">
                 <h3 className="text-[21px] font-bold">{title}</h3>
                 <p className="text-grey-500 mt-2 flex-1 text-[15px]">{body}</p>
                 <span className="font-heading text-green-600 mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition-all group-hover:gap-2.5">
