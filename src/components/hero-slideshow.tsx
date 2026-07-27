@@ -123,6 +123,16 @@ export function HeroSlideshow({ slides }: { slides: readonly HeroSlide[] }) {
             aria-hidden
             className="from-ink absolute inset-0 bg-linear-to-t via-transparent to-transparent opacity-90 sm:opacity-55"
           />
+          {/*
+           * The header now floats over this image with white text and a white
+           * logo. Some frames are bright at the top (ceiling lights, daylight
+           * through glass), so this keeps the nav readable without darkening
+           * the whole picture.
+           */}
+          <div
+            aria-hidden
+            className="from-ink/80 absolute inset-x-0 top-0 h-40 bg-linear-to-b to-transparent"
+          />
         </>
       )}
 

@@ -108,11 +108,17 @@ export default function HomePage() {
   return (
     <>
       {/* ===== Hero ===== */}
-      <section className="bg-ink relative flex min-h-[78vh] items-center overflow-hidden">
+      {/*
+        Full-viewport banner. The negative top margin slides it under the
+        sticky header so the header floats over the image; the matching top
+        padding keeps the content clear of it. dvh rather than vh so mobile
+        browser chrome doesn't crop it.
+      */}
+      <section className="bg-ink relative -mt-[76px] flex min-h-dvh items-center overflow-hidden sm:-mt-22">
         <HeroSlideshow slides={heroSlides} />
         <span className="brand-glow top-[-160px] right-[-120px] size-[600px] blur-[20px]" />
 
-        <div className="wrap relative z-2 py-15">
+        <div className="wrap relative z-2 pt-[calc(76px+3.5rem)] pb-14 sm:pt-[calc(5.5rem+4rem)]">
           <div className="max-w-[760px]">
             <p className="font-heading mb-6 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/12 px-4 py-2 text-[13.5px] font-semibold text-white backdrop-blur-md">
               <span className="bg-green size-2 rounded-full shadow-[0_0_0_4px_rgb(132_194_36_/_0.3)]" />
@@ -138,7 +144,7 @@ export default function HomePage() {
               </BtnLink>
             </div>
 
-            <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-5">
+            <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-5">
               {[
                 {
                   icon: Clock,
@@ -151,11 +157,6 @@ export default function HomePage() {
                   icon: MapPin,
                   k: location.venue,
                   v: `${location.campus} · ${location.postcode}`,
-                },
-                {
-                  icon: Users,
-                  k: "Kids & teens",
-                  v: "The Seeds and 412 Nation every week",
                 },
               ].map(({ icon: Icon, k, v }) => (
                 <li key={k}>

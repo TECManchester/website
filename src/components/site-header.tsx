@@ -14,14 +14,18 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Only the homepage has a full-height hero for the header to sit over.
+  const isHome = pathname === "/";
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    // Flip once the hero has largely scrolled past, so the header doesn't
+    // fight the image behind it on the way down.
+    const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock background scrolling while the full-screen mobile menu is open.
   useEffect(() => {
     if (!menuOpen) return;
     const previous = document.body.style.overflow;
@@ -42,11 +46,17 @@ export function SiteHeader() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  /** Sitting over the hero image, rather than on a white page. */
+  const overHero = isHome && !scrolled;
+
   return (
     <>
       <header
         className={cn(
-          "border-grey-100 sticky top-0 z-100 border-b bg-white/92 backdrop-blur-xl transition-shadow duration-300",
+          "sticky top-0 z-100 border-b transition-[background-color,box-shadow,border-color] duration-300",
+          overHero
+            ? "border-transparent bg-transparent"
+            : "border-grey-100 bg-white/92 backdrop-blur-xl",
           scrolled && "shadow-[0_6px_24px_rgb(14_14_44_/_0.07)]",
         )}
       >
@@ -54,9 +64,35 @@ export function SiteHeader() {
           <Link
             href="/"
             aria-label="Elevation Church Manchester — home"
-            className="rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-600"
+            className="focus-visible:outline-green-600 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4"
           >
-            <Logo priority />
+            {isHome ? (
+              /*
+               * Both lockups render and crossfade. Swapping the src on scroll
+               * would pop the first time, because the second file hasn't been
+               * fetched yet.
+               */
+              <span className="relative block">
+                <Logo
+                  priority
+                  tone="white"
+                  className={cn(
+                    "transition-opacity duration-300",
+                    overHero ? "opacity-100" : "opacity-0",
+                  )}
+                />
+                <Logo
+                  priority
+                  tone="ink"
+                  className={cn(
+                    "absolute top-0 left-0 transition-opacity duration-300",
+                    overHero ? "opacity-0" : "opacity-100",
+                  )}
+                />
+              </span>
+            ) : (
+              <Logo priority tone="ink" />
+            )}
           </Link>
 
           <nav aria-label="Main" className="hidden lg:block">
@@ -67,8 +103,14 @@ export function SiteHeader() {
                     href={item.href}
                     aria-current={isActive(item.href) ? "page" : undefined}
                     className={cn(
-                      "font-heading hover:bg-grey-50 hover:text-green-600 block rounded-[9px] px-3.5 py-2.5 text-[14.5px] font-medium transition-colors",
-                      isActive(item.href) ? "text-green-600" : "text-ink",
+                      "font-heading block rounded-[9px] px-3.5 py-2.5 text-[14.5px] font-medium transition-colors",
+                      overHero
+                        ? isActive(item.href)
+                          ? "text-green"
+                          : "text-white/85 hover:bg-white/10 hover:text-white"
+                        : isActive(item.href)
+                          ? "text-green-600"
+                          : "text-ink hover:bg-grey-50 hover:text-green-600",
                     )}
                   >
                     {item.label}
@@ -79,10 +121,18 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-2.5">
-            <BtnLink href="/im-new" variant="ghost" className="hidden lg:inline-flex">
+            <BtnLink
+              href="/im-new"
+              variant={overHero ? "ghostOnDark" : "ghost"}
+              className="hidden lg:inline-flex"
+            >
               Plan a Visit
             </BtnLink>
-            <BtnLink href="/give" variant="green" className="hidden lg:inline-flex">
+            <BtnLink
+              href="/give"
+              variant="green"
+              className="hidden lg:inline-flex"
+            >
               Give
             </BtnLink>
             <button
@@ -90,7 +140,10 @@ export function SiteHeader() {
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
               aria-expanded={menuOpen}
-              className="text-ink p-2 lg:hidden"
+              className={cn(
+                "p-2 transition-colors lg:hidden",
+                overHero ? "text-white" : "text-ink",
+              )}
             >
               <Menu className="size-6" />
             </button>
@@ -104,7 +157,6 @@ export function SiteHeader() {
           "bg-ink fixed inset-0 z-200 flex flex-col p-7 transition-transform duration-350 ease-[cubic-bezier(.4,0,.2,1)] lg:hidden",
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
-        // Keeps links out of the tab order while the panel is off-screen.
         inert={!menuOpen}
       >
         <div className="mb-8 flex items-center justify-between">
