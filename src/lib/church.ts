@@ -305,7 +305,7 @@ export type HeroSlide = {
 export const heroSlides: HeroSlide[] = [
   {
     src: "/hero/hero-worship.jpg",
-    alt: "Members of the congregation worshipping with hands raised on a Sunday morning",
+    alt: "Members of the congregation worshipping together on a Sunday morning",
     focal: "object-[62%_32%]",
     preTreated: true,
   },
@@ -316,8 +316,20 @@ export const heroSlides: HeroSlide[] = [
     preTreated: true,
   },
   {
+    src: "/hero/hero-kids.jpg",
+    alt: "Two children from The Seeds smiling together on a Sunday morning",
+    focal: "object-[66%_30%]",
+    preTreated: true,
+  },
+  {
+    src: "/hero/hero-welcome-desk.jpg",
+    alt: "Two members smiling outside the welcome entrance to our venue",
+    focal: "object-[68%_28%]",
+    preTreated: true,
+  },
+  {
     src: "/hero/hero-city.jpg",
-    alt: "A member standing outside the venue on the University of Salford campus",
+    alt: "A member standing outside our venue on the University of Salford campus",
     focal: "object-[70%_34%]",
     preTreated: true,
   },
@@ -335,20 +347,6 @@ export const brand = {
   },
   /** Intrinsic size of the supplied artwork (938 × 307, ~3.05:1). */
   logoAspect: { width: 938, height: 307 },
-} as const;
-
-/**
- * Site-wide announcement bar. Change `id` when the message changes so it
- * re-appears for anyone who dismissed the previous one.
- *
- * Kept factual — no invented events.
- */
-export const announcement = {
-  id: "2026-visit-us",
-  headline: "New here?",
-  body: "Join us Sundays at 10:30am — Mary Seacole Building, University of Salford.",
-  href: "/im-new",
-  linkLabel: "Plan your visit",
 } as const;
 
 export const nav = [

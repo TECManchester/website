@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -18,13 +19,21 @@ import { HomeWatchSection } from "@/components/home-watch-section";
 import { Section, SectionHeading } from "@/components/section";
 import { heroSlides, location, service } from "@/lib/church";
 
+/**
+ * "First time?" cards.
+ *
+ * `image` is optional — without one the card falls back to a tinted panel with
+ * the icon, so the section still looks deliberate before photography arrives.
+ * See public/im-new/README.md for the spec.
+ */
 const newHereCards = [
   {
     icon: Home,
     title: "What to expect",
-    body: "Passionate worship, a practical message from the Bible, and time to pray. Come as you are — nobody is checking what you're wearing.",
+    body: "Passionate worship, a practical message from the Bible, and a genuinely warm welcome. Come as you are — nobody is checking what you're wearing.",
     href: "/im-new#what-to-expect",
     cta: "Learn more",
+    image: null as string | null,
   },
   {
     icon: MapPin,
@@ -32,6 +41,7 @@ const newHereCards = [
     body: `${service.day}s at ${service.startTime} in the ${location.venue} on the ${location.campus} campus. We'll help you find your way in.`,
     href: "/im-new#find-us",
     cta: "Get directions",
+    image: null as string | null,
   },
   {
     icon: Baby,
@@ -39,6 +49,7 @@ const newHereCards = [
     body: "The Seeds runs every Sunday for children, including a baby class, and 412 Nation is for teenagers. They're in good hands.",
     href: "/im-new#kids",
     cta: "See their spaces",
+    image: null as string | null,
   },
 ];
 
@@ -185,20 +196,47 @@ export default function HomePage() {
         />
 
         <div className="grid gap-6 md:grid-cols-3">
-          {newHereCards.map(({ icon: Icon, title, body, href, cta }) => (
+          {newHereCards.map(({ icon: Icon, title, body, href, cta, image }) => (
             <Link
               key={title}
               href={href}
-              className="reveal group border-grey-100 hover:shadow-card-lg relative overflow-hidden rounded-2xl border bg-white p-8 transition duration-250 hover:-translate-y-1.5 hover:border-transparent"
+              className="reveal group border-grey-100 hover:shadow-card-lg flex flex-col overflow-hidden rounded-2xl border bg-white transition duration-250 hover:-translate-y-1.5"
             >
-              <span className="bg-green-100 group-hover:bg-green mb-5 grid size-[54px] place-items-center rounded-[14px] transition-colors duration-250">
-                <Icon className="text-green-600 group-hover:text-ink size-[26px] transition-colors duration-250" />
-              </span>
-              <h3 className="mb-2 text-[21px] font-bold">{title}</h3>
-              <p className="text-grey-500 mb-4 text-[15px]">{body}</p>
-              <span className="font-heading text-green-600 inline-flex items-center gap-1.5 text-sm font-semibold transition-all group-hover:gap-2.5">
-                {cta} <ArrowRight className="size-4" />
-              </span>
+              {/* Image, or a tinted panel with the icon until one exists. */}
+              <div className="bg-green-100 relative aspect-4/3 overflow-hidden">
+                {image ? (
+                  <>
+                    <Image
+                      src={image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <span
+                      aria-hidden
+                      className="from-ink/45 absolute inset-0 bg-linear-to-t to-transparent"
+                    />
+                  </>
+                ) : (
+                  <span
+                    aria-hidden
+                    className="from-green-100 to-green/35 absolute inset-0 bg-linear-to-br"
+                  />
+                )}
+                {/* Icon badge straddling the image edge. */}
+                <span className="bg-green shadow-card absolute bottom-0 left-6 grid size-14 translate-y-1/2 place-items-center rounded-2xl">
+                  <Icon className="text-ink size-6" />
+                </span>
+              </div>
+
+              <div className="flex flex-1 flex-col p-6 pt-11">
+                <h3 className="text-[21px] font-bold">{title}</h3>
+                <p className="text-grey-500 mt-2 flex-1 text-[15px]">{body}</p>
+                <span className="font-heading text-green-600 mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition-all group-hover:gap-2.5">
+                  {cta} <ArrowRight className="size-4" />
+                </span>
+              </div>
             </Link>
           ))}
         </div>
