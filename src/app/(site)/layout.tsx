@@ -4,6 +4,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { RevealProvider } from "@/components/reveal";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { AnnouncementModal } from "@/components/announcement-modal";
+import { getActiveAnnouncement } from "@/lib/announcements";
 import { getSettings } from "@/lib/settings";
 import { siteUrl } from "@/lib/site";
 import "../globals.css";
@@ -72,7 +74,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { service } = await getSettings();
+  const [{ service }, announcement] = await Promise.all([
+    getSettings(),
+    getActiveAnnouncement(),
+  ]);
+  const nowMs = new Date().getTime();
   return (
     <html
       lang="en-GB"
@@ -90,6 +96,9 @@ export default async function RootLayout({
           {children}
         </main>
         <SiteFooter />
+        {announcement && (
+          <AnnouncementModal announcement={announcement} nowMs={nowMs} />
+        )}
         <RevealProvider />
         <Toaster />
       </body>

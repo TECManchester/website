@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          cta_label: string | null
+          cta_url: string | null
+          dismiss_hours: number
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          starts_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          dismiss_hours?: number
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          starts_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          dismiss_hours?: number
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          starts_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           action: string
