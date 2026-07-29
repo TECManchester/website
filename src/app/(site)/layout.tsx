@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { church, location, service } from "@/lib/church";
 import { siteUrl } from "@/lib/site";
-import "./globals.css";
+import "../globals.css";
 
 const inter = Inter({
   variable: "--font-sans",

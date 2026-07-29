@@ -1,7 +1,6 @@
 # Admin / CMS — build plan
 
-Status: **proposed, not started.** No admin code exists today; `/admin` is a 404
-and Supabase Auth is unused.
+Status: **approved — bespoke build. Phase 0 in progress.**
 
 Super admin: `communications@elevationmanchester.org`
 
@@ -141,20 +140,39 @@ photo change currently requires a deploy.
 Phases 0–3 deliver most of the day-to-day value. Phase 4 is the largest single
 chunk — converting 11 pages is the bulk of the work.
 
-## 12. Open decisions
+## 12. Decisions (settled 29 July 2026)
 
-1. **Draft/preview**, or do edits go live immediately? Preview is safer with
-   several editors; instant is simpler.
-2. **Revision history** — recommended, and cheap if built in from the start.
-3. **Rich text editor** — recommend Tiptap.
+1. **Draft/preview: yes.** Pages can be held in draft, previewed at desktop and
+   mobile widths, and published only by someone whose role carries
+   `pages.publish`.
+2. **Revision history: yes** — `block_revisions` from the start.
+3. **Rich text editor: Tiptap.**
+4. **Build vs buy: bespoke.** Sanity's free tier was disqualifying on facts:
+   custom roles need the Growth plan ($15/seat/month) and free datasets are
+   public — unacceptable for prayer and Gift Aid data. Payload (MIT, free,
+   ships blocks/drafts/versions/live-preview) was the credible alternative and
+   was declined for full design control and long-term ownership of the
+   platform. Recorded so the decision is revisitable with its reasoning.
 
-## 13. Considered and rejected
+## 13. Additional engineering considerations (adopted)
 
-**Buying a CMS (Payload, Sanity) instead of building.** Payload would give
-roughly 80% of this, maintained by someone else — a real consideration for an
-organisation that may lose its technical volunteer.
+Things not in the original brief that a production CMS needs, now part of the
+plan:
 
-Rejected because the project is already on Supabase with the schema and RLS
-patterns established, an off-the-shelf CMS would add a second auth system and a
-heavy dependency, and the site needs a bespoke look. Worth revisiting if the
-block editor proves more work than expected.
+- **Audit log** — every approval, role change, publish and settings change
+  records who did it and when. Essential with multiple editors.
+- **Cache correctness** — public pages are statically cached; every admin
+  mutation calls `revalidatePath`/`revalidateTag` so edits appear immediately.
+- **Concurrent-edit safety** — saves carry the revision they were based on;
+  a conflicting save warns instead of silently overwriting.
+- **Slug changes → redirects** — renaming a published page records a redirect
+  so old links and search results keep working.
+- **Gift Aid CSV export** — HMRC claims need the data out, not just visible.
+- **Admin is noindexed** — `robots` disallow plus per-page noindex metadata.
+- **Sign-up email confirmation trade-off** — Supabase's built-in mailer only
+  reliably delivers to project team members, so self-serve sign-up uses
+  auto-confirm; the approval gate (no access until a super admin approves)
+  is the real control. Revisit if a custom SMTP provider is added.
+- **Temp credentials** — seeded accounts get a forced password change on
+  first login via the account page.
+- **Media discipline** — uploads require alt text; images resized server-side.
