@@ -2,7 +2,8 @@ import { ArrowRight, Clock, MapPin, Sparkles } from "lucide-react";
 import { BtnLink } from "@/components/btn";
 import { EventCard } from "@/components/event-card";
 import { Section } from "@/components/section";
-import { location, service, socials } from "@/lib/church";
+import { socials } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 import { getUpcomingEvents } from "@/lib/events";
 
 const instagram = socials.find((s) => s.name === "Instagram")!;
@@ -15,7 +16,10 @@ const instagram = socials.find((s) => s.name === "Instagram")!;
  * than an empty grid.
  */
 export async function HomeEventsSection() {
-  const events = await getUpcomingEvents(3);
+  const [events, { service, location }] = await Promise.all([
+    getUpcomingEvents(3),
+    getSettings(),
+  ]);
 
   return (
     <Section>

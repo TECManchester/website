@@ -3,7 +3,8 @@ import { Baby, Car, Clock, Shirt, Users } from "lucide-react";
 import { BtnLink } from "@/components/btn";
 import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Card, CardContent } from "@/components/ui/card";
-import { kidsAndYouth, location, service } from "@/lib/church";
+import { kidsAndYouth } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "I'm New",
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/im-new" },
 };
 
-const expectations = [
+const expectations = (service: {
+  startTime: string;
+  doorsOpen: string | null;
+}) => [
   {
     icon: Clock,
     title: "When should I arrive?",
@@ -43,7 +47,9 @@ const expectations = [
   },
 ];
 
-export default function ImNewPage() {
+export default async function ImNewPage() {
+  const { service, location } = await getSettings();
+  const cards = expectations(service);
   return (
     <>
       <PageHero
@@ -58,7 +64,7 @@ export default function ImNewPage() {
           title="The honest answers to the questions everyone asks"
         />
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {expectations.map(({ icon: Icon, title, body }) => (
+          {cards.map(({ icon: Icon, title, body }) => (
             <Card key={title} className="h-full">
               <CardContent>
                 <Icon className="text-green-600 size-6" />

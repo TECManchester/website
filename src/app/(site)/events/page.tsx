@@ -4,7 +4,8 @@ import { BtnLink } from "@/components/btn";
 import { EventCalendar, type CalendarEvent } from "@/components/event-calendar";
 import { EventCard } from "@/components/event-card";
 import { PageHero, Section, SectionHeading } from "@/components/section";
-import { location, service, socials } from "@/lib/church";
+import { socials } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 import {
   formatEventTime,
   getAllEvents,
@@ -23,9 +24,10 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function EventsPage() {
-  const [upcoming, all] = await Promise.all([
+  const [upcoming, all, { service, location }] = await Promise.all([
     getUpcomingEvents(24),
     getAllEvents(),
+    getSettings(),
   ]);
 
   const calendarEvents: CalendarEvent[] = all.map((event) => ({

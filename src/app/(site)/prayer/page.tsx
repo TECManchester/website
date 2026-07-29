@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero, Section } from "@/components/section";
 import { PrayerForm } from "@/components/prayer-form";
-import { contact } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Prayer",
@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/prayer" },
 };
 
-export default function PrayerPage() {
+export default async function PrayerPage() {
+  const { contact } = await getSettings();
   return (
     <>
       <PageHero

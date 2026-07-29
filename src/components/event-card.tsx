@@ -9,17 +9,18 @@ import {
   isMultiDay,
   type ChurchEvent,
 } from "@/lib/events";
-import { location } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
 /** Grid card — used on the homepage and the events index. */
-export function EventCard({
+export async function EventCard({
   event,
   className,
 }: {
   event: ChurchEvent;
   className?: string;
 }) {
+  const { location } = await getSettings();
   return (
     <article
       className={cn(

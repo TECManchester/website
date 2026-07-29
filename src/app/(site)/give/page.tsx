@@ -5,7 +5,7 @@ import { GiftAidForm } from "@/components/gift-aid-form";
 import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { church, giving } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Give",
@@ -14,7 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/give" },
 };
 
-export default function GivePage() {
+export default async function GivePage() {
+  const { church, giving } = await getSettings();
   return (
     <>
       <PageHero

@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { RevealProvider } from "@/components/reveal";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { church, location, service } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 import { siteUrl } from "@/lib/site";
 import "../globals.css";
 
@@ -28,41 +28,51 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: `${church.name} | ${church.tagline}`,
-    template: `${church.name} | %s`,
-  },
-  description: `A Spirit-filled church family in Manchester on one mission: making greatness common. Join us ${service.day}s at ${service.startTime}, ${location.venue}, ${location.campus}.`,
-  keywords: [
-    "church in Manchester",
-    "Elevation Church Manchester",
-    "TEC Manchester",
-    "Pentecostal church Manchester",
-    "Salford church",
-  ],
-  openGraph: {
-    type: "website",
-    locale: "en_GB",
-    siteName: church.name,
-    title: `${church.name} | ${church.tagline}`,
-    description: `Join us ${service.day}s at ${service.startTime} — ${location.full}.`,
-    url: siteUrl,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${church.name} | ${church.tagline}`,
-    description: `Join us ${service.day}s at ${service.startTime} — ${location.full}.`,
-  },
-  alternates: { canonical: "/" },
-};
+/**
+ * Every public route re-renders within 5 minutes of a settings/content change;
+ * admin saves also revalidate the layout immediately.
+ */
+export const revalidate = 300;
 
-export default function RootLayout({
+export async function generateMetadata(): Promise<Metadata> {
+  const { church, service, location } = await getSettings();
+  return {
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: `${church.name} | ${church.tagline}`,
+      template: `${church.name} | %s`,
+    },
+    description: `A Spirit-filled church family in Manchester on one mission: making greatness common. Join us ${service.day}s at ${service.startTime}, ${location.venue}, ${location.campus}.`,
+    keywords: [
+      "church in Manchester",
+      "Elevation Church Manchester",
+      "TEC Manchester",
+      "Pentecostal church Manchester",
+      "Salford church",
+    ],
+    openGraph: {
+      type: "website",
+      locale: "en_GB",
+      siteName: church.name,
+      title: `${church.name} | ${church.tagline}`,
+      description: `Join us ${service.day}s at ${service.startTime} — ${location.full}.`,
+      url: siteUrl,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${church.name} | ${church.tagline}`,
+      description: `Join us ${service.day}s at ${service.startTime} — ${location.full}.`,
+    },
+    alternates: { canonical: "/" },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { service } = await getSettings();
   return (
     <html
       lang="en-GB"
@@ -75,7 +85,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <SiteHeader />
+        <SiteHeader service={service} />
         <main id="main" className="flex-1">
           {children}
         </main>

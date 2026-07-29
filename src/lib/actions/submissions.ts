@@ -2,7 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { contact as contactDetails } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 import {
   DECLARATION_STATEMENT,
   DECLARATION_VERSION,
@@ -49,11 +49,16 @@ function text(data: FormData, key: string): string {
  * A prayer request that appears to send but goes nowhere is worse than a form
  * that tells you to email instead — so if the backend isn't wired up, say so.
  */
-function notConfigured(): FormState {
+async function notConfigured(): Promise<FormState> {
+  const { contact } = await getSettings();
   return {
     status: "error",
-    message: `Our form isn't connected yet — sorry. Please email us at ${contactDetails.email} and we'll pick it up from there.`,
+    message: `Our form isn't connected yet — sorry. Please email us at ${contact.email} and we'll pick it up from there.`,
   };
+}
+
+async function contactEmail(): Promise<string> {
+  return (await getSettings()).contact.email;
 }
 
 function formsDisabled(): FormState {
@@ -83,7 +88,7 @@ export async function submitPrayerRequest(
   }
 
   if (!FORMS_ENABLED.prayer) return formsDisabled();
-  if (!isSupabaseConfigured) return notConfigured();
+  if (!isSupabaseConfigured) return await notConfigured();
 
   const { error } = await createAdminClient()
     .from("prayer_requests")
@@ -100,7 +105,7 @@ export async function submitPrayerRequest(
     console.error("prayer_requests insert failed", error);
     return {
       status: "error",
-      message: `Something went wrong our end. Please email ${contactDetails.email} and we'll make sure it's prayed for.`,
+      message: `Something went wrong our end. Please email ${await contactEmail()} and we'll make sure it's prayed for.`,
     };
   }
 
@@ -126,7 +131,7 @@ export async function subscribeToNewsletter(
   }
 
   if (!FORMS_ENABLED.newsletter) return formsDisabled();
-  if (!isSupabaseConfigured) return notConfigured();
+  if (!isSupabaseConfigured) return await notConfigured();
 
   // Re-subscribing shouldn't error on the unique index.
   const { error } = await createAdminClient()
@@ -213,7 +218,7 @@ export async function submitGiftAidDeclaration(
   }
 
   if (!FORMS_ENABLED.giftAid) return formsDisabled();
-  if (!isSupabaseConfigured) return notConfigured();
+  if (!isSupabaseConfigured) return await notConfigured();
 
   const { error } = await createAdminClient()
     .from("gift_aid_declarations")
@@ -239,7 +244,7 @@ export async function submitGiftAidDeclaration(
     console.error("gift_aid_declarations insert failed", error);
     return {
       status: "error",
-      message: `We couldn't save your declaration. Please email ${contactDetails.email} and we'll sort it out.`,
+      message: `We couldn't save your declaration. Please email ${await contactEmail()} and we'll sort it out.`,
     };
   }
 
@@ -272,7 +277,7 @@ export async function submitContactMessage(
   }
 
   if (!FORMS_ENABLED.contact) return formsDisabled();
-  if (!isSupabaseConfigured) return notConfigured();
+  if (!isSupabaseConfigured) return await notConfigured();
 
   const { error } = await createAdminClient()
     .from("contact_messages")
@@ -288,7 +293,7 @@ export async function submitContactMessage(
     console.error("contact_messages insert failed", error);
     return {
       status: "error",
-      message: `Something went wrong our end. Please email ${contactDetails.email} directly.`,
+      message: `Something went wrong our end. Please email ${await contactEmail()} directly.`,
     };
   }
 

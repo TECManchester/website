@@ -17,7 +17,7 @@ import { HeroSlideshow } from "@/components/hero-slideshow";
 import { HomeEventsSection } from "@/components/home-events-section";
 import { HomeWatchSection } from "@/components/home-watch-section";
 import { Section, SectionHeading } from "@/components/section";
-import { heroSlides, location, service } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 
 /**
  * "First time?" cards.
@@ -38,7 +38,7 @@ const newHereCards = [
   {
     icon: MapPin,
     title: "Times & location",
-    body: `${service.day}s at ${service.startTime} in the ${location.venue} on the ${location.campus} campus. We'll help you find your way in.`,
+    body: "", // filled from settings at render
     href: "/im-new#find-us",
     cta: "Get directions",
     image: "/im-new/times-and-location.jpg" as string | null,
@@ -115,7 +115,16 @@ function EventsSkeleton() {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { service, location, hero } = await getSettings();
+  const cards = newHereCards.map((card) =>
+    card.title === "Times & location"
+      ? {
+          ...card,
+          body: `${service.day}s at ${service.startTime} in the ${location.venue} on the ${location.campus} campus. We'll help you find your way in.`,
+        }
+      : card,
+  );
   return (
     <>
       {/* ===== Hero ===== */}
@@ -126,7 +135,7 @@ export default function HomePage() {
         browser chrome doesn't crop it.
       */}
       <section className="bg-ink relative -mt-[76px] flex min-h-dvh items-center overflow-hidden sm:-mt-[88px]">
-        <HeroSlideshow slides={heroSlides} />
+        <HeroSlideshow slides={hero} />
         <span className="brand-glow top-[-160px] right-[-120px] size-[600px] blur-[20px]" />
 
         <div className="wrap relative z-2 pt-[calc(76px+3.5rem)] pb-14 sm:pt-[calc(88px+4rem)]">
@@ -196,7 +205,7 @@ export default function HomePage() {
         />
 
         <div className="grid gap-6 md:grid-cols-3">
-          {newHereCards.map(({ icon: Icon, title, body, href, cta, image }) => (
+          {cards.map(({ icon: Icon, title, body, href, cta, image }) => (
             <Link
               key={title}
               href={href}

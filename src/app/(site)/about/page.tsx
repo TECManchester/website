@@ -5,7 +5,8 @@ import { LeadershipGrid } from "@/components/leadership-grid";
 import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { church, personality, values } from "@/lib/church";
+import { church as story, personality, values } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "About",
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { church } = await getSettings();
   return (
     <>
       <PageHero
@@ -40,7 +42,7 @@ export default function AboutPage() {
               across Nigeria, the UK, Europe and the US.
             </p>
             <p>
-              TEC Manchester launched on {church.launched}, led by Pastor Tosin
+              TEC Manchester launched on {story.launched}, led by Pastor Tosin
               Babalola, to bring that same message of hope and greatness to this
               city.
             </p>
@@ -52,7 +54,7 @@ export default function AboutPage() {
         <SectionHeading
           eyebrow="Vision & values"
           title="What we're built on"
-          lead={`Everything we do traces back to one line of scripture: "${church.bedrockScripture.text}" — ${church.bedrockScripture.reference}.`}
+          lead={`Everything we do traces back to one line of scripture: "${story.bedrockScripture.text}" — ${story.bedrockScripture.reference}.`}
         />
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
 import { PageHero, Section } from "@/components/section";
-import { contact, location, service, socials } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { contact, location, service, socials } = await getSettings();
   return (
     <>
       <PageHero

@@ -4,7 +4,7 @@ import { BtnLink } from "@/components/btn";
 import { LivePlayer, UpcomingStream } from "@/components/live-player";
 import { PageHero, Section, SectionHeading } from "@/components/section";
 import { VideoCard } from "@/components/video-card";
-import { location, service } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 import {
   CHANNEL_URL,
   getLiveNow,
@@ -28,10 +28,11 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function WatchPage() {
-  const [live, upcoming, messages] = await Promise.all([
+  const [live, upcoming, messages, { service, location }] = await Promise.all([
     getLiveNow(),
     getUpcomingStream(),
     getPastMessages(12),
+    getSettings(),
   ]);
 
   return (

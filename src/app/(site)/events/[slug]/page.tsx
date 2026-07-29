@@ -6,7 +6,7 @@ import { ArrowLeft, CalendarDays, Clock, MapPin } from "lucide-react";
 import { BtnLink } from "@/components/btn";
 import { EventCard } from "@/components/event-card";
 import { Section, SectionHeading } from "@/components/section";
-import { location } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 import {
   formatEventDate,
   formatEventDateRange,
@@ -55,7 +55,10 @@ export default async function EventPage({
   const event = await getEventBySlug(slug);
   if (!event) notFound();
 
-  const others = (await getUpcomingEvents(4)).filter((e) => e.slug !== slug);
+  const [others, { location }] = await Promise.all([
+    getUpcomingEvents(4).then((list) => list.filter((e) => e.slug !== slug)),
+    getSettings(),
+  ]);
   const venue = event.venue ?? location.full;
 
   return (

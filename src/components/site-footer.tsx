@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { socialIcons } from "@/components/social-icons";
-import { church, contact, location, service, socials } from "@/lib/church";
+import { getSettings } from "@/lib/settings";
 
 const columns = [
   {
@@ -34,7 +34,8 @@ const columns = [
   },
 ];
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const { church, contact, location, service, socials } = await getSettings();
   return (
     <footer className="bg-ink-800 pt-16 pb-8 text-white/60">
       <div className="wrap">
@@ -46,7 +47,8 @@ export function SiteFooter() {
             </p>
             <ul className="flex gap-2.5">
               {socials.map((s) => {
-                const Icon = socialIcons[s.name];
+                const Icon =
+                  socialIcons[s.name as keyof typeof socialIcons] ?? null;
                 return (
                   <li key={s.name}>
                     <Link
@@ -56,7 +58,13 @@ export function SiteFooter() {
                       aria-label={`${church.shortName} on ${s.name}`}
                       className="hover:bg-green hover:text-ink grid size-10 place-items-center rounded-[11px] bg-white/6 text-white transition-colors"
                     >
-                      <Icon className="size-[18px]" />
+                      {Icon ? (
+                        <Icon className="size-[18px]" />
+                      ) : (
+                        <span className="text-xs font-bold">
+                          {s.name.charAt(0)}
+                        </span>
+                      )}
                     </Link>
                   </li>
                 );

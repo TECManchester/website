@@ -6,10 +6,14 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { BtnLink } from "@/components/btn";
 import { Logo } from "@/components/logo";
-import { nav, service } from "@/lib/church";
+import { nav } from "@/lib/church";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader() {
+export function SiteHeader({
+  service,
+}: {
+  service: { day: string; startTime: string };
+}) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
