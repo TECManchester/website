@@ -294,6 +294,53 @@ export type Database = {
           },
         ]
       }
+      media: {
+        Row: {
+          alt: string
+          bytes: number | null
+          created_at: string
+          created_by: string | null
+          height: number | null
+          id: string
+          mime: string | null
+          path: string
+          url: string
+          width: number | null
+        }
+        Insert: {
+          alt: string
+          bytes?: number | null
+          created_at?: string
+          created_by?: string | null
+          height?: number | null
+          id?: string
+          mime?: string | null
+          path: string
+          url: string
+          width?: number | null
+        }
+        Update: {
+          alt?: string
+          bytes?: number | null
+          created_at?: string
+          created_by?: string | null
+          height?: number | null
+          id?: string
+          mime?: string | null
+          path?: string
+          url?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_subscribers: {
         Row: {
           confirmed_at: string | null

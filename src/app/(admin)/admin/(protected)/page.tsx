@@ -70,8 +70,10 @@ export default async function AdminDashboard() {
       <p className="eyebrow">Dashboard</p>
       <h1 className="mt-2 text-3xl font-bold">Hello, {firstName}</h1>
       <p className="text-grey-500 mt-2">
-        {ctx.profile.roles?.description ??
-          "Manage the site from the menu on the left."}
+        {ctx.profile.status !== "approved"
+          ? "Welcome — your account is awaiting approval. Once a super admin assigns your role, the sections you can manage will appear in the menu."
+          : (ctx.profile.roles?.description ??
+            "Manage the site from the menu on the left.")}
       </p>
 
       {stats.length > 0 && (

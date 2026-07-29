@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // YouTube video thumbnails.
       { protocol: "https", hostname: "i.ytimg.com" },
+      // Supabase Storage (media library uploads).
+      { protocol: "https", hostname: "imsmgftkwjbwaaqqzwta.supabase.co" },
       { protocol: "https", hostname: "yt3.ggpht.com" },
     ],
   },

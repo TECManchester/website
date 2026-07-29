@@ -61,7 +61,7 @@ export function LoginForm() {
         if (data.session) {
           // Auto-confirm is on: they're signed in, and land on the pending
           // screen until a super admin approves them.
-          router.push("/admin/pending");
+          router.push("/admin");
           router.refresh();
         } else {
           setNotice(
@@ -80,8 +80,8 @@ export function LoginForm() {
       <div className="bg-grey-100 mb-6 flex rounded-full p-1">
         {(
           [
-            ["sign-in", "Sign in"],
-            ["request", "Request access"],
+            ["sign-in", "Log in"],
+            ["request", "Sign up"],
           ] as const
         ).map(([value, label]) => (
           <button
@@ -105,12 +105,12 @@ export function LoginForm() {
       </div>
 
       <h1 className="text-ink text-xl font-bold">
-        {mode === "sign-in" ? "Welcome back" : "Request admin access"}
+        {mode === "sign-in" ? "Welcome back" : "Create your account"}
       </h1>
       <p className="text-grey-500 mt-1 mb-6 text-sm">
         {mode === "sign-in"
-          ? "Sign in to manage the site."
-          : "Create an account — a super admin approves it and assigns your role."}
+          ? "Log in to manage the site."
+          : "You'll be signed in straight away — a super admin then approves your access and assigns what you can do."}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -169,9 +169,9 @@ export function LoginForm() {
               <Loader2 className="size-4 animate-spin" /> Working…
             </>
           ) : mode === "sign-in" ? (
-            "Sign in"
+            "Log in"
           ) : (
-            "Request access"
+            "Sign up"
           )}
         </Btn>
       </form>
