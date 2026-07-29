@@ -108,6 +108,47 @@ export type Database = {
           },
         ]
       }
+      blocks: {
+        Row: {
+          created_at: string
+          draft: Json
+          id: string
+          page_id: string
+          published: Json | null
+          sort: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          draft?: Json
+          id?: string
+          page_id: string
+          published?: Json | null
+          sort?: number
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          draft?: Json
+          id?: string
+          page_id?: string
+          published?: Json | null
+          sort?: number
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blocks_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connect_groups: {
         Row: {
           area: string | null
@@ -424,6 +465,92 @@ export type Database = {
         }
         Relationships: []
       }
+      page_revisions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          page_id: string
+          snapshot: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          page_id: string
+          snapshot: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          page_id?: string
+          snapshot?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_revisions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "page_revisions_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pages: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_system: boolean
+          published_at: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean
+          published_at?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean
+          published_at?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pages_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prayer_requests: {
         Row: {
           created_at: string
@@ -510,6 +637,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      redirects: {
+        Row: {
+          created_at: string
+          from_slug: string
+          to_slug: string
+        }
+        Insert: {
+          created_at?: string
+          from_slug: string
+          to_slug: string
+        }
+        Update: {
+          created_at?: string
+          from_slug?: string
+          to_slug?: string
+        }
+        Relationships: []
       }
       roles: {
         Row: {

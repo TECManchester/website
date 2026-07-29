@@ -1,6 +1,6 @@
 # Admin / CMS — build plan
 
-Status: **approved — bespoke build. Phase 0 in progress.**
+Status: **built.** Phases 0–6 are live; see §11 for what each shipped.
 
 Super admin: `communications@elevationmanchester.org`
 
@@ -129,16 +129,18 @@ photo change currently requires a deploy.
 
 | Phase | Delivers |
 | --- | --- |
-| **0** | Auth, approval queue, roles, admin shell, route protection |
-| **1** | Events CRUD + media library — **staff stop needing a developer for events** |
-| **2** | Site settings — address, times, socials, giving |
-| **3** | Announcement modals |
-| **4** | Block editor; the 11 existing pages converted |
-| **5** | Create new pages on the fly |
-| **6** | Submissions inbox; enable the three disabled forms |
+| **0** | ✅ Auth, approval queue, roles, admin shell, route protection |
+| **1** | ✅ Events CRUD + media library |
+| **2** | ✅ Site settings — address, times, socials, giving, banner slides |
+| **3** | ✅ Announcement modals |
+| **4** | ✅ Block editor with draft/publish, revisions, preview at three widths |
+| **5** | ✅ New pages with live URL check; renames leave redirects |
+| **6** | ✅ Submissions inbox; contact, prayer and newsletter forms enabled |
 
-Phases 0–3 deliver most of the day-to-day value. Phase 4 is the largest single
-chunk — converting 11 pages is the bulk of the work.
+Deliberate scope note: the 11 built-in pages stay code-rendered. Their
+changeable content (address, times, socials, giving, banner) is editable via
+Settings; converting their remaining fixed copy into blocks is mechanical now
+the engine exists, and can be done page by page on request.
 
 ## 12. Decisions (settled 29 July 2026)
 

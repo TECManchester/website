@@ -104,13 +104,13 @@ export default async function AdminDashboard() {
 
       <div className="border-grey-100 mt-10 rounded-2xl border bg-white p-6">
         <h2 className="font-heading text-ink text-lg font-bold">
-          What&apos;s built so far
+          What you can do here
         </h2>
         <p className="text-grey-500 mt-2 text-sm leading-relaxed">
-          Phase 0 — sign-in, access requests, roles and approvals. Events
-          management, the media library, page editing and the submissions inbox
-          arrive in the next phases; their menu entries lead to a preview of
-          what&apos;s coming.
+          Run events, upload photos, edit the site&apos;s settings (address,
+          times, socials, giving, banner), put up announcement popups, build
+          and publish new pages, and read what people send through the forms —
+          all depending on your role.
         </p>
       </div>
     </>
