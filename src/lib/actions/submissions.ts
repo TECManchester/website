@@ -11,20 +11,13 @@ import {
 } from "@/lib/gift-aid";
 
 /**
- * Per-form switches.
- *
- * Prayer, contact and newsletter are off while the destination for those
- * submissions is still being decided — database, email, a church management
- * system, or some combination. While off, nothing is written anywhere and the
- * UI says so plainly rather than faking success.
- *
- * Gift Aid is on: the declaration is the record the church needs in order to
- * claim, so there's no value in collecting it and throwing it away.
+ * Per-form switches. All live: submissions land in Supabase and are read in
+ * the admin inbox by the roles allowed to see each kind.
  */
 const FORMS_ENABLED = {
-  prayer: false,
-  contact: false,
-  newsletter: false,
+  prayer: true,
+  contact: true,
+  newsletter: true,
   giftAid: true,
 } as const;
 
