@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect, unstable_rethrow } from "next/navigation";
 import { getAdminContext } from "@/lib/admin/auth";
 import { createAdminClient } from "@/lib/supabase/server";
 import { RESERVED_SLUGS, slugify, type EditorBlock } from "@/lib/blocks";
@@ -10,6 +11,9 @@ function actionFailure(where: string, error: unknown): {
   ok: false;
   message: string;
 } {
+  // redirect()/notFound() signal via a thrown sentinel — rethrow it, or the
+  // catch turns a successful redirect into a silent failure.
+  unstable_rethrow(error);
   console.error(`${where} threw`, error);
   const name = error instanceof Error ? error.message : String(error);
   return { ok: false, message: `Something went wrong (${name.slice(0, 120)}).` };
@@ -86,7 +90,9 @@ async function createPageInner(
     draft: { eyebrow: "", title: cleanTitle, lead: "" } as unknown as Json,
   });
 
-  return { ok: true, message: "Page created.", id: page.id, slug };
+  // Redirect from the server: the client-side router.push after this action
+  // wasn't navigating, leaving people stranded on the form.
+  redirect(`/admin/pages/${page.id}`);
 }
 
 async function savePageDraftInner(input: {

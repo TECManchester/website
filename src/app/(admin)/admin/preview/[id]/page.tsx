@@ -16,8 +16,11 @@ export default async function PreviewPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const ctx = (await getAdminContext())!;
-  if (!ctx.can("pages.view")) redirect("/admin/pages");
+  // Outside the (protected) group — no sidebar — so it does its own gate.
+  const ctx = await getAdminContext();
+  if (!ctx) redirect("/admin/login");
+  if (ctx.profile.status !== "approved" || !ctx.can("pages.view"))
+    redirect("/admin/pages");
 
   const { id } = await params;
   const admin = createAdminClient();

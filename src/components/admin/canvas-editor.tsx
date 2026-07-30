@@ -331,26 +331,30 @@ function BlockPicker({
 
 function AddDivider({
   onPick,
+  prominent = false,
 }: {
   onPick: (type: BlockType) => void;
+  prominent?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="group/add relative flex justify-center py-1">
-      <div className="bg-grey-300 absolute top-1/2 right-8 left-8 h-px opacity-0 transition group-hover/add:opacity-100" />
+    <div className="relative flex justify-center py-3">
+      <div className="bg-grey-100 absolute top-1/2 right-6 left-6 h-px" />
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Add a section here"
         className={cn(
-          "bg-green text-ink relative z-10 grid size-8 place-items-center rounded-full shadow-md transition",
-          open ? "rotate-45" : "opacity-0 group-hover/add:opacity-100 focus-visible:opacity-100",
+          "font-heading relative z-10 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition",
+          prominent
+            ? "bg-green text-ink shadow-md hover:brightness-105"
+            : "border-grey-300 text-grey-500 hover:border-green-600 hover:text-green-600 border bg-white",
         )}
       >
-        <Plus className="size-4" />
+        <Plus className={cn("size-3.5 transition", open && "rotate-45")} />
+        Add a section
       </button>
       {open && (
-        <div className="absolute top-10 left-0 w-full">
+        <div className="absolute top-12 left-0 z-40 w-full">
           <BlockPicker
             onPick={(type) => {
               setOpen(false);
@@ -983,7 +987,7 @@ export function CanvasEditor({
             </div>
 
             <Link
-              href={`/admin/pages/${page.id}/preview`}
+              href={`/admin/preview/${page.id}`}
               target="_blank"
               aria-label="Open full preview"
               className="text-grey-500 hover:text-ink grid size-9 place-items-center rounded-full transition"
@@ -1026,61 +1030,91 @@ export function CanvasEditor({
           )}
         >
           {blocks.length === 0 && (
-            <div className="text-grey-500 p-16 text-center text-sm">
-              This page is empty — add your first section below.
-            </div>
-          )}
-          {blocks.map((block, i) => (
-            <div key={block.id}>
-              <div
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  if (dragIdx !== null && dragIdx !== i) dragTo(dragIdx, i);
-                }}
-                className={cn(
-                  "group/block relative transition-opacity",
-                  dragIdx === i && "opacity-50",
-                )}
-              >
-                {renderEdit(block, i)}
-                {/* Block controls */}
-                <div className="absolute top-2 right-2 z-20 flex gap-1 opacity-0 transition group-focus-within/block:opacity-100 group-hover/block:opacity-100">
-                  <span
-                    draggable
-                    onDragStart={(e) => {
-                      e.dataTransfer.effectAllowed = "move";
-                      setDragIdx(i);
-                    }}
-                    onDragEnd={() => setDragIdx(null)}
-                    title="Drag to move"
-                    className="bg-ink/80 grid size-8 cursor-grab place-items-center rounded-lg text-white backdrop-blur active:cursor-grabbing"
-                  >
-                    <GripVertical className="size-4" />
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (confirm("Remove this section?")) removeBlock(i);
-                    }}
-                    aria-label="Remove section"
-                    className="bg-ink/80 hover:bg-destructive grid size-8 place-items-center rounded-lg text-white backdrop-blur transition"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
-                </div>
+            <div className="px-6 py-16 text-center">
+              <span className="bg-green-100 mx-auto grid size-14 place-items-center rounded-2xl">
+                <PanelTop className="text-green-600 size-6" />
+              </span>
+              <h2 className="text-ink mt-5 text-xl font-bold">
+                Let&apos;s build your page
+              </h2>
+              <p className="text-grey-500 mx-auto mt-2 max-w-sm text-sm leading-relaxed">
+                Start with a banner for the title, then add text, a picture, an
+                event date, or a button. You can move sections around at any
+                time.
+              </p>
+              <div className="mx-auto mt-6 max-w-md">
+                <AddDivider
+                  prominent
+                  onPick={(type) => insertBlock(0, type)}
+                />
               </div>
-              <AddDivider onPick={(type) => insertBlock(i + 1, type)} />
-            </div>
-          ))}
-          {blocks.length === 0 && (
-            <div className="pb-10">
-              <AddDivider onPick={(type) => insertBlock(0, type)} />
             </div>
           )}
+          {blocks.length > 0 && (
+            <AddDivider onPick={(type) => insertBlock(0, type)} />
+          )}
+          {blocks.map((block, i) => {
+            const meta = BLOCK_META[block.type];
+            const Icon = PICKER_ICONS[block.type] ?? Plus;
+            return (
+              <div key={block.id}>
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    if (dragIdx !== null && dragIdx !== i) dragTo(dragIdx, i);
+                  }}
+                  className={cn(
+                    "group/block relative rounded-xl outline-2 outline-transparent transition",
+                    "hover:outline-green/40 focus-within:outline-green/60",
+                    dragIdx === i && "opacity-40",
+                  )}
+                >
+                  {/* Section label — always tells you what this is */}
+                  <div className="pointer-events-none absolute -top-1 left-4 z-20 flex items-center gap-2">
+                    <span className="bg-ink/85 font-heading inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold text-white opacity-0 backdrop-blur transition group-focus-within/block:opacity-100 group-hover/block:opacity-100">
+                      <Icon className="size-3" />
+                      {meta.label}
+                    </span>
+                  </div>
+
+                  {/* Section controls */}
+                  <div className="absolute -top-1 right-4 z-20 flex gap-1 opacity-0 transition group-focus-within/block:opacity-100 group-hover/block:opacity-100">
+                    <span
+                      draggable
+                      onDragStart={(e) => {
+                        e.dataTransfer.effectAllowed = "move";
+                        setDragIdx(i);
+                      }}
+                      onDragEnd={() => setDragIdx(null)}
+                      title="Drag to move this section"
+                      className="bg-ink/85 grid size-7 cursor-grab place-items-center rounded-lg text-white backdrop-blur active:cursor-grabbing"
+                    >
+                      <GripVertical className="size-3.5" />
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm(`Remove the ${meta.label} section?`))
+                          removeBlock(i);
+                      }}
+                      aria-label={`Remove ${meta.label} section`}
+                      title="Remove this section"
+                      className="bg-ink/85 hover:bg-destructive grid size-7 place-items-center rounded-lg text-white backdrop-blur transition"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  </div>
+
+                  {renderEdit(block, i)}
+                </div>
+                <AddDivider onPick={(type) => insertBlock(i + 1, type)} />
+              </div>
+            );
+          })}
         </div>
       </div>
       <p className="text-grey-500 mt-3 text-center text-xs">
-        Click any text to edit it · hover a section for move and delete ·
+        Click any text to edit it · hover a section to move or remove it ·
         changes save by themselves
       </p>
     </div>

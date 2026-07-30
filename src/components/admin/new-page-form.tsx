@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Check, Loader2, X } from "lucide-react";
@@ -11,7 +10,6 @@ import { checkSlug, createPage } from "@/lib/actions/admin-pages";
 import { slugify } from "@/lib/blocks";
 
 export function NewPageForm() {
-  const router = useRouter();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
@@ -39,15 +37,10 @@ export function NewPageForm() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
+    // On success this action redirects, so control never returns here.
     const result = await createPage(title, slug);
     setBusy(false);
-    if (!result.ok) {
-      toast.error(result.message);
-      return;
-    }
-    toast.success("Page created — build it below, then publish.");
-    router.push(`/admin/pages/${result.id}`);
-    router.refresh();
+    if (!result.ok) toast.error(result.message);
   }
 
   return (

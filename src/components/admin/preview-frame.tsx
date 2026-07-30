@@ -28,13 +28,13 @@ export function PreviewFrame({
   const active = WIDTHS.find((w) => w.key === mode)!;
 
   return (
-    <div className="-mx-6 -my-8 min-h-dvh lg:-mx-10">
+    <div className="min-h-dvh">
       <div className="bg-ink sticky top-0 z-50 flex items-center justify-between gap-4 px-5 py-3">
         <Link
           href={backHref}
           className="hover:text-green flex items-center gap-2 text-sm font-semibold text-white/80"
         >
-          <ArrowLeft className="size-4" /> Back to editor
+          <ArrowLeft className="size-4" /> Close preview
         </Link>
         <p className="hidden truncate text-sm font-semibold text-white sm:block">
           Preview · {title} <span className="text-gold">(draft)</span>
