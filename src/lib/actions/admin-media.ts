@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import sharp from "sharp";
 import { getAdminContext } from "@/lib/admin/auth";
 import { createAdminClient } from "@/lib/supabase/server";
 import { supabaseUrl } from "@/lib/supabase/env";
@@ -52,6 +51,10 @@ export async function uploadMedia(formData: FormData): Promise<MediaResult> {
   let width: number;
   let height: number;
   try {
+    // Deliberately lazy: sharp is a native module, and importing it at module
+    // scope would 500 every action in this file if the platform binary is
+    // missing — including listMedia, which the media picker calls.
+    const sharp = (await import("sharp")).default;
     const input = Buffer.from(await file.arrayBuffer());
     const processed = await sharp(input)
       .rotate() // honour EXIF orientation
@@ -61,8 +64,15 @@ export async function uploadMedia(formData: FormData): Promise<MediaResult> {
     buffer = processed.data;
     width = processed.info.width;
     height = processed.info.height;
-  } catch {
-    return { ok: false, message: "That file doesn't look like a valid image." };
+  } catch (error) {
+    console.error("image processing failed", error);
+    return {
+      ok: false,
+      message:
+        error instanceof Error && error.message.includes("sharp")
+          ? "Image processing isn't available on the server right now."
+          : "That file doesn't look like a valid image.",
+    };
   }
 
   const stamp = Date.now().toString(36);

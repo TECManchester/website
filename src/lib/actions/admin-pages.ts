@@ -6,6 +6,15 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { RESERVED_SLUGS, slugify, type EditorBlock } from "@/lib/blocks";
 import type { Json } from "@/lib/supabase/types";
 
+function actionFailure(where: string, error: unknown): {
+  ok: false;
+  message: string;
+} {
+  console.error(`${where} threw`, error);
+  const name = error instanceof Error ? error.message : String(error);
+  return { ok: false, message: `Something went wrong (${name.slice(0, 120)}).` };
+}
+
 export type PageActionResult =
   | { ok: true; message: string; id?: string; slug?: string; updatedAt?: string }
   | { ok: false; message: string; conflict?: boolean };
@@ -41,7 +50,7 @@ export async function checkSlug(
     : { slug, available: true };
 }
 
-export async function createPage(
+async function createPageInner(
   title: string,
   rawSlug: string,
 ): Promise<PageActionResult> {
@@ -80,7 +89,7 @@ export async function createPage(
   return { ok: true, message: "Page created.", id: page.id, slug };
 }
 
-export async function savePageDraft(input: {
+async function savePageDraftInner(input: {
   pageId: string;
   title: string;
   description: string;
@@ -186,7 +195,7 @@ export async function savePageDraft(input: {
   };
 }
 
-export async function publishPage(pageId: string): Promise<PageActionResult> {
+async function publishPageInner(pageId: string): Promise<PageActionResult> {
   const ctx = await requireCap("pages.publish");
   if (!ctx) return { ok: false, message: "You can't publish pages." };
 
@@ -316,4 +325,34 @@ export async function restoreRevision(
     message: "Revision restored to draft. Publish to make it live.",
     updatedAt: updated?.updated_at,
   };
+}
+
+export async function savePageDraft(
+  ...args: Parameters<typeof savePageDraftInner>
+): Promise<PageActionResult> {
+  try {
+    return await savePageDraftInner(...args);
+  } catch (error) {
+    return actionFailure("savePageDraft", error);
+  }
+}
+
+export async function publishPage(
+  ...args: Parameters<typeof publishPageInner>
+): Promise<PageActionResult> {
+  try {
+    return await publishPageInner(...args);
+  } catch (error) {
+    return actionFailure("publishPage", error);
+  }
+}
+
+export async function createPage(
+  ...args: Parameters<typeof createPageInner>
+): Promise<PageActionResult> {
+  try {
+    return await createPageInner(...args);
+  } catch (error) {
+    return actionFailure("createPage", error);
+  }
 }
