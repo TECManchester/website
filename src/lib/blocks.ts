@@ -19,6 +19,7 @@ export type BlockType =
   | "page-hero"
   | "rich-text"
   | "image"
+  | "date-card"
   | "icon-cards"
   | "accordion"
   | "cta-band"
@@ -38,22 +39,36 @@ export type EditorBlock = {
 
 export const BLOCK_META: Record<
   BlockType,
-  { label: string; description: string; defaults: BlockData }
+  { label: string; description: string; defaults: BlockData; simple?: boolean }
 > = {
   "page-hero": {
-    label: "Page header",
-    description: "Dark banner with an eyebrow, title and intro line.",
+    label: "Banner",
+    description: "The big heading at the top of the page.",
     defaults: { eyebrow: "", title: "New page", lead: "" },
+    simple: true,
   },
   "rich-text": {
     label: "Text",
-    description: "Paragraphs, headings, lists and links.",
-    defaults: { content: { type: "doc", content: [] } },
+    description: "Write anything — headings, lists and links.",
+    defaults: {
+      content: {
+        type: "doc",
+        content: [{ type: "paragraph", content: [] }],
+      },
+    },
+    simple: true,
   },
   image: {
-    label: "Image",
-    description: "A full-width image with an optional caption.",
+    label: "Picture",
+    description: "A photo from the media library, with an optional caption.",
     defaults: { url: "", alt: "", caption: "" },
+    simple: true,
+  },
+  "date-card": {
+    label: "Event date",
+    description: "A date, time and place — perfect for announcing something.",
+    defaults: { title: "Our next gathering", date: "", time: "", place: "" },
+    simple: true,
   },
   "icon-cards": {
     label: "Card row",
@@ -72,13 +87,14 @@ export const BLOCK_META: Record<
     defaults: { items: [{ title: "Question", body: "Answer." }] },
   },
   "cta-band": {
-    label: "Call to action",
-    description: "Dark band with a heading and buttons.",
+    label: "Button",
+    description: "A big call-to-action button, with an optional heading.",
     defaults: {
       title: "Ready to take the next step?",
       lead: "",
       buttons: [{ label: "Plan a visit", href: "/im-new", style: "green" }],
     },
+    simple: true,
   },
   stats: {
     label: "Stats",

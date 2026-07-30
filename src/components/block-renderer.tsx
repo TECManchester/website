@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CalendarDays, Clock, MapPin } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { BtnLink } from "@/components/btn";
 import { ContactForm } from "@/components/contact-form";
@@ -70,6 +71,60 @@ async function RenderBlock({ block }: { block: RenderableBlock }) {
       );
     }
 
+    case "date-card": {
+      const dateIso = str(d.date);
+      const parsed = /^\d{4}-\d{2}-\d{2}$/.test(dateIso)
+        ? new Date(`${dateIso}T12:00:00Z`)
+        : null;
+      const day = parsed
+        ? new Intl.DateTimeFormat("en-GB", { day: "numeric", timeZone: "Europe/London" }).format(parsed)
+        : "?";
+      const month = parsed
+        ? new Intl.DateTimeFormat("en-GB", { month: "short", timeZone: "Europe/London" }).format(parsed)
+        : "";
+      const weekday = parsed
+        ? new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/London" }).format(parsed)
+        : "";
+      return (
+        <Section className="py-10 sm:py-14">
+          <div className="border-grey-100 shadow-card mx-auto flex max-w-2xl flex-col items-center gap-6 rounded-3xl border bg-white p-8 sm:flex-row sm:gap-8 sm:p-10">
+            <div className="bg-ink relative shrink-0 overflow-hidden rounded-2xl px-7 py-5 text-center">
+              <span className="brand-glow top-[-40px] right-[-40px] size-[140px]" />
+              <span className="font-heading text-green relative block text-5xl font-extrabold">
+                {day}
+              </span>
+              <span className="relative mt-1 block text-sm font-bold tracking-[0.14em] text-white uppercase">
+                {month}
+              </span>
+            </div>
+            <div className="min-w-0 text-center sm:text-left">
+              <h3 className="text-2xl font-bold text-balance">{str(d.title)}</h3>
+              <div className="text-grey-500 mt-3 space-y-1.5 text-[15px]">
+                {weekday && (
+                  <p className="flex items-center justify-center gap-2 sm:justify-start">
+                    <CalendarDays className="text-green-600 size-4 shrink-0" />
+                    {weekday}
+                  </p>
+                )}
+                {str(d.time) && (
+                  <p className="flex items-center justify-center gap-2 sm:justify-start">
+                    <Clock className="text-green-600 size-4 shrink-0" />
+                    {str(d.time)}
+                  </p>
+                )}
+                {str(d.place) && (
+                  <p className="flex items-center justify-center gap-2 sm:justify-start">
+                    <MapPin className="text-green-600 size-4 shrink-0" />
+                    {str(d.place)}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </Section>
+      );
+    }
+
     case "icon-cards": {
       const cards = arr(d.cards);
       if (cards.length === 0) return null;
@@ -123,9 +178,11 @@ async function RenderBlock({ block }: { block: RenderableBlock }) {
         <Section tone="ink">
           <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
             <div className="max-w-[620px]">
-              <h2 className="text-[clamp(30px,4vw,46px)] font-bold text-white">
-                {str(d.title)}
-              </h2>
+              {str(d.title) && (
+                <h2 className="text-[clamp(30px,4vw,46px)] font-bold text-white">
+                  {str(d.title)}
+                </h2>
+              )}
               {str(d.lead) && (
                 <p className="mt-4 text-lg text-white/60">{str(d.lead)}</p>
               )}

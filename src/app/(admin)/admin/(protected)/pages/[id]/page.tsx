@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { PageEditor } from "@/components/admin/page-editor";
+import { CanvasEditor } from "@/components/admin/canvas-editor";
 import { getAdminContext } from "@/lib/admin/auth";
 import { createAdminClient } from "@/lib/supabase/server";
 import type { BlockType } from "@/lib/blocks";
@@ -31,20 +31,16 @@ export default async function EditPagePage({
   if (!page) notFound();
 
   return (
-    <>
-      <p className="eyebrow">Pages</p>
-      <h1 className="mt-2 mb-8 text-3xl font-bold">{page.title}</h1>
-      <PageEditor
+    <CanvasEditor
         page={page}
-        initialBlocks={(blocks ?? []).map((b) => ({
+      initialBlocks={(blocks ?? []).map((b) => ({
           id: b.id,
           type: b.type as BlockType,
           data: (b.draft ?? {}) as Record<string, unknown>,
         }))}
         revisions={revisions ?? []}
-        canPublish={ctx.can("pages.publish")}
-        canDelete={ctx.can("pages.delete")}
-      />
-    </>
+      canPublish={ctx.can("pages.publish")}
+      canDelete={ctx.can("pages.delete")}
+    />
   );
 }
