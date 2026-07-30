@@ -7,6 +7,15 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(import.meta.dirname),
   },
+  experimental: {
+    /*
+     * Server actions cap request bodies at 1 MB by default — a phone photo
+     * upload through the media library dies at the door with a digest-only
+     * 500 before our own 10 MB check ever runs. 12 MB = our limit plus
+     * multipart overhead.
+     */
+    serverActions: { bodySizeLimit: "12mb" },
+  },
   images: {
     /*
      * Next only serves qualities listed here and 400s on anything else; the

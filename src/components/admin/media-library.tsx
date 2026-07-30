@@ -26,6 +26,10 @@ function UploadPanel({ onDone }: { onDone?: (item: MediaItem) => void }) {
       toast.error("Choose an image first.");
       return;
     }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("That image is over 10 MB — resize it and try again.");
+      return;
+    }
     setBusy(true);
     const data = new FormData();
     data.set("file", file);
