@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -73,6 +74,13 @@ const arr = (v: unknown) =>
  * Click-and-type text. contentEditable seeded via effect and never re-rendered
  * with children, so the caret never jumps; placeholder shows through CSS when
  * empty.
+ *
+ * Renders a <span>, not a <div>: some callers place this inside a <p> (the
+ * event-date block does), and a div there is invalid HTML. The browser's parser
+ * hoists it out of the paragraph, so the parsed DOM stops matching the server
+ * string and React throws the whole subtree away and re-renders it. `block` in
+ * the base classes keeps the old layout; callers passing `inline-block` win
+ * through tailwind-merge.
  */
 function InlineText({
   value,
@@ -87,7 +95,7 @@ function InlineText({
   placeholder: string;
   multiline?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -97,7 +105,7 @@ function InlineText({
   }, [value]);
 
   return (
-    <div
+    <span
       ref={ref}
       contentEditable
       suppressContentEditableWarning
@@ -118,7 +126,7 @@ function InlineText({
         );
       }}
       className={cn(
-        "cursor-text rounded-sm outline-none",
+        "block cursor-text rounded-sm outline-none",
         "empty:before:pointer-events-none empty:before:opacity-40 empty:before:content-[attr(data-placeholder)]",
         "focus:ring-green/60 focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent",
         className,
@@ -268,7 +276,7 @@ function BlockPicker({
     <div
       role="dialog"
       aria-label="Add a section"
-      className="border-grey-100 absolute left-1/2 z-30 w-[min(480px,90vw)] -translate-x-1/2 rounded-2xl border bg-white p-4 shadow-2xl"
+      className="border-grey-100 max-h-[min(70vh,32rem)] w-[min(480px,92vw)] overflow-y-auto rounded-2xl border bg-white p-4 shadow-2xl"
     >
       <div className="mb-3 flex items-center justify-between">
         <p className="font-heading text-ink text-sm font-bold">Add a section</p>
@@ -329,6 +337,16 @@ function BlockPicker({
   );
 }
 
+/**
+ * The "Add a section" control.
+ *
+ * The picker is portalled to <body> and positioned with fixed coordinates
+ * rather than rendered in place. That is deliberate: the canvas card clips its
+ * contents (`overflow-hidden`, to keep full-bleed sections inside the rounded
+ * corners), so an in-flow dropdown gets sliced off — and the one on the last
+ * divider was cut away entirely, which read as "the button does nothing".
+ * A portal escapes both the clip and every ancestor stacking context.
+ */
 function AddDivider({
   onPick,
   prominent = false,
@@ -337,11 +355,81 @@ function AddDivider({
   prominent?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const popRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * Prefer below the button, flip above when there isn't room, and clamp into
+   * the viewport either way — a picker that opens half off-screen is the same
+   * bug as one that's clipped.
+   */
+  const place = useCallback(() => {
+    const el = btnRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const GAP = 8;
+    // Estimates on the first pass (the portal hasn't painted yet); the rAF
+    // pass below re-runs this with the real measurements.
+    const h = popRef.current?.offsetHeight ?? 340;
+    const w = popRef.current?.offsetWidth ?? 480;
+    const maxTop = window.innerHeight - h - GAP;
+
+    let top = r.bottom + GAP;
+    if (top > maxTop) {
+      const above = r.top - GAP - h;
+      top = above >= GAP ? above : Math.max(GAP, maxTop);
+    }
+    // `left` is the centre point — translateX(-50%) does the centring.
+    const half = w / 2;
+    const left = Math.min(
+      Math.max(r.left + r.width / 2, half + GAP),
+      window.innerWidth - half - GAP,
+    );
+
+    setPos((prev) =>
+      prev && prev.top === top && prev.left === left ? prev : { top, left },
+    );
+  }, []);
+
+  // Keep it pinned to the button while the page moves, and close on Escape or
+  // a click anywhere outside.
+  useEffect(() => {
+    if (!open) return;
+    place();
+    // Second pass after paint: the first ran on estimates because the portal
+    // hadn't mounted yet.
+    const raf = requestAnimationFrame(place);
+    const onScroll = () => place();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    const onDown = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (!popRef.current?.contains(t) && !btnRef.current?.contains(t))
+        setOpen(false);
+    };
+    window.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", onScroll);
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDown);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDown);
+    };
+  }, [open, place]);
+
   return (
     <div className="relative flex justify-center py-3">
       <div className="bg-grey-100 absolute top-1/2 right-6 left-6 h-px" />
       <button
+        ref={btnRef}
         type="button"
+        aria-expanded={open}
+        aria-haspopup="dialog"
         onClick={() => setOpen((v) => !v)}
         className={cn(
           "font-heading relative z-10 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition",
@@ -353,17 +441,29 @@ function AddDivider({
         <Plus className={cn("size-3.5 transition", open && "rotate-45")} />
         Add a section
       </button>
-      {open && (
-        <div className="absolute top-12 left-0 z-40 w-full">
-          <BlockPicker
-            onPick={(type) => {
-              setOpen(false);
-              onPick(type);
+      {open &&
+        createPortal(
+          <div
+            ref={popRef}
+            style={{
+              position: "fixed",
+              top: pos?.top ?? 0,
+              left: pos?.left ?? 0,
+              visibility: pos ? "visible" : "hidden",
+              transform: "translateX(-50%)",
+              zIndex: 100,
             }}
-            onClose={() => setOpen(false)}
-          />
-        </div>
-      )}
+          >
+            <BlockPicker
+              onPick={(type) => {
+                setOpen(false);
+                onPick(type);
+              }}
+              onClose={() => setOpen(false)}
+            />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
@@ -1064,45 +1164,52 @@ export function CanvasEditor({
                     if (dragIdx !== null && dragIdx !== i) dragTo(dragIdx, i);
                   }}
                   className={cn(
+                    // No overflow clipping here — the rich-text floating
+                    // toolbar sits above the block and must not be cut off.
                     "group/block relative rounded-xl outline-2 outline-transparent transition",
                     "hover:outline-green/40 focus-within:outline-green/60",
                     dragIdx === i && "opacity-40",
                   )}
                 >
-                  {/* Section label — always tells you what this is */}
-                  <div className="pointer-events-none absolute -top-1 left-4 z-20 flex items-center gap-2">
-                    <span className="bg-ink/85 font-heading inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold text-white opacity-0 backdrop-blur transition group-focus-within/block:opacity-100 group-hover/block:opacity-100">
-                      <Icon className="size-3" />
+                  {/*
+                    A permanent header rather than a hover-only chip: it names
+                    every section at a glance and keeps the controls off the
+                    content they'd otherwise sit on top of.
+                  */}
+                  <div className="border-grey-100 bg-grey-50 flex items-center justify-between border-b px-3 py-1.5">
+                    <span className="font-heading text-grey-500 inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wide uppercase">
+                      <Icon className="size-3.5" />
                       {meta.label}
                     </span>
-                  </div>
-
-                  {/* Section controls */}
-                  <div className="absolute -top-1 right-4 z-20 flex gap-1 opacity-0 transition group-focus-within/block:opacity-100 group-hover/block:opacity-100">
-                    <span
-                      draggable
-                      onDragStart={(e) => {
-                        e.dataTransfer.effectAllowed = "move";
-                        setDragIdx(i);
-                      }}
-                      onDragEnd={() => setDragIdx(null)}
-                      title="Drag to move this section"
-                      className="bg-ink/85 grid size-7 cursor-grab place-items-center rounded-lg text-white backdrop-blur active:cursor-grabbing"
-                    >
-                      <GripVertical className="size-3.5" />
+                    <span className="flex items-center gap-1">
+                      <span className="text-grey-500 mr-1 text-[11px] opacity-0 transition group-hover/block:opacity-100">
+                        Section {i + 1} of {blocks.length}
+                      </span>
+                      <span
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.effectAllowed = "move";
+                          setDragIdx(i);
+                        }}
+                        onDragEnd={() => setDragIdx(null)}
+                        title="Drag to move this section"
+                        className="text-grey-500 hover:text-ink grid size-6 cursor-grab place-items-center rounded-md transition active:cursor-grabbing"
+                      >
+                        <GripVertical className="size-3.5" />
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Remove the ${meta.label} section?`))
+                            removeBlock(i);
+                        }}
+                        aria-label={`Remove ${meta.label} section`}
+                        title="Remove this section"
+                        className="text-grey-500 hover:text-destructive grid size-6 place-items-center rounded-md transition"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (confirm(`Remove the ${meta.label} section?`))
-                          removeBlock(i);
-                      }}
-                      aria-label={`Remove ${meta.label} section`}
-                      title="Remove this section"
-                      className="bg-ink/85 hover:bg-destructive grid size-7 place-items-center rounded-lg text-white backdrop-blur transition"
-                    >
-                      <Trash2 className="size-3.5" />
-                    </button>
                   </div>
 
                   {renderEdit(block, i)}
