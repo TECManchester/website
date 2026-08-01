@@ -31,6 +31,16 @@ function siteUrl(): string {
   return (raw || "http://localhost:3000").replace(/\/+$/, "");
 }
 
+/**
+ * An invite link is only useful if it points somewhere the recipient can
+ * reach. If NEXT_PUBLIC_SITE_URL still says localhost, every invitation we
+ * email is a dead link — and the person sending it has no way to tell.
+ */
+function isReachableSite(): boolean {
+  const url = siteUrl();
+  return !/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])/i.test(url);
+}
+
 export async function inviteUser(
   emailRaw: string,
   roleKey: string | null,
@@ -110,6 +120,16 @@ export async function inviteUser(
     detail: { email, role: roleKey ?? "none" },
   });
   revalidatePath("/admin/users");
+
+  if (!isReachableSite()) {
+    // Emailing a localhost link would look like it worked and reach nobody.
+    return {
+      ok: true,
+      message:
+        "Invitation created, but the site address is still set to localhost, so the emailed link wouldn't work. Copy the link below, or set NEXT_PUBLIC_SITE_URL and re-invite.",
+      link,
+    };
+  }
 
   if (!emailConfigured()) {
     // No mail configured: hand back the link so the invite still works rather
