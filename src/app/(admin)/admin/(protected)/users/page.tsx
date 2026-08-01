@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { ShieldAlert } from "lucide-react";
+import Link from "next/link";
+import { ShieldAlert, SlidersHorizontal } from "lucide-react";
+import { InvitePanel, type PendingInvite } from "@/components/admin/invite-panel";
 import {
   ApproveControls,
   MemberControls,
   ReinstateControls,
 } from "@/components/admin/user-row-actions";
 import { getAdminContext, type AdminProfile } from "@/lib/admin/auth";
+import { describeCapabilities } from "@/lib/admin/capabilities";
+import { createAdminClient } from "@/lib/supabase/server";
 import { createAuthClient } from "@/lib/supabase/server-auth";
 
 export const metadata: Metadata = { title: "Users" };
@@ -32,8 +36,11 @@ function UserCard({
         </p>
         <p className="text-grey-500 truncate text-sm">{profile.email}</p>
         <p className="text-grey-500 mt-1 text-xs">
-          Requested {dateFmt.format(new Date(profile.created_at))}
+          Joined {dateFmt.format(new Date(profile.created_at))}
           {profile.roles && ` · ${profile.roles.name}`}
+        </p>
+        <p className="text-grey-500 mt-0.5 text-xs">
+          Can see: {profile.roles ? describeCapabilities(profile.roles.capabilities) : "No access yet"}
         </p>
       </div>
       <div className="shrink-0">{children}</div>
@@ -66,6 +73,24 @@ export default async function UsersPage() {
     supabase.from("roles").select("key, name").order("name"),
   ]);
 
+  // Outstanding invitations, for the invite panel.
+  let invites: PendingInvite[] = [];
+  if (ctx.can("users.invite")) {
+    const { data } = await createAdminClient()
+      .from("invitations")
+      .select("id, email, expires_at, roles(name), profiles!invitations_invited_by_fkey(full_name, email)")
+      .is("accepted_at", null)
+      .is("revoked_at", null)
+      .order("created_at", { ascending: false });
+    invites = (data ?? []).map((row) => ({
+      id: row.id,
+      email: row.email,
+      roleName: row.roles?.name ?? null,
+      invitedByName: row.profiles?.full_name ?? row.profiles?.email ?? null,
+      expiresAt: row.expires_at,
+    }));
+  }
+
   const all = (profiles ?? []) as AdminProfile[];
   const roleOptions = roles ?? [];
   const pending = all.filter((p) => p.status === "pending");
@@ -78,14 +103,31 @@ export default async function UsersPage() {
     <>
       <p className="eyebrow">Users</p>
       <h1 className="mt-2 text-3xl font-bold">People &amp; access</h1>
-      <p className="text-grey-500 mt-2">
-        Approve requests, assign roles, and manage who can do what. Every change
-        here is recorded in the audit log.
-      </p>
+      <div className="mt-2 flex flex-wrap items-start justify-between gap-4">
+        <p className="text-grey-500 max-w-2xl">
+          Invite people, decide what each person can see and do, and remove
+          access when they move on. Every change here is recorded in the
+          activity log.
+        </p>
+        {ctx.can("roles.manage") && (
+          <Link
+            href="/admin/roles"
+            className="border-grey-300 hover:border-green-600 hover:text-green-600 font-heading inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition"
+          >
+            <SlidersHorizontal className="size-4" /> Roles &amp; permissions
+          </Link>
+        )}
+      </div>
+
+      {ctx.can("users.invite") && (
+        <div className="mt-8">
+          <InvitePanel roles={roleOptions} invites={invites} />
+        </div>
+      )}
 
       <section className="mt-10">
         <h2 className="font-heading text-ink text-lg font-bold">
-          Access requests
+          Waiting for access
           {pending.length > 0 && (
             <span className="bg-green text-ink ml-2.5 rounded-full px-2.5 py-0.5 text-xs font-bold">
               {pending.length}
@@ -102,7 +144,8 @@ export default async function UsersPage() {
           </ul>
         ) : (
           <p className="text-grey-500 mt-3 text-sm">
-            Nothing waiting. New sign-ups appear here for approval.
+            Nobody waiting. People who accept an invitation without a role
+            appear here until you give them one.
           </p>
         )}
       </section>

@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin/auth";
+import { recordAudit } from "@/lib/admin/audit";
 import { createAdminClient } from "@/lib/supabase/server";
-import type { Json } from "@/lib/supabase/types";
 
 export type ActionResult = { ok: boolean; message: string };
 
@@ -21,22 +21,6 @@ async function requireApprover() {
     return null;
   }
   return ctx;
-}
-
-async function audit(
-  actorId: string,
-  action: string,
-  entityId: string,
-  detail: Json,
-) {
-  const { error } = await createAdminClient().from("audit_log").insert({
-    actor_id: actorId,
-    action,
-    entity: "profile",
-    entity_id: entityId,
-    detail,
-  });
-  if (error) console.error("audit_log insert failed", error);
 }
 
 export async function approveUser(
@@ -70,7 +54,7 @@ export async function approveUser(
     return { ok: false, message: "Something went wrong — try again." };
   }
 
-  await audit(ctx.profile.id, "user.approved", userId, { role: roleKey });
+  await recordAudit(ctx, "user.approved", { entity: "profile", entityId: userId, detail: { role: roleKey } });
   revalidatePath("/admin/users");
   return { ok: true, message: `Approved as ${role.name}.` };
 }
@@ -91,7 +75,7 @@ export async function rejectUser(userId: string): Promise<ActionResult> {
     return { ok: false, message: "Something went wrong — try again." };
   }
 
-  await audit(ctx.profile.id, "user.rejected", userId, {});
+  await recordAudit(ctx, "user.rejected", { entity: "profile", entityId: userId });
   revalidatePath("/admin/users");
   return { ok: true, message: "Access request rejected." };
 }
@@ -112,7 +96,7 @@ export async function suspendUser(userId: string): Promise<ActionResult> {
     return { ok: false, message: "Something went wrong — try again." };
   }
 
-  await audit(ctx.profile.id, "user.suspended", userId, {});
+  await recordAudit(ctx, "user.suspended", { entity: "profile", entityId: userId });
   revalidatePath("/admin/users");
   return { ok: true, message: "Account suspended." };
 }
@@ -144,7 +128,7 @@ export async function changeUserRole(
     return { ok: false, message: "Something went wrong — try again." };
   }
 
-  await audit(ctx.profile.id, "user.role_changed", userId, { role: roleKey });
+  await recordAudit(ctx, "user.role_changed", { entity: "profile", entityId: userId, detail: { role: roleKey } });
   revalidatePath("/admin/users");
   return { ok: true, message: `Role changed to ${role.name}.` };
 }

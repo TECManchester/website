@@ -60,6 +60,7 @@ import {
   type EditorBlock,
   type TiptapDoc,
 } from "@/lib/blocks";
+import { mediaUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -518,7 +519,7 @@ function TextEdit({ d, set }: { d: BlockData; set: (d: BlockData) => void }) {
 
 function PictureEdit({ d, set }: { d: BlockData; set: (d: BlockData) => void }) {
   const [changing, setChanging] = useState(false);
-  const url = str(d.url);
+  const url = mediaUrl(str(d.url));
   return (
     <section className="py-8 sm:py-12">
       <div className="wrap">

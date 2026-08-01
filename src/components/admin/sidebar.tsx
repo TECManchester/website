@@ -10,6 +10,8 @@ import {
   LayoutDashboard,
   Megaphone,
   Settings,
+  SlidersHorizontal,
+  History,
   UserRound,
   Users,
 } from "lucide-react";
@@ -42,7 +44,19 @@ const NAV: NavItem[] = [
     ],
   },
   { label: "Settings", href: "/admin/settings", icon: Settings, capability: "settings.edit" },
-  { label: "Users", href: "/admin/users", icon: Users, capability: "users.approve" },
+  {
+    label: "People",
+    href: "/admin/users",
+    icon: Users,
+    capability: ["users.approve", "users.invite"],
+  },
+  {
+    label: "Roles",
+    href: "/admin/roles",
+    icon: SlidersHorizontal,
+    capability: "roles.manage",
+  },
+  { label: "Activity", href: "/admin/audit", icon: History, capability: "audit.view" },
 ];
 
 export function AdminSidebar({

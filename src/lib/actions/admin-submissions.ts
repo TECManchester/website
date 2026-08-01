@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin/auth";
+import { recordAudit } from "@/lib/admin/audit";
 import { createAdminClient } from "@/lib/supabase/server";
 
 /**
@@ -45,6 +46,9 @@ export async function setSubmissionStatus(
     return { ok: false, message: "Couldn't update — try again." };
   }
 
+  await recordAudit(ctx, "submission.status_changed", {
+    entity: KIND_TABLE[kind], entityId: id, detail: { status },
+  });
   revalidatePath("/admin/submissions");
   return { ok: true, message: "Updated." };
 }

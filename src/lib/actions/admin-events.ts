@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin/auth";
+import { recordAudit } from "@/lib/admin/audit";
 import { createAdminClient } from "@/lib/supabase/server";
 import { londonNaiveToUtcIso } from "@/lib/london-time";
 
@@ -135,6 +136,10 @@ export async function createEvent(data: FormData): Promise<EventActionResult> {
     return { ok: false, message: "Couldn't save the event — try again." };
   }
 
+  await recordAudit(ctx, "event.created", {
+    entity: "event", entityId: created.id,
+    detail: { title: parsed.values.title, slug: created.slug },
+  });
   revalidateEvents(created.slug);
   return { ok: true, message: "Event created.", id: created.id, slug: created.slug };
 }
@@ -175,6 +180,10 @@ export async function updateEvent(
     return { ok: false, message: "Couldn't save the event — try again." };
   }
 
+  await recordAudit(ctx, "event.updated", {
+    entity: "event", entityId: id,
+    detail: { title: parsed.values.title, slug: parsed.values.slug },
+  });
   if (previous && previous.slug !== parsed.values.slug)
     revalidateEvents(previous.slug);
   revalidateEvents(parsed.values.slug);
@@ -201,6 +210,9 @@ export async function deleteEvent(
     return { ok: false, message: "Couldn't delete — try again." };
   }
 
+  await recordAudit(ctx, "event.deleted", {
+    entity: "event", entityId: id, detail: { slug: event.slug },
+  });
   revalidateEvents(event.slug);
   revalidatePath("/admin/events");
   return { ok: true, message: "Event deleted." };

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin/auth";
+import { recordAudit } from "@/lib/admin/audit";
 import { createAdminClient } from "@/lib/supabase/server";
 import { supabaseUrl } from "@/lib/supabase/env";
 import type { Tables } from "@/lib/supabase/types";
@@ -114,6 +115,9 @@ export async function uploadMedia(formData: FormData): Promise<MediaResult> {
     return { ok: false, message: "Upload failed — try again." };
   }
 
+  await recordAudit(ctx, "media.uploaded", {
+    entity: "media", entityId: data.id, detail: { name: alt },
+  });
   revalidatePath("/admin/media");
   return { ok: true, item: data };
 }
@@ -142,6 +146,9 @@ export async function updateMediaAlt(
     .update({ alt: alt.trim() })
     .eq("id", id);
   if (error) return { ok: false, message: "Couldn't save — try again." };
+  await recordAudit(ctx, "media.updated", {
+    entity: "media", entityId: id, detail: { name: alt.trim() },
+  });
   revalidatePath("/admin/media");
   return { ok: true, message: "Description saved." };
 }
@@ -168,6 +175,9 @@ export async function deleteMedia(
   const { error } = await admin.from("media").delete().eq("id", id);
   if (error) return { ok: false, message: "Couldn't delete — try again." };
 
+  await recordAudit(ctx, "media.deleted", {
+    entity: "media", entityId: id, detail: { name: item.path },
+  });
   revalidatePath("/admin/media");
   return {
     ok: true,

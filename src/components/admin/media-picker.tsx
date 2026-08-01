@@ -92,7 +92,7 @@ export function MediaPicker({
                 canUpload={canUpload}
                 canDelete={false}
                 onSelect={(item) => {
-                  onChange(item.url, item.alt);
+                  onChange(item.path, item.alt);
                   setOpen(false);
                 }}
               />

@@ -1,4 +1,5 @@
 import { getAdminContext } from "@/lib/admin/auth";
+import { recordAudit } from "@/lib/admin/audit";
 import { createAdminClient } from "@/lib/supabase/server";
 
 /**
@@ -22,9 +23,19 @@ export async function GET() {
     .select("*")
     .order("declared_at", { ascending: true });
 
+  /**
+   * Escape for CSV *and* for spreadsheets.
+   *
+   * Names and addresses here come straight from a public form. A value starting
+   * with = + - @ (or a control character Excel treats as a formula lead-in) is
+   * executed as a formula when the file is opened — so a submitted surname
+   * could run a command on the treasurer's machine. Prefixing with a single
+   * quote neutralises it; Excel shows the text and drops the quote.
+   */
   const esc = (v: unknown) => {
-    const s = v == null ? "" : String(v);
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    let s = v == null ? "" : String(v);
+    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
 
   const header = [
@@ -38,6 +49,13 @@ export async function GET() {
       header.map((k) => esc((d as Record<string, unknown>)[k])).join(","),
     ),
   ];
+
+  // Downloading every donor's name and home address is a significant act —
+  // record who did it and how much they took.
+  await recordAudit(ctx, "submissions.giftaid.exported", {
+    entity: "gift_aid_declarations",
+    detail: { count: (data ?? []).length },
+  });
 
   return new Response(lines.join("\n"), {
     headers: {

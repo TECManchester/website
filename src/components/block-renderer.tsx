@@ -10,6 +10,7 @@ import { NewsletterForm } from "@/components/newsletter-form";
 import { PageHero, Section } from "@/components/section";
 import { PrayerForm } from "@/components/prayer-form";
 import { TiptapRender } from "@/components/tiptap-render";
+import { mediaUrl } from "@/lib/media-url";
 import type { BlockData, BlockType, TiptapDoc } from "@/lib/blocks";
 import { getUpcomingEvents } from "@/lib/events";
 
@@ -47,7 +48,7 @@ async function RenderBlock({ block }: { block: RenderableBlock }) {
       );
 
     case "image": {
-      const url = str(d.url);
+      const url = mediaUrl(str(d.url));
       if (!url) return null;
       return (
         <Section className="py-8 sm:py-12">

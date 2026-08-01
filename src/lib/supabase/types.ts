@@ -73,7 +73,9 @@ export type Database = {
       audit_log: {
         Row: {
           action: string
+          actor_email: string | null
           actor_id: string | null
+          actor_name: string | null
           created_at: string
           detail: Json | null
           entity: string | null
@@ -82,7 +84,9 @@ export type Database = {
         }
         Insert: {
           action: string
+          actor_email?: string | null
           actor_id?: string | null
+          actor_name?: string | null
           created_at?: string
           detail?: Json | null
           entity?: string | null
@@ -91,7 +95,9 @@ export type Database = {
         }
         Update: {
           action?: string
+          actor_email?: string | null
           actor_id?: string | null
+          actor_name?: string | null
           created_at?: string
           detail?: Json | null
           entity?: string | null
@@ -391,6 +397,60 @@ export type Database = {
           },
         ]
       }
+      invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string | null
+          invited_name: string | null
+          revoked_at: string | null
+          role_id: string | null
+          token_hash: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          invited_name?: string | null
+          revoked_at?: string | null
+          role_id?: string | null
+          token_hash: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          invited_name?: string | null
+          revoked_at?: string | null
+          role_id?: string | null
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media: {
         Row: {
           alt: string
@@ -638,6 +698,24 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          count: number
+          key: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          key: string
+          window_start?: string
+        }
+        Update: {
+          count?: number
+          key?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       redirects: {
         Row: {
           created_at: string
@@ -845,8 +923,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: { p_key: string; p_max: number; p_window_seconds: number }
+        Returns: {
+          allowed: boolean
+          retry_after_seconds: number
+        }[]
+      }
       current_capabilities: { Args: never; Returns: string[] }
       has_capability: { Args: { cap: string }; Returns: boolean }
+      prune_rate_limits: { Args: never; Returns: undefined }
     }
     Enums: {
       profile_status: "pending" | "approved" | "rejected" | "suspended"

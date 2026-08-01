@@ -20,7 +20,7 @@ export default function AdminLoginPage() {
         </div>
 
         <p className="mt-6 text-center text-[13px] text-white/50">
-          Staff area. Access requests need approval from a super admin.
+          Staff area. Accounts are created by invitation only.
         </p>
       </div>
     </main>

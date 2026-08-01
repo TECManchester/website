@@ -5,6 +5,7 @@ import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Check, Copy, Loader2, Trash2, UploadCloud } from "lucide-react";
 import { Btn } from "@/components/btn";
+import { mediaUrl } from "@/lib/media-url";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -109,7 +110,7 @@ function MediaCard({
         aria-label={onSelect ? `Use ${item.alt}` : item.alt}
       >
         <Image
-          src={item.url}
+          src={mediaUrl(item.path)}
           alt={item.alt}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
@@ -140,7 +141,7 @@ function MediaCard({
             <button
               type="button"
               onClick={async () => {
-                await navigator.clipboard.writeText(item.url);
+                await navigator.clipboard.writeText(mediaUrl(item.path));
                 setCopied(true);
                 setTimeout(() => setCopied(false), 1500);
               }}

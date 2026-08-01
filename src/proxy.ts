@@ -45,6 +45,9 @@ export default async function proxy(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
   const isLoginPage = path === "/admin/login";
+  // Accepting an invitation happens while signed out by definition — bouncing
+  // it to the login page would make every invite link dead on arrival.
+  const isInvitePage = path.startsWith("/admin/invite/");
 
   const redirectTo = (target: string) => {
     const redirect = NextResponse.redirect(new URL(target, request.url));
@@ -55,7 +58,7 @@ export default async function proxy(request: NextRequest) {
     return redirect;
   };
 
-  if (!user && !isLoginPage) return redirectTo("/admin/login");
+  if (!user && !isLoginPage && !isInvitePage) return redirectTo("/admin/login");
   if (user && isLoginPage) return redirectTo("/admin");
 
   return response;

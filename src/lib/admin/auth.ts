@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { createAuthClient } from "@/lib/supabase/server-auth";
 import type { Tables } from "@/lib/supabase/types";
 
@@ -20,8 +21,12 @@ export type AdminContext = {
  * Reads through the cookie-session client, so RLS evaluates as the user —
  * a pending profile literally cannot read anyone else's row, whatever the UI
  * does. Returns null when there's no session or no profile.
+ *
+ * Memoised per request: the layout, the page and any server action in the same
+ * render all call this, and without the cache each one costs a round trip to
+ * the auth server plus a profile query.
  */
-export async function getAdminContext(): Promise<AdminContext | null> {
+export const getAdminContext = cache(async function getAdminContext(): Promise<AdminContext | null> {
   const supabase = await createAuthClient();
 
   const {
@@ -43,4 +48,4 @@ export async function getAdminContext(): Promise<AdminContext | null> {
     capabilities.includes("all") || capabilities.includes(capability);
 
   return { profile: profile as AdminProfile, capabilities, can };
-}
+});

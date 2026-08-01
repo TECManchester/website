@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect, unstable_rethrow } from "next/navigation";
 import { getAdminContext } from "@/lib/admin/auth";
+import { recordAudit } from "@/lib/admin/audit";
 import { createAdminClient } from "@/lib/supabase/server";
 import { RESERVED_SLUGS, slugify, type EditorBlock } from "@/lib/blocks";
 import type { Json } from "@/lib/supabase/types";
@@ -88,6 +89,10 @@ async function createPageInner(
     sort: 0,
     type: "page-hero",
     draft: { eyebrow: "", title: cleanTitle, lead: "" } as unknown as Json,
+  });
+
+  await recordAudit(ctx, "page.created", {
+    entity: "page", entityId: page.id, detail: { title: cleanTitle, slug },
   });
 
   // Redirect from the server: the client-side router.push after this action
@@ -192,6 +197,10 @@ async function savePageDraftInner(input: {
     revalidatePath(`/${page.slug}`);
   }
 
+  await recordAudit(ctx, "page.updated", {
+    entity: "page", entityId: page.id, detail: { title: input.title.trim(), slug },
+  });
+
   revalidatePath(`/${slug}`);
   return {
     ok: true,
@@ -224,12 +233,8 @@ async function publishPageInner(pageId: string): Promise<PageActionResult> {
     .single();
   if (error) return { ok: false, message: "Couldn't publish — try again." };
 
-  await admin.from("audit_log").insert({
-    actor_id: ctx.profile.id,
-    action: "page.published",
-    entity: "page",
-    entity_id: pageId,
-    detail: { slug: page.slug } as unknown as Json,
+  await recordAudit(ctx, "page.published", {
+    entity: "page", entityId: pageId, detail: { slug: page.slug },
   });
 
   revalidatePath(`/${page.slug}`);
@@ -256,6 +261,10 @@ export async function unpublishPage(pageId: string): Promise<PageActionResult> {
     .single();
   if (error) return { ok: false, message: "Couldn't unpublish — try again." };
 
+  await recordAudit(ctx, "page.unpublished", {
+    entity: "page", entityId: pageId, detail: { slug: page.slug },
+  });
+
   revalidatePath(`/${page.slug}`);
   return { ok: true, message: "Unpublished — the page now 404s.", updatedAt: updated?.updated_at };
 }
@@ -274,12 +283,8 @@ export async function deletePage(pageId: string): Promise<PageActionResult> {
   const { error } = await admin.from("pages").delete().eq("id", pageId);
   if (error) return { ok: false, message: "Couldn't delete — try again." };
 
-  await admin.from("audit_log").insert({
-    actor_id: ctx.profile.id,
-    action: "page.deleted",
-    entity: "page",
-    entity_id: pageId,
-    detail: { slug: page.slug } as unknown as Json,
+  await recordAudit(ctx, "page.deleted", {
+    entity: "page", entityId: pageId, detail: { slug: page.slug },
   });
 
   revalidatePath(`/${page.slug}`);
@@ -325,6 +330,10 @@ export async function restoreRevision(
     .eq("id", pageId)
     .select("updated_at")
     .single();
+
+  await recordAudit(ctx, "page.restored", {
+    entity: "page", entityId: pageId, detail: { revisionId },
+  });
 
   return {
     ok: true,

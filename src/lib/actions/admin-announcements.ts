@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin/auth";
+import { recordAudit } from "@/lib/admin/audit";
 import { createAdminClient } from "@/lib/supabase/server";
 import { londonNaiveToUtcIso } from "@/lib/london-time";
 
@@ -113,6 +114,10 @@ export async function createAnnouncement(
   }
 
   if (parsed.values.is_active) await deactivateOthers(created.id);
+  await recordAudit(ctx, "announcement.created", {
+    entity: "announcement", entityId: created.id,
+    detail: { title: parsed.values.title },
+  });
   revalidatePath("/", "layout");
   revalidatePath("/admin/announcements");
   return { ok: true, message: "Announcement saved.", id: created.id };
@@ -138,6 +143,9 @@ export async function updateAnnouncement(
   }
 
   if (parsed.values.is_active) await deactivateOthers(id);
+  await recordAudit(ctx, "announcement.updated", {
+    entity: "announcement", entityId: id, detail: { title: parsed.values.title },
+  });
   revalidatePath("/", "layout");
   revalidatePath("/admin/announcements");
   return { ok: true, message: "Announcement saved.", id };
@@ -155,6 +163,9 @@ export async function deleteAnnouncement(
     .eq("id", id);
   if (error) return { ok: false, message: "Couldn't delete — try again." };
 
+  await recordAudit(ctx, "announcement.deleted", {
+    entity: "announcement", entityId: id,
+  });
   revalidatePath("/", "layout");
   revalidatePath("/admin/announcements");
   return { ok: true, message: "Announcement deleted." };

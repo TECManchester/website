@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin/auth";
+import { recordAudit } from "@/lib/admin/audit";
 import { createAdminClient } from "@/lib/supabase/server";
 import type { SiteSettings } from "@/lib/settings";
 import type { Json } from "@/lib/supabase/types";
@@ -69,12 +70,10 @@ export async function saveSettings(
     return { ok: false, message: "Couldn't save — try again." };
   }
 
-  await admin.from("audit_log").insert({
-    actor_id: ctx.profile.id,
-    action: "settings.saved",
+  await recordAudit(ctx, "settings.updated", {
     entity: "site_settings",
-    entity_id: "all",
-    detail: { keys: rows.map((r) => r.key) } as unknown as Json,
+    entityId: "all",
+    detail: { groups: rows.map((r) => r.key).join(", ") },
   });
 
   // The whole public site reads these — refresh everything at once.
