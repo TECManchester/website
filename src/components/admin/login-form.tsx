@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -68,7 +69,15 @@ export function LoginForm() {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="login-password">Password</Label>
+          <div className="flex items-baseline justify-between">
+            <Label htmlFor="login-password">Password</Label>
+            <Link
+              href="/admin/forgot-password"
+              className="text-grey-500 hover:text-green-600 text-xs"
+            >
+              Forgotten?
+            </Link>
+          </div>
           <Input
             id="login-password"
             type="password"

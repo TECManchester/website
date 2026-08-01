@@ -131,6 +131,26 @@ export async function sendInvite(options: {
   });
 }
 
+export async function sendPasswordReset(options: {
+  to: string;
+  link: string;
+}): Promise<SendResult> {
+  return send({
+    to: options.to,
+    subject: "Reset your Elevation Manchester admin password",
+    body: [
+      "Someone asked to reset the password for this account.",
+      "",
+      "Set a new password here:",
+      options.link,
+      "",
+      "The link expires in an hour and can only be used once.",
+      "",
+      "If this wasn't you, ignore this email — your password hasn't changed.",
+    ].join("\n"),
+  });
+}
+
 export async function notifyPrayerRequest(options: {
   name: string | null;
   email: string | null;

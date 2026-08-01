@@ -48,6 +48,9 @@ export default async function proxy(request: NextRequest) {
   // Accepting an invitation happens while signed out by definition — bouncing
   // it to the login page would make every invite link dead on arrival.
   const isInvitePage = path.startsWith("/admin/invite/");
+  // Password recovery also happens signed out, by definition.
+  const isRecoveryPage =
+    path === "/admin/forgot-password" || path === "/admin/reset-password";
 
   const redirectTo = (target: string) => {
     const redirect = NextResponse.redirect(new URL(target, request.url));
@@ -58,8 +61,10 @@ export default async function proxy(request: NextRequest) {
     return redirect;
   };
 
-  if (!user && !isLoginPage && !isInvitePage) return redirectTo("/admin/login");
+  if (!user && !isLoginPage && !isInvitePage && !isRecoveryPage)
+    return redirectTo("/admin/login");
   if (user && isLoginPage) return redirectTo("/admin");
+  // Someone mid-reset holds a session but still needs the reset form.
 
   return response;
 }
