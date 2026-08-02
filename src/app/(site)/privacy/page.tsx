@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ConsentControls } from "@/components/cookie-banner";
+import { ConsentControls } from "@/components/consent-controls";
 import { PageHero, Section } from "@/components/section";
 import { getSettings } from "@/lib/settings";
 
@@ -254,9 +254,16 @@ export default async function PrivacyPage() {
           <P>
             <b>Embedded maps and videos</b> come from Google. Loading one tells
             Google your IP address and details about your browser, and Google
-            may set its own cookies. Because of that we don&apos;t load them
-            until you say so — you will see a placeholder with a button
-            instead. You can change your mind here at any time:
+            may set its own cookies. So we don&apos;t load them at all until you
+            ask — you&apos;ll see a placeholder with a button instead, and
+            nothing is requested from Google until you press it.
+          </P>
+          <P>
+            That is also why this site has no cookie pop-up. A consent banner
+            exists to get permission before something loads in the background;
+            here nothing does, so there is nothing to interrupt you about. If
+            you would rather maps and videos simply loaded, you can set that
+            below and we&apos;ll remember it.
           </P>
           <div className="mt-5">
             <ConsentControls />

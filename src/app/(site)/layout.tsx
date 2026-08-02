@@ -6,7 +6,6 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { AnnouncementModal } from "@/components/announcement-modal";
 import { ConsentProvider } from "@/components/consent-provider";
-import { CookieBanner } from "@/components/cookie-banner";
 import { getActiveAnnouncement } from "@/lib/announcements";
 import { getSettings } from "@/lib/settings";
 import { siteUrl } from "@/lib/site";
@@ -104,7 +103,6 @@ export default async function RootLayout({
           )}
           <RevealProvider />
           <Toaster />
-          <CookieBanner />
         </ConsentProvider>
       </body>
     </html>

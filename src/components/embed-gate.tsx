@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin, Play, ShieldCheck } from "lucide-react";
+import { MapPin, Play } from "lucide-react";
 import { useConsent } from "@/components/consent-provider";
 import { cn } from "@/lib/utils";
 
@@ -45,17 +45,16 @@ export function EmbedGate({
         className,
       )}
     >
+      {/*
+        Deliberately understated. The point is a one-tap "show me" — the
+        privacy reason is a quiet footnote, not a warning notice. Anything
+        heavier reads as a consent wall, which is the thing we're avoiding.
+      */}
       <div className="max-w-sm">
         <span className="bg-white/80 mx-auto grid size-12 place-items-center rounded-2xl">
           <Icon className="text-green-600 size-5" />
         </span>
         <p className="font-heading text-ink mt-4 font-bold">{title}</p>
-        <p className="text-grey-500 mt-1.5 text-sm leading-relaxed">
-          {description ??
-            (kind === "map"
-              ? "This map is provided by Google. Loading it shares your IP address with them."
-              : "This video is hosted by YouTube. Playing it shares your IP address with them.")}
-        </p>
         <button
           type="button"
           disabled={!ready}
@@ -65,9 +64,11 @@ export function EmbedGate({
           <Icon className="size-4" />
           {kind === "map" ? "Show the map" : "Play the video"}
         </button>
-        <p className="text-grey-500 mt-3 flex items-center justify-center gap-1.5 text-xs">
-          <ShieldCheck className="size-3.5" />
-          Nothing loads until you choose
+        <p className="text-grey-500 mt-3 text-xs">
+          {description ??
+            (kind === "map"
+              ? "Loads from Google Maps"
+              : "Loads from YouTube")}
         </p>
       </div>
     </div>
