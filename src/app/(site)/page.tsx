@@ -140,11 +140,6 @@ export default async function HomePage() {
 
         <div className="wrap relative z-2 pt-[calc(76px+3.5rem)] pb-14 sm:pt-[calc(88px+4rem)]">
           <div className="max-w-[760px]">
-            <p className="font-heading mb-6 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/12 px-4 py-2 text-[13.5px] font-semibold text-white backdrop-blur-md">
-              <span className="bg-green size-2 rounded-full shadow-[0_0_0_4px_rgb(132_194_36_/_0.3)]" />
-              Gathering {service.day}s · {service.startTime} · {location.campus}
-            </p>
-
             <h1 className="mb-5 text-[clamp(42px,6vw,76px)] font-extrabold text-white">
               Making greatness <span className="text-green">common.</span>
             </h1>
