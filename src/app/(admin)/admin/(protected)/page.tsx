@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CalendarDays, HandCoins, Users } from "lucide-react";
+import { ArrowRight, CalendarDays, Clock, HandCoins, Mail, Users } from "lucide-react";
+import { getSettings } from "@/lib/settings";
 import { getAdminContext } from "@/lib/admin/auth";
 import { createAdminClient, createPublicClient } from "@/lib/supabase/server";
 
@@ -11,6 +12,70 @@ export default async function AdminDashboard() {
 
   const firstName =
     (ctx.profile.full_name || ctx.profile.email).split(/[\s@]/)[0] ?? "there";
+
+  /*
+   * Someone with no permissions gets a dedicated screen rather than the normal
+   * dashboard with everything stripped out. An empty dashboard reads as "this
+   * is broken"; this reads as "you're in, you're waiting on someone", and says
+   * who to chase.
+   */
+  const hasAnyAccess =
+    ctx.profile.status === "approved" && ctx.capabilities.length > 0;
+
+  if (!hasAnyAccess) {
+    const { contact } = await getSettings();
+    const suspended =
+      ctx.profile.status === "rejected" || ctx.profile.status === "suspended";
+
+    return (
+      <div className="mx-auto max-w-xl py-6">
+        <span className="bg-green-100 grid size-14 place-items-center rounded-2xl">
+          <Clock className="text-green-600 size-6" />
+        </span>
+        <p className="eyebrow mt-6">Dashboard</p>
+        <h1 className="mt-2 text-3xl font-bold">Hello, {firstName}</h1>
+
+        {suspended ? (
+          <p className="text-grey-500 mt-3 leading-relaxed">
+            This account&apos;s access has been turned off. If you think
+            that&apos;s a mistake, get in touch with the communications team and
+            they can put it right.
+          </p>
+        ) : (
+          <>
+            <p className="text-grey-500 mt-3 leading-relaxed">
+              You&apos;re signed in — but you don&apos;t have permission to
+              manage anything yet.
+            </p>
+            <div className="border-grey-100 mt-6 rounded-2xl border bg-white p-6">
+              <h2 className="font-heading text-ink font-bold">
+                What happens next
+              </h2>
+              <p className="text-grey-500 mt-2 text-sm leading-relaxed">
+                A super admin needs to give you permissions. Once they do, the
+                things you can work on — events, pages, photos and so on — will
+                appear in the menu on the left, and this page will fill in.
+              </p>
+              <p className="text-grey-500 mt-4 text-sm leading-relaxed">
+                Nothing else to do at your end. If it&apos;s been a while,
+                nudge whoever asked you to sign up.
+              </p>
+              <a
+                href={`mailto:${contact.email}`}
+                className="text-green-600 mt-4 inline-flex items-center gap-2 text-sm font-semibold hover:underline"
+              >
+                <Mail className="size-4" /> {contact.email}
+              </a>
+            </div>
+          </>
+        )}
+
+        <p className="text-grey-500 mt-6 text-xs">
+          Signed in as {ctx.profile.email}
+        </p>
+      </div>
+    );
+  }
 
   // Counts are gated by the same capabilities as the pages they link to.
   const [eventCount, pendingCount, giftAidCount] = await Promise.all([

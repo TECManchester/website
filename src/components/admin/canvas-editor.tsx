@@ -41,6 +41,7 @@ import {
   X,
 } from "lucide-react";
 import { Btn, btn } from "@/components/btn";
+import { ConfirmDialog, useConfirm } from "@/components/admin/confirm-dialog";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -794,6 +795,11 @@ export function CanvasEditor({
   const [historyOpen, setHistoryOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+  // Which section the remove dialog is asking about (null = closed).
+  const [removing, setRemoving] = useState<number | null>(null);
+  const confirmDeletePage = useConfirm();
+  const restoring = useConfirm();
+  const [pendingRevision, setPendingRevision] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [saveState, setSaveState] = useState<
     "idle" | "dirty" | "saving" | "saved" | "conflict"
@@ -1009,11 +1015,9 @@ export function CanvasEditor({
                       <button
                         key={rev.id}
                         type="button"
-                        onClick={async () => {
-                          if (!confirm("Replace what's on screen with this version?")) return;
-                          const r = await restoreRevision(page.id, rev.id);
-                          if (r.ok) window.location.reload();
-                          else toast.error(r.message);
+                        onClick={() => {
+                          setPendingRevision(rev.id);
+                          restoring.ask();
                         }}
                         className="hover:bg-grey-50 block w-full rounded-lg px-2 py-1.5 text-left text-sm"
                       >
@@ -1071,15 +1075,7 @@ export function CanvasEditor({
                     </Btn>
                   )}
                   {canDelete && !page.is_system && (
-                    <Btn variant="ghost" block onClick={async () => {
-                      if (!confirm("Delete this page completely? This can't be undone.")) return;
-                      const r = await deletePage(page.id);
-                      if (r.ok) {
-                        toast.success(r.message);
-                        router.push("/admin/pages");
-                        router.refresh();
-                      } else toast.error(r.message);
-                    }}>
+                    <Btn variant="ghost" block onClick={confirmDeletePage.ask}>
                       <Trash2 className="size-4" /> Delete page
                     </Btn>
                   )}
@@ -1200,10 +1196,7 @@ export function CanvasEditor({
                       </span>
                       <button
                         type="button"
-                        onClick={() => {
-                          if (confirm(`Remove the ${meta.label} section?`))
-                            removeBlock(i);
-                        }}
+                        onClick={() => setRemoving(i)}
                         aria-label={`Remove ${meta.label} section`}
                         title="Remove this section"
                         className="text-grey-500 hover:text-destructive grid size-6 place-items-center rounded-md transition"
@@ -1225,6 +1218,59 @@ export function CanvasEditor({
         Click any text to edit it · hover a section to move or remove it ·
         changes save by themselves
       </p>
+
+      <ConfirmDialog
+        open={removing !== null}
+        onOpenChange={(next) => {
+          if (!next) setRemoving(null);
+        }}
+        title={
+          removing !== null && blocks[removing]
+            ? `Remove the ${BLOCK_META[blocks[removing].type].label} section?`
+            : "Remove this section?"
+        }
+        body="Everything in it goes with it. You can add a new one afterwards, but the wording won't come back."
+        confirmLabel="Remove section"
+        onConfirm={() => {
+          if (removing !== null) removeBlock(removing);
+          setRemoving(null);
+        }}
+      />
+
+      <ConfirmDialog
+        {...confirmDeletePage.dialogProps}
+        title="Delete this page completely?"
+        body="The page and everything on it is removed for good, and the web address stops working. This can't be undone."
+        confirmLabel="Delete page"
+        onConfirm={async () => {
+          confirmDeletePage.setBusy(true);
+          const r = await deletePage(page.id);
+          confirmDeletePage.setBusy(false);
+          confirmDeletePage.close();
+          if (r.ok) {
+            toast.success(r.message);
+            router.push("/admin/pages");
+            router.refresh();
+          } else toast.error(r.message);
+        }}
+      />
+
+      <ConfirmDialog
+        {...restoring.dialogProps}
+        title="Go back to this version?"
+        body="What's on screen now will be replaced by the older version. Anything unsaved is lost."
+        confirmLabel="Restore this version"
+        destructive={false}
+        onConfirm={async () => {
+          if (!pendingRevision) return;
+          restoring.setBusy(true);
+          const r = await restoreRevision(page.id, pendingRevision);
+          restoring.setBusy(false);
+          restoring.close();
+          if (r.ok) window.location.reload();
+          else toast.error(r.message);
+        }}
+      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Check, Copy, Loader2, Trash2, UploadCloud } from "lucide-react";
 import { Btn } from "@/components/btn";
+import { ConfirmDialog, useConfirm } from "@/components/admin/confirm-dialog";
 import { mediaUrl } from "@/lib/media-url";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -99,6 +100,7 @@ function MediaCard({
   const [alt, setAlt] = useState(item.alt);
   const [copied, setCopied] = useState(false);
   const [pending, start] = useTransition();
+  const confirmDelete = useConfirm();
 
   return (
     <figure className="border-grey-100 overflow-hidden rounded-2xl border bg-white">
@@ -158,15 +160,7 @@ function MediaCard({
               <button
                 type="button"
                 disabled={pending}
-                onClick={() => {
-                  if (!confirm("Delete this image? Pages using it will break."))
-                    return;
-                  start(async () => {
-                    const r = await deleteMedia(item.id);
-                    if (r.ok) toast.success(r.message);
-                    else toast.error(r.message);
-                  });
-                }}
+                onClick={confirmDelete.ask}
                 aria-label="Delete image"
                 className="text-destructive/70 hover:text-destructive p-1"
               >
@@ -176,6 +170,25 @@ function MediaCard({
           </span>
         </div>
       </figcaption>
+      <ConfirmDialog
+        {...confirmDelete.dialogProps}
+        title="Delete this photo?"
+        body={
+          <>
+            Any page still using it will show a broken image. Replace it there
+            first if you&apos;re not sure.
+          </>
+        }
+        confirmLabel="Delete photo"
+        onConfirm={() =>
+          start(async () => {
+            const r = await deleteMedia(item.id);
+            confirmDelete.close();
+            if (r.ok) toast.success(r.message);
+            else toast.error(r.message);
+          })
+        }
+      />
     </figure>
   );
 }

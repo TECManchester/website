@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2, Trash2 } from "lucide-react";
 import { Btn } from "@/components/btn";
+import { ConfirmDialog, useConfirm } from "@/components/admin/confirm-dialog";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,6 +55,7 @@ export function EventForm({ event }: { event?: ChurchEvent }) {
   const [image, setImage] = useState<string | null>(event?.image_url ?? null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
+  const confirmDelete = useConfirm();
 
   const autoSlug = (value: string) =>
     value
@@ -252,20 +254,29 @@ export function EventForm({ event }: { event?: ChurchEvent }) {
             type="button"
             variant="ghost"
             disabled={busy}
-            onClick={async () => {
-              if (!confirm("Delete this event? This can't be undone.")) return;
-              const result = await deleteEvent(event!.id);
-              if (result.ok) {
-                toast.success(result.message);
-                router.push("/admin/events");
-                router.refresh();
-              } else toast.error(result.message);
-            }}
+            onClick={confirmDelete.ask}
           >
             <Trash2 className="size-4" /> Delete
           </Btn>
         )}
       </div>
+      <ConfirmDialog
+        {...confirmDelete.dialogProps}
+        title="Delete this event?"
+        body="It will disappear from the website straight away, and this can't be undone."
+        confirmLabel="Delete event"
+        onConfirm={async () => {
+          confirmDelete.setBusy(true);
+          const result = await deleteEvent(event!.id);
+          confirmDelete.setBusy(false);
+          confirmDelete.close();
+          if (result.ok) {
+            toast.success(result.message);
+            router.push("/admin/events");
+            router.refresh();
+          } else toast.error(result.message);
+        }}
+      />
     </form>
   );
 }

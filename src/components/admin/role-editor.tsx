@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Lock, Plus, ShieldAlert, Trash2 } from "lucide-react";
 import { Btn } from "@/components/btn";
+import { ConfirmDialog, useConfirm } from "@/components/admin/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -111,6 +112,7 @@ function RoleCard({ role }: { role: EditableRole }) {
   const [description, setDescription] = useState(role.description ?? "");
   const [selected, setSelected] = useState(new Set(role.capabilities));
   const [pending, start] = useTransition();
+  const confirmDelete = useConfirm();
 
   const toggle = (key: string) =>
     setSelected((prev) => {
@@ -159,14 +161,7 @@ function RoleCard({ role }: { role: EditableRole }) {
                 type="button"
                 variant="ghost"
                 disabled={pending}
-                onClick={() => {
-                  if (!confirm(`Delete the "${role.name}" role?`)) return;
-                  start(async () => {
-                    const r = await deleteRole(role.id);
-                    if (r.ok) { toast.success(r.message); router.refresh(); }
-                    else toast.error(r.message);
-                  });
-                }}
+                onClick={confirmDelete.ask}
                 aria-label={`Delete ${role.name}`}
               >
                 <Trash2 className="text-destructive size-4" />
@@ -255,6 +250,22 @@ function RoleCard({ role }: { role: EditableRole }) {
           </div>
         </div>
       )}
+      <ConfirmDialog
+        {...confirmDelete.dialogProps}
+        title={`Delete the "${role.name}" role?`}
+        body="Nobody is using it, so nothing will lose access. You can always create it again."
+        confirmLabel="Delete role"
+        onConfirm={() =>
+          start(async () => {
+            const r = await deleteRole(role.id);
+            confirmDelete.close();
+            if (r.ok) {
+              toast.success(r.message);
+              router.refresh();
+            } else toast.error(r.message);
+          })
+        }
+      />
     </li>
   );
 }

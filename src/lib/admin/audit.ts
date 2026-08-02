@@ -31,7 +31,7 @@ export type AuditAction =
   // People
   | "user.invited" | "user.invite_revoked" | "user.invite_accepted"
   | "user.approved" | "user.rejected" | "user.suspended" | "user.role_changed"
-  | "user.password_reset"
+  | "user.password_reset" | "user.signed_up"
   // Roles
   | "role.created" | "role.updated" | "role.deleted"
   // Sensitive reads — who looked at personal data matters as much as who changed it
@@ -91,6 +91,7 @@ export const AUDIT_LABELS: Record<string, string> = {
   "user.suspended": "suspended someone",
   "user.role_changed": "changed someone's role",
   "user.password_reset": "reset their password",
+  "user.signed_up": "signed up and is waiting for access",
   "role.created": "created a role",
   "role.updated": "changed what a role can do",
   "role.deleted": "deleted a role",

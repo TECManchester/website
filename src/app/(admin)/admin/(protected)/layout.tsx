@@ -16,7 +16,8 @@ export default async function ProtectedAdminLayout({
   const ctx = await getAdminContext();
   if (!ctx) redirect("/admin/login");
 
-  const pending = ctx.profile.status === "pending";
+  // The dashboard explains the pending state properly now, and a pending user
+  // can't reach anything else — a banner on top of that is just noise.
   const blocked =
     ctx.profile.status === "rejected" || ctx.profile.status === "suspended";
 
@@ -26,17 +27,11 @@ export default async function ProtectedAdminLayout({
         capabilities={ctx.capabilities}
         userName={ctx.profile.full_name || ctx.profile.email}
         roleName={
-          ctx.profile.roles?.name ?? (pending ? "Awaiting approval" : "No access")
+          ctx.profile.roles?.name ??
+          (ctx.profile.status === "pending" ? "Awaiting access" : "No access")
         }
       />
       <div className="min-w-0 flex-1">
-        {pending && (
-          <div className="bg-gold/15 text-ink border-gold/30 border-b px-6 py-3 text-sm lg:px-10">
-            <b>You&apos;re in, but not approved yet.</b> A super admin needs to
-            approve your account and assign a role — more will appear here once
-            they do.
-          </div>
-        )}
         {blocked && (
           <div className="bg-destructive/10 text-ink border-destructive/20 border-b px-6 py-3 text-sm lg:px-10">
             <b>This account&apos;s access has been revoked.</b> Speak to the

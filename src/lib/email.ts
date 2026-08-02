@@ -131,6 +131,37 @@ export async function sendInvite(options: {
   });
 }
 
+export async function sendMagicLink(options: {
+  to: string;
+  link: string;
+  isNew: boolean;
+}): Promise<SendResult> {
+  return send({
+    to: options.to,
+    subject: options.isNew
+      ? "Finish setting up your Elevation Manchester account"
+      : "Your sign-in link for the Elevation Manchester admin",
+    body: [
+      options.isNew
+        ? "Thanks for signing up to help with the Elevation Church Manchester website."
+        : "Here's the sign-in link you asked for.",
+      "",
+      "Click here to continue and choose a password:",
+      options.link,
+      "",
+      "The link expires in an hour and can only be used once.",
+      "",
+      options.isNew
+        ? "Once you're in, a super admin will give you access to the parts of the site you'll be looking after. Until then you'll see a holding page — that's expected."
+        : "",
+      "",
+      "If you didn't ask for this, ignore this email — nothing will happen.",
+    ]
+      .filter((line, i, all) => !(line === "" && all[i - 1] === ""))
+      .join("\n"),
+  });
+}
+
 export async function sendPasswordReset(options: {
   to: string;
   link: string;

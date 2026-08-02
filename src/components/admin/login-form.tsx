@@ -106,8 +106,13 @@ export function LoginForm() {
       </form>
 
       <p className="text-grey-500 mt-6 text-center text-[13px] leading-relaxed">
-        Accounts are invite-only. If you need access, ask the communications
-        team to send you an invitation.
+        Don&apos;t have an account?{" "}
+        <Link href="/admin/signup" className="text-green-600 font-semibold hover:underline">
+          Sign up
+        </Link>
+        <br />
+        Signing up doesn&apos;t grant access on its own — a super admin decides
+        what you can see and do.
       </p>
     </div>
   );

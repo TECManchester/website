@@ -51,6 +51,8 @@ export default async function proxy(request: NextRequest) {
   // Password recovery also happens signed out, by definition.
   const isRecoveryPage =
     path === "/admin/forgot-password" || path === "/admin/reset-password";
+  // Signing up, and landing from the magic link, both happen signed out.
+  const isSignupPage = path === "/admin/signup" || path === "/admin/welcome";
 
   const redirectTo = (target: string) => {
     const redirect = NextResponse.redirect(new URL(target, request.url));
@@ -61,7 +63,7 @@ export default async function proxy(request: NextRequest) {
     return redirect;
   };
 
-  if (!user && !isLoginPage && !isInvitePage && !isRecoveryPage)
+  if (!user && !isLoginPage && !isInvitePage && !isRecoveryPage && !isSignupPage)
     return redirectTo("/admin/login");
   if (user && isLoginPage) return redirectTo("/admin");
   // Someone mid-reset holds a session but still needs the reset form.
