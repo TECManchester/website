@@ -5,6 +5,8 @@ import { RevealProvider } from "@/components/reveal";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { AnnouncementModal } from "@/components/announcement-modal";
+import { ConsentProvider } from "@/components/consent-provider";
+import { CookieBanner } from "@/components/cookie-banner";
 import { getActiveAnnouncement } from "@/lib/announcements";
 import { getSettings } from "@/lib/settings";
 import { siteUrl } from "@/lib/site";
@@ -85,22 +87,25 @@ export default async function RootLayout({
       className={`${inter.variable} ${sora.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <a
-          href="#main"
-          className="bg-primary text-primary-foreground focus:ring-ring sr-only rounded-md px-4 py-2 focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:ring-2"
-        >
-          Skip to content
-        </a>
-        <SiteHeader service={service} />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
-        {announcement && (
-          <AnnouncementModal announcement={announcement} nowMs={nowMs} />
-        )}
-        <RevealProvider />
-        <Toaster />
+        <ConsentProvider>
+          <a
+            href="#main"
+            className="bg-primary text-primary-foreground focus:ring-ring sr-only rounded-md px-4 py-2 focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:ring-2"
+          >
+            Skip to content
+          </a>
+          <SiteHeader service={service} />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <SiteFooter />
+          {announcement && (
+            <AnnouncementModal announcement={announcement} nowMs={nowMs} />
+          )}
+          <RevealProvider />
+          <Toaster />
+          <CookieBanner />
+        </ConsentProvider>
       </body>
     </html>
   );

@@ -124,8 +124,14 @@ export async function SiteFooter() {
             &copy; {new Date().getFullYear()} {church.name}. An expression of The
             Elevation Church.
           </p>
-          <p>
-            {church.legalName} · registered charity no. {church.charityNumber}
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <Link href="/privacy" className="hover:text-green transition-colors">
+              Privacy &amp; cookies
+            </Link>
+            <span aria-hidden className="text-white/25">·</span>
+            <span>
+              {church.legalName} · registered charity no. {church.charityNumber}
+            </span>
           </p>
         </div>
       </div>

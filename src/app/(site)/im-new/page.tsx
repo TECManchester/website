@@ -5,6 +5,7 @@ import { PageHero, Section, SectionHeading } from "@/components/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { kidsAndYouth } from "@/lib/church";
 import { getSettings } from "@/lib/settings";
+import { EmbedGate } from "@/components/embed-gate";
 
 export const metadata: Metadata = {
   title: "I'm New",
@@ -103,13 +104,19 @@ export default async function ImNewPage() {
             </div>
           </div>
           <div className="overflow-hidden rounded-xl border shadow-sm">
-            <iframe
-              title={`Map showing ${location.full}`}
-              src={location.embedUrl}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
+            <EmbedGate
+              kind="map"
+              title="Find us on the map"
               className="aspect-4/3 w-full"
-            />
+            >
+              <iframe
+                title={`Map showing ${location.full}`}
+                src={location.embedUrl}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="aspect-4/3 w-full"
+              />
+            </EmbedGate>
           </div>
         </div>
       </Section>

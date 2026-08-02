@@ -121,6 +121,7 @@ export const BLOCK_META: Record<
 export const RESERVED_SLUGS = new Set([
   "admin", "api", "about", "contact", "events", "get-involved", "give",
   "im-new", "prayer", "watch", "brand", "hero", "leadership", "im-new",
+  "privacy", "cookies",
   "sitemap.xml", "robots.txt", "icon.png", "apple-icon.png",
   "opengraph-image.png", "twitter-image.png", "_next", "login",
 ]);

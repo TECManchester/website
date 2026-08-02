@@ -1,5 +1,6 @@
 import { BtnLink } from "@/components/btn";
 import type { YouTubeVideo } from "@/lib/youtube";
+import { EmbedGate } from "@/components/embed-gate";
 
 const timeFormat = new Intl.DateTimeFormat("en-GB", {
   weekday: "long",
@@ -27,19 +28,26 @@ export function LiveBadge({ label = "Live now" }: { label?: string }) {
  * Embedded player for whatever is on air.
  *
  * youtube-nocookie so no tracking cookie is set unless the visitor actually
- * plays something.
+ * plays something, and gated behind EmbedGate so the request to YouTube isn't
+ * made at all until they've said yes — nocookie still discloses an IP address.
  */
 export function LivePlayer({ video }: { video: YouTubeVideo }) {
   return (
     <div className="grid items-center gap-12 lg:grid-cols-[1.3fr_1fr]">
       <div className="shadow-card-lg aspect-video overflow-hidden rounded-2xl">
-        <iframe
-          title={video.title}
-          src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=0`}
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-          allowFullScreen
+        <EmbedGate
+          kind="video"
+          title="Watch the stream"
           className="size-full"
-        />
+        >
+          <iframe
+            title={video.title}
+            src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=0`}
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            allowFullScreen
+            className="size-full"
+          />
+        </EmbedGate>
       </div>
       <div>
         <LiveBadge />

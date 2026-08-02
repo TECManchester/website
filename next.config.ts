@@ -71,7 +71,10 @@ const nextConfig: NextConfig = {
       "img-src 'self' data: blob: https://*.supabase.co https://i.ytimg.com https://yt3.ggpht.com",
       "font-src 'self' data:",
       "media-src 'self' https://*.supabase.co",
-      "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
+      // google.com is the map embed on /contact and /im-new. Omitting it here
+      // silently blanked both maps — a CSP failure looks like a broken page,
+      // not a security message.
+      "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://www.google.com https://maps.google.com",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
       "upgrade-insecure-requests",
     ].join("; ");

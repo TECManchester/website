@@ -4,6 +4,7 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
 import { PageHero, Section } from "@/components/section";
 import { getSettings } from "@/lib/settings";
+import { EmbedGate } from "@/components/embed-gate";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -110,13 +111,15 @@ export default async function ContactPage() {
       </Section>
 
       <div className="border-t">
-        <iframe
-          title={`Map showing ${location.full}`}
-          src={location.embedUrl}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          className="h-[420px] w-full"
-        />
+        <EmbedGate kind="map" title="Find us on the map" className="h-[420px] w-full">
+          <iframe
+            title={`Map showing ${location.full}`}
+            src={location.embedUrl}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="h-[420px] w-full"
+          />
+        </EmbedGate>
       </div>
     </>
   );

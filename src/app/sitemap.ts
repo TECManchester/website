@@ -12,6 +12,7 @@ const routes = [
   { path: "/give", priority: 0.9 },
   { path: "/prayer", priority: 0.7 },
   { path: "/contact", priority: 0.7 },
+  { path: "/privacy", priority: 0.3 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
