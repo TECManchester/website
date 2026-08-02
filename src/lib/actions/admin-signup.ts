@@ -112,7 +112,21 @@ export async function requestAccess(
   const link = `${siteUrl()}/admin/welcome?token_hash=${encodeURIComponent(
     data.properties.hashed_token,
   )}`;
-  await sendMagicLink({ to: email, link, isNew: !existing });
+  const sent = await sendMagicLink({ to: email, link, isNew: !existing });
+
+  /*
+   * A send failure is a problem at our end — the same for every address — so
+   * saying so leaks nothing about who has an account, and telling someone to
+   * check an inbox that will never receive anything is worse than useless.
+   */
+  if (!sent.sent) {
+    console.error("sign-up email failed to send:", sent.reason);
+    return {
+      ok: false,
+      message:
+        "We couldn't send the email — that's a problem at our end, not yours. Please contact the communications team and they'll set your account up directly.",
+    };
+  }
 
   if (!existing) {
     await recordAudit(null, "user.signed_up", {

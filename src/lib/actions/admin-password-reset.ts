@@ -81,7 +81,19 @@ export async function requestPasswordReset(
   const link = `${siteUrl()}/admin/reset-password?token_hash=${encodeURIComponent(
     data.properties.hashed_token,
   )}`;
-  await sendPasswordReset({ to: email, link });
+  const sent = await sendPasswordReset({ to: email, link });
+
+  // Same reasoning as sign-up: a send failure is our problem, identical for
+  // every address, so reporting it reveals nothing and saves someone waiting
+  // on an email that is never coming.
+  if (!sent.sent) {
+    console.error("password reset email failed to send:", sent.reason);
+    return {
+      ok: false,
+      message:
+        "We couldn't send the email — that's a problem at our end. Please contact the communications team.",
+    };
+  }
 
   return sameAnswer;
 }
