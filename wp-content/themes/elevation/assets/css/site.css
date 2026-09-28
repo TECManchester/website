@@ -189,6 +189,9 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .site-footer { padding-top: 64px; padding-bottom: 32px; color: rgb(255 255 255 / 0.6); }
 .site-footer a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
 .site-footer a:hover, .site-footer a:focus-visible { color: var(--wp--preset--color--green); }
+.site-footer .social-links a { color: #fff; }
+.site-footer .social-links a:hover, .site-footer .social-links a:focus-visible { color: var(--wp--preset--color--ink); }
+.wp-site-blocks > footer.wp-block-template-part { margin-block-start: 0; }
 .site-footer__grid { gap: 40px; margin-bottom: 44px; }
 .footer-logo img { display: block; height: 44px; width: auto; }
 @media (min-width: 640px) { .footer-logo img { height: 52px; } }
