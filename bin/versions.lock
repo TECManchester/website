@@ -1,0 +1,6 @@
+# Pinned versions. bin/setup.sh installs exactly these; bin/check-env.sh verifies them.
+# Upgrade deliberately: bump here (and the image digest in docker-compose.yml), re-run, re-test.
+WP_CORE=7.1.2
+DB_MAJOR=10.6
+TABLE_PREFIX=wp6d_
+PLUGINS="fluentform@6.2.14:active redirection@5.10.1:active smartcrawl-seo@3.16.4:active wp-smushit@4.3.3:active fluent-smtp@2.4.1:inactive defender-security@6.2.4:inactive hummingbird-performance@3.21.2:inactive wpvivid-backuprestore@0.9.136:inactive"
