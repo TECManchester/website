@@ -87,7 +87,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 }
 .wp-site-blocks > header + * { margin-block-start: 0; }
 
-.site-header__inner { min-height: var(--header-h); gap: 24px; }
+.site-header__inner { min-height: calc(var(--header-h) - 1px); gap: 24px; } /* -1px: the header's border-bottom keeps the total at exactly --header-h */
 .site-header__right { gap: 12px; }
 
 /* Logo: colour and white stacked for the cross-fade. */
@@ -114,6 +114,12 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .is-over-hero .wp-block-navigation__responsive-container-open { color: #fff; }
 .is-over-hero .site-header__ctas .is-style-ghost .wp-block-button__link { color: #fff; border-color: rgb(255 255 255 / 0.35); }
 .is-over-hero .site-header__ctas .is-style-ghost .wp-block-button__link:hover { border-color: #fff; }
+
+/* Submenu chevron: core draws it in currentColor, which the desktop container's colour:inherit turns ink. */
+.site-header .site-nav .wp-block-navigation__submenu-icon { color: var(--wp--preset--color--ink); }
+.is-over-hero .site-header .site-nav .wp-block-navigation__submenu-icon { color: rgb(255 255 255 / 0.85); }
+.is-over-hero .site-header .site-nav .wp-block-navigation-item:hover > .wp-block-navigation__submenu-icon { color: #fff; }
+.site-header .site-nav .is-menu-open .wp-block-navigation__submenu-icon { color: #fff; }
 
 /* Desktop dropdown panel */
 .site-nav .wp-block-navigation__submenu-container {
@@ -171,7 +177,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .site-nav .is-menu-open .wp-block-navigation__submenu-container .wp-block-navigation-item__content { font-size: 18px; color: rgb(255 255 255 / 0.75) !important; }
 .site-nav .is-menu-open .site-logo--overlay { position: absolute; top: 0; left: 0; }
 .site-nav .is-menu-open .site-logo--overlay .site-logo__ink { opacity: 0; }
-.site-nav .is-menu-open .site-logo--overlay .site-logo__white { opacity: 1; }
+.site-nav .is-menu-open .site-logo--overlay .site-logo__white { position: static; opacity: 1; }
 .site-nav .is-menu-open .site-header__overlay-extra { display: block; width: 100%; margin-top: auto; padding-top: 28px; }
 .site-header__service { font-size: 14px; color: rgb(255 255 255 / 0.6); margin: 0 0 16px; }
 @media (prefers-reduced-motion: no-preference) {

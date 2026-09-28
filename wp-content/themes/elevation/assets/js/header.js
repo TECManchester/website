@@ -26,13 +26,42 @@
 	const extra = header.querySelector( '.site-header__overlay-extra' );
 	const logo = header.querySelector( '.site-logo' );
 	if ( dialog && logo ) {
-		const overlayLogo = logo.cloneNode( true );
-		overlayLogo.classList.add( 'site-logo--overlay' );
-		overlayLogo.setAttribute( 'tabindex', '-1' );
+		// Decorative, non-focusable copy so core's focus trap never lands on it.
+		const white = logo.querySelector( '.site-logo__white' );
+		const overlayLogo = document.createElement( 'span' );
+		overlayLogo.className = 'site-logo site-logo--overlay';
+		overlayLogo.setAttribute( 'aria-hidden', 'true' );
+		if ( white ) {
+			overlayLogo.append( white.cloneNode( true ) );
+		}
 		dialog.prepend( overlayLogo );
 	}
 	if ( content && extra ) {
 		content.append( extra );
+	}
+
+	// Core computes its Tab-wrap targets before the overlay is visible, so the first open has no focus trap.
+	// Wrap Tab / Shift+Tab inside the open overlay ourselves.
+	const overlay = header.querySelector( '.wp-block-navigation__responsive-container' );
+	if ( overlay ) {
+		overlay.addEventListener( 'keydown', ( event ) => {
+			if ( event.key !== 'Tab' || ! overlay.classList.contains( 'is-menu-open' ) ) {
+				return;
+			}
+			const items = Array.from( overlay.querySelectorAll( 'a[href], button:not([disabled])' ) ).filter( ( el ) => el.offsetParent !== null );
+			if ( ! items.length ) {
+				return;
+			}
+			const first = items[ 0 ];
+			const last = items[ items.length - 1 ];
+			if ( event.shiftKey && document.activeElement === first ) {
+				event.preventDefault();
+				last.focus();
+			} else if ( ! event.shiftKey && document.activeElement === last ) {
+				event.preventDefault();
+				first.focus();
+			}
+		} );
 	}
 
 	const here = window.location.pathname.replace( /\/+$/, '' ) || '/';
