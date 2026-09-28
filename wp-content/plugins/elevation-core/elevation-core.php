@@ -15,3 +15,5 @@ define( 'ELEVATION_CORE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ELEVATION_CORE_URL', plugin_dir_url( __FILE__ ) );
 
 require_once ELEVATION_CORE_DIR . 'src/Settings.php';
+require_once ELEVATION_CORE_DIR . 'src/Tokens.php';
+require_once ELEVATION_CORE_DIR . 'src/SeedGuard.php';
