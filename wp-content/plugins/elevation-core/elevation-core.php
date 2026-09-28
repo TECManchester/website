@@ -17,3 +17,10 @@ define( 'ELEVATION_CORE_URL', plugin_dir_url( __FILE__ ) );
 require_once ELEVATION_CORE_DIR . 'src/Settings.php';
 require_once ELEVATION_CORE_DIR . 'src/Tokens.php';
 require_once ELEVATION_CORE_DIR . 'src/SeedGuard.php';
+
+require_once ELEVATION_CORE_DIR . 'includes/settings.php';
+require_once ELEVATION_CORE_DIR . 'includes/bindings.php';
+require_once ELEVATION_CORE_DIR . 'includes/roles.php';
+require_once ELEVATION_CORE_DIR . 'includes/settings-page.php';
+
+register_activation_hook( __FILE__, 'elevation_install_roles' );
