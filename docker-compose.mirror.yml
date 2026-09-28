@@ -1,0 +1,24 @@
+# Isolated copy of the LIVE site, for Phase 0 discovery and entry migration only.
+# Contains real personal data: no ports are published, and its volumes must be deleted
+# after go-live sign-off (docs/go-live.md).
+name: elevation-mirror
+
+services:
+  db:
+    image: mariadb:10.6
+    environment:
+      MARIADB_DATABASE: live
+      MARIADB_USER: live
+      MARIADB_PASSWORD: ${MIRROR_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MIRROR_DB_PASSWORD}
+    volumes:
+      - mirror_db:/var/lib/mysql
+      - ./private:/private:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  mirror_db:

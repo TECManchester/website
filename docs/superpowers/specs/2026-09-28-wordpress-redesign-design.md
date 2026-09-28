@@ -1,6 +1,6 @@
 # Elevation Church Manchester — WordPress redesign
 
-Date: 2026-09-28 (revision 2, after spec review)
+Date: 2026-09-28 (revision 3: Phase 0 findings from the live backup)
 Status: revised, awaiting spec review
 
 ## 1. Goal
@@ -40,53 +40,67 @@ redesign", that inventory, and ultimately the redesign source, is authoritative.
 | Edit rights | Editors for content; a new Site Manager role for settings and menus; Administrators only for people allowed to see Prayer and Gift Aid |
 | Local email | Mailpit container (every notification is testable locally) |
 | Email on live | FluentSMTP → existing Resend account |
+| Analytics | Keep the existing GA4 property, loaded **only after consent** via a small banner in the redesign's style (§6.8) |
+| Plugin stack | Free wordpress.org builds replace the expired WPMU DEV Pro suite. Fluent Forms Pro kept (licence valid), but the build must still work on free Fluent Forms (§8) |
+| Redirects | The Redirection plugin (already on live) holds both the live short links and the new page redirects (§6.9) |
 
-## 3. Known facts about live (checked 2026-09-28)
+## 3. Known facts about live (checked 2026-09-28; full detail in `docs/live-inventory.md`)
 
-- **Hosting**: Apache on `host02.elevationchurchng.org` (Liquid Web IP `67.225.139.124`), DNS on
-  `ns1/ns2.elevationchurchng.org`. It is the parent church's own server. **We have wp-admin access
-  only**: no SSH, WP-CLI, database tool or cPanel is assumed. There is no CDN or proxy in front, so
-  `REMOTE_ADDR` is the real client IP.
-- **Caching**: HTML is served with `Cache-Control: max-age=600` (10 minutes, browser-side). No page
-  cache plugin was detected in the markup. Design rule: nothing time-sensitive may depend on the
+- **Hosting**: cPanel on Apache at `host02.elevationchurchng.org` (Liquid Web IP `67.225.139.124`),
+  DNS on `ns1/ns2.elevationchurchng.org`. It is the parent church's own server. **We have wp-admin
+  access only**, so no SSH, WP-CLI or database access is assumed. The parent church's IT has a live
+  Administrator account. There is no CDN or proxy, so `REMOTE_ADDR` is the real client IP.
+- **Platform**: WordPress 6.8.10, PHP 8.3.30, MariaDB 10.6.28, table prefix `wp6d_`, uploads up
+  to 256M. The local environment is pinned to match the database version and prefix (§8). The
+  migration also brings live's core up to the local, pinned version.
+- **Caching**: HTML is sent with `Cache-Control: max-age=600` (10 minutes, browser-side). The
+  Hummingbird page cache is **disabled**. Design rule: nothing time-sensitive may depend on the
   HTML being fresh (§6.4, §6.5).
+- **Plugins**: 26 active (listed in the inventory). They include Fluent Forms Pro (valid licence),
+  a WPMU DEV Pro suite with an **expired** membership (no updates since 2025-10), Google Site Kit
+  outputting **GA4** (`G-0Q3764FCYN`), the **CookieYes** GDPR banner, and **Redirection** with 10
+  campaign short links, some heavily used (`/fyv` 1,228 hits, `/lane7` 656).
+- **Tracking**: GA4 is the only live tracker. The WPCode header Google Ads tag is commented out,
+  and WPCode's only active snippet allows SVG uploads.
+- **Users**: 3 accounts, all Administrators.
 - **Pages on live** (from the export): `/`, `/home`, `/sample-page`, `/who-we-are`, `/volunteer`,
   `/join-our-community`, `/privacy-policy`, `/resources`, `/resources/alpha`, `/resources/etracts`,
   `/guest`, `/church-in-the-park-2025`.
-- **Forms on live**: Fluent Forms 3 (Volunteer: name, email, phone, home address), 4 (Join our
-  Community: name, email, phone), 5 (Home: email-only newsletter), 6 (Guest: a post-visit
-  connection card with address, how you heard, what you enjoyed, would you join, prayer, comments),
-  7 (Alpha registration: name, phone, email, gender, age range, visited before, how you heard,
-  contact consent). A Forminator form "newsletter-subscription" exists but is not embedded on any
-  page. It may still hold historic entries.
-- **Unknown until the live backup is inspected (§4)**: entry counts per form, Forminator entries,
-  WPCode snippets, SmartCrawl settings, live users and roles, and the server's upload limit.
+- **Forms on live** (entry counts at 2026-09-28):
+
+  | Form | Page | Entries |
+  |---|---|---|
+  | FF 3 "Volunteer Form" | /volunteer | 21 |
+  | FF 4 "Reserve a seat Form" | /join-our-community | 27 |
+  | FF 5 "Newsletter Form" | home | 134 |
+  | FF 6 "Guest Form" | /guest | 0 |
+  | FF 7 "Alpha Course sign up" | /resources/alpha | 1 |
+  | Forminator newsletter | not embedded | 0 |
+  | Hustle | — | 0 |
+
+  FF 1 and 2 are unused demo forms. **Notifications are disabled on FF 3, 4 and 5**, so none of
+  those entries was ever emailed to anyone. FF 7 notifies a personal Gmail address.
 - **Developer dependency**: blocks render at request time (`render.php`), so content never breaks
   when a block changes. But changing a block's behaviour or markup means editing code and
   rebuilding with Node. Content, settings, menus and patterns need no developer.
 
-## 4. Phase 0 — live discovery (before building)
+## 4. Phase 0 — live discovery
 
-Using wp-admin only:
+1. ✅ Full WPvivid backup of live (WPvivid was already installed), taken 2026-09-28 22:17 UTC.
+   Stored in `private/live-backup/2026-09-28/` (gitignored, `chmod 700`).
+2. ✅ Form definitions: not needed as a separate export. They are in the backup's
+   `wp6d_fluentform_forms` and `wp6d_fluentform_form_meta` tables.
+3. ✅ The database is restored into the isolated `elevation-mirror` MariaDB 10.6
+   (`docker-compose.mirror.yml`, no published ports, password in `private/.env.mirror`). A full
+   WordPress front end for the mirror is only started if visual reference is needed.
+4. ✅ Findings recorded in `docs/live-inventory.md`.
+5. ✅ WPCode reviewed: no active tracking. GA4 via Site Kit is the only tracker, which led to the
+   consent decision (§2, §6.8).
+6. ⏳ Check the redesign's Supabase `pages` table for published CMS pages (the user checks
+   `/admin/pages` on the redesign). Each one found is added to §5.5, or listed as dropped.
 
-1. On live, install **WPvivid Backup** (free; its chunked upload/download is not bound by
-   `upload_max_filesize`) and take a full backup (database + `wp-content`). Download it. *The user
-   does this, after confirming with the parent church that installing a plugin is permitted.*
-2. In Fluent Forms → Tools, export all five form definitions as JSON. Save them to
-   `seed/forms/live/` (gitignored if entries are included).
-3. Restore the backup into a second, isolated local environment `live-mirror`
-   (`docker-compose.mirror.yml`, port 8090, its own volumes, mail to Mailpit, never exposed).
-4. Record in `docs/live-inventory.md`: active plugins and versions, WPCode snippets (full code),
-   SmartCrawl settings, users and roles, entry counts per Fluent Form, Forminator entry count,
-   upload limit and PHP version (Tools → Site Health → Info), and any redirects or rewrite rules.
-5. **Review the WPCode snippets now.** Anything setting cookies or tracking (analytics, pixels)
-   is either removed or triggers a consent-banner decision *before* the privacy notice is written
-   (§11).
-6. Check the redesign's Supabase `pages` table for published CMS pages (read via the redesign's
-   admin at `/admin/pages`, or a read-only key). Each one found is added to §5.5, or listed as
-   dropped.
-
-Phase 0 is repeated at go-live (§10) to capture entries submitted in the meantime.
+Phase 0 is repeated at go-live (§10) with a fresh backup, to capture entries submitted in the
+meantime.
 
 ## 5. Theme
 
@@ -282,7 +296,8 @@ templates for the post types in §6.
   directory). Fields: name (title), description (excerpt), taxonomies `area` (e.g. Salford, City
   Centre, Online) and `group_category` (families, young professionals, couples, fitness, …), meta
   `meeting_day`, `meeting_time`, `leader_name` (public), `leader_email` (private, for
-  notifications), `accepting_members` (bool), and a featured image.
+  notifications), `accepting_members` (bool), and a featured image. There is no live data to
+  migrate. Groups are entered by staff.
 - **Public**: `/connect-groups` has a filter bar (area, category, day; GET params) and group cards
   (image, name, area, category, day and time, leader first name, status). "Ask to join" opens the
   Join Group form with the group pre-selected. Groups not accepting members show "Full right now,
@@ -291,8 +306,7 @@ templates for the post types in §6.
   existing "Find a group" → form flow.
 - **Join Group form** (Fluent Forms): name, email, phone, group (hidden, set from the card via URL
   param; blank = "not sure, help me choose"), message. Notification to the group's `leader_email`
-  (looked up server-side from the group ID, never exposed) and to `welcomeInbox`. Live form 4
-  entries migrate here with group = blank.
+  (looked up server-side from the group ID, never exposed) and to `welcomeInbox`.
 - Seed: the directory starts empty on live unless staff supply groups. Fixtures (3 fake groups) are
   loaded **locally only**, for visual testing.
 
@@ -308,33 +322,57 @@ templates for the post types in §6.
     scope.
 - **Connect card** (`#connect-card`, replaces live form 6): the live Guest form's questions minus
   the full postal address (only postcode, for data minimisation), with the country dropdown dropped.
-  Notifies `welcomeInbox`. Live form 6 entries migrate here. `/guest` redirects to
-  `/im-new#connect-card`, so printed QR codes keep working.
+  Notifies `welcomeInbox`. Live form 6 has no entries. `/guest` redirects to `/im-new#connect-card`,
+  so printed QR codes keep working.
+- Live FF 4 "Reserve a seat" (27 entries: name, email, phone) migrates into Plan a Visit.
 
-### 6.8 Consent gate and other blocks
+### 6.8 Consent (analytics + embeds) and other blocks
 
-- `embed-gate` (map | video) and `consent-controls`, as inventory §2. localStorage key
-  `ecm.consent.embeds`, and no cookie banner. This holds only if Phase 0 step 5 finds no tracking.
+- **One consent store**, two categories: `analytics` (GA4) and `embeds` (Google Maps, YouTube).
+  It lives in localStorage `ecm.consent` = `{ analytics, embeds, version, ts }`. The redesign's
+  `ecm.consent.embeds` key is read once for backwards compatibility. Changes fire
+  `ecm:consent-changed` and sync across tabs via `storage`.
+- **Banner**: a small bottom bar in the redesign's style (ink panel, pill buttons) shown until a
+  choice is made. It offers "Accept all", "Reject all" (equal prominence) and "Choose". The last
+  opens toggles for Analytics and Maps & videos. There is no pre-ticked box and no cookie wall.
+  After a choice, a "Cookie settings" link in the footer reopens it.
+- **GA4**: loaded by `elevation-core` only after `analytics` is granted, using the measurement ID
+  from Church Settings (default `G-0Q3764FCYN`, the existing property, so history continues).
+  Nothing from Google loads before consent. Withdrawing consent stops future loads and deletes the
+  `_ga*` cookies for the domain. Site Kit and CookieYes are removed (§8).
+- `embed-gate` (map | video), as inventory §2. Clicking "Show the map" / "Play the video" loads that
+  one embed without changing the stored choice. If `embeds` is granted, embeds load immediately.
+- `consent-controls` block on the Privacy page: shows the current choices, with per-category
+  toggles and "Clear my choice".
 - `hero-slideshow` (6.5s, 1.2s fade, Ken Burns, pauses when the tab is hidden, static under reduced
   motion, first image `fetchpriority=high`), `leadership-grid`, `icon` (allow-listed Lucide set),
   `social-links`.
 
-### 6.9 Redirects (built from the live export, not the local DB)
+### 6.9 Redirects (from the live export and the live Redirection table)
 
-| Live URL | → |
-|---|---|
-| `/home` | `/` |
-| `/sample-page` | `/` |
-| `/who-we-are` | `/about` |
-| `/volunteer` | `/get-involved#serve` |
-| `/join-our-community` | `/connect-groups` |
-| `/guest` | `/im-new#connect-card` |
-| `/privacy-policy` | `/privacy` |
+All redirects live in the **Redirection** plugin, so staff manage short links and page moves in one
+screen. There is no custom redirect code.
 
-These are 301s in `template_redirect` before 404, as a filterable array. Kept pages retain their
-live slugs: `/resources`, `/resources/alpha`, `/resources/etracts`, `/church-in-the-park-2025`.
-§12 checks every live URL listed in §3 (plus every attachment URL in the export) returns 200 or a
-correct 301.
+- **Carried over unchanged**: the 10 live Redirection items (`/fyv/`, `/lane7`, `/settledin/`,
+  `/free-resources/`, `/dreamjobuk`, `/godlyparentingseries`, `/hu/`, `/jewels`, `/gts`,
+  `/resources/e-tracts/`). They are copied from the mirror by `bin/migrate-live-data.php` (§6.10),
+  keeping their hit counts.
+- **New** (seeded into a "Redesign 2026" group):
+
+  | Live URL | → |
+  |---|---|
+  | `/home` | `/` |
+  | `/sample-page` | `/` |
+  | `/who-we-are` | `/about` |
+  | `/volunteer` | `/get-involved#serve` |
+  | `/join-our-community` | `/im-new#plan-a-visit` (it hosted "Reserve a seat") |
+  | `/guest` | `/im-new#connect-card` |
+  | `/privacy-policy` | `/privacy` |
+
+- Kept pages retain their live slugs: `/resources`, `/resources/alpha`, `/resources/etracts`,
+  `/church-in-the-park-2025`.
+- §12 checks that every live URL in §3, every Redirection source, and every attachment URL in the
+  export returns 200 or the correct 301.
 
 ### 6.10 Forms: complete map
 
@@ -343,24 +381,32 @@ correct 301.
 | Contact | `/contact` | — | contact email (reply-to sender) | Site Manager, Admin |
 | Prayer | `/prayer` | — | `prayerInbox` ("URGENT" subject when ticked) | Admin only |
 | Gift Aid | `/give#gift-aid` | — | contact email (name + postcode only) | Admin only |
-| Newsletter | footer, site-wide | FF 5 (home) + Forminator 53 | none | Site Manager, Admin |
-| G-Squad sign-up | `/get-involved#serve` | FF 3 (volunteer) | `welcomeInbox` | Site Manager, Admin |
-| Join Group | `/connect-groups` | FF 4 (join-our-community) | group leader + `welcomeInbox` | Site Manager, Admin |
-| Plan a Visit | `/im-new#plan-a-visit` | — | `welcomeInbox` + visitor confirmation | Site Manager, Admin |
-| Connect card | `/im-new#connect-card` | FF 6 (guest) | `welcomeInbox` | Site Manager, Admin |
-| Alpha registration | `/resources/alpha` | FF 7 (same fields, restyled) | as live (from the exported JSON) | Site Manager, Admin |
+| Newsletter | footer, site-wide | FF 5 (134 entries) | none | Site Manager, Admin |
+| G-Squad sign-up | `/get-involved#serve` | FF 3 Volunteer (21) | `welcomeInbox` | Site Manager, Admin |
+| Plan a Visit | `/im-new#plan-a-visit` | FF 4 "Reserve a seat" (27) | `welcomeInbox` + visitor confirmation | Site Manager, Admin |
+| Join Group | `/connect-groups` | — (new) | group leader + `welcomeInbox` | Site Manager, Admin |
+| Connect card | `/im-new#connect-card` | FF 6 Guest (0; nothing to migrate) | `welcomeInbox` | Site Manager, Admin |
+| Alpha registration | `/resources/alpha` | FF 7 (1), same fields, restyled | `welcomeInbox` (replaces the personal Gmail recipient) | Site Manager, Admin |
 
-- **Definitions**: new forms are authored as JSON in `seed/forms/`. Alpha is recreated from its
-  live JSON export (Phase 0 step 2), falling back to the fields recovered from the export's cached
-  HTML (§3).
-- **Entry migration**: Fluent Forms free can't import entries. So migration is done in the local
-  database, where we have full access. From the `live-mirror`, copy
-  `wp_fluentform_submissions` + `wp_fluentform_entry_details` rows for forms 3, 4, 5, 6 and 7 into
-  the new site under the new form IDs, with a field-name map per form, via a script
-  `bin/migrate-entries.php` that is run and checked locally. Forminator newsletter entries are
-  converted into Newsletter entries. Entry counts before and after are recorded in
-  `docs/live-inventory.md`. Anything that can't be mapped is exported to CSV and stored outside
-  git.
+- **Notifications are on for every form.** Live had them off on FF 3, 4 and 5 (§3), so the
+  go-live checklist includes handing the 48 historic volunteer and seat entries to the welcome team.
+- Retired without migration: FF 1 and FF 2 (demo, 0 entries), Forminator (0), Hustle (0).
+- **Definitions**: new forms are authored as JSON in `seed/forms/`. Alpha is rebuilt from its live
+  definition (`wp6d_fluentform_forms` id 7 in the mirror), restyled, with the same field names so
+  its entry maps 1:1.
+- **Live data migration**: Fluent Forms (free or Pro) can't import entries. So the migration is a
+  local script, `bin/migrate-live-data.php`, run with WP-CLI against the new site. It reads from
+  the `elevation-mirror` database and does three things:
+  1. Copies `wp6d_fluentform_submissions` + `wp6d_fluentform_entry_details` rows for FF 3, 4, 5
+     and 7 into the new forms, with a field map per form (the keys are in the inventory; FF 3/4
+     `subject` → `phone`, FF 4 → Plan a Visit with the date left blank, `ak_js` dropped). It keeps
+     the original `created_at`, and stores `source = live-ff{N}` in the entry meta.
+  2. Copies the Redirection items (§6.9).
+  3. Copies the live user accounts (§10).
+
+  It is idempotent (it skips rows already copied, using the source ID). It prints counts
+  before and after, and those are recorded in `docs/live-inventory.md`. Nothing is written to the
+  mirror.
 - **Validation and data**:
   - Gift Aid rules (first name ≥2 characters after stripping dots and spaces, surname ≥2,
     house name or number required, UK postcode) are enforced with Fluent Forms' **validation**
@@ -399,16 +445,37 @@ correct 301.
 
 ## 8. Plugins and versions
 
-- **Keep**: Fluent Forms, SmartCrawl, Smush, WPCode (only snippets approved in Phase 0).
-- **Add**: FluentSMTP (configured on live), WPvivid Backup (migration; removed after sign-off).
-- **Remove**: Elementor, Header Footer Elementor, Essential Addons, Happy Addons, Premium Addons,
-  Royal Elementor Addons, Forminator (after its entries are migrated), Hello Elementor.
-- **Pinning** (`bin/versions.lock`): WordPress core (currently 7.1.2), each plugin slug@version,
-  and Docker images by exact tag and digest (`wordpress:<core>-php8.3-apache`, `wordpress:cli`,
-  `mariadb:11.x.y`, `node:22.x`, `axllent/mailpit`, `phpmyadmin`). `setup.sh` installs exactly
-  these. Upgrades are deliberate: bump the lock, re-run, test.
-- Live must run the same core, PHP and plugin versions as the lock at migration (checked in the
-  go-live checklist).
+| Plugin | Source | Role |
+|---|---|---|
+| Fluent Forms | wordpress.org | all forms |
+| Fluent Forms Pro | licensed zip (from the live backup, stored in `private/vendor/`, not git) | kept for the licence holder's benefit; **no feature in this spec may require it** |
+| FluentSMTP | wordpress.org | email on live (Resend) |
+| Redirection | wordpress.org | all redirects (§6.9) |
+| SmartCrawl (free, `smartcrawl-seo`) | wordpress.org | SEO; replaces the expired `wpmu-dev-seo` Pro |
+| Smush (free, `wp-smushit`) | wordpress.org | image compression; replaces Smush Pro |
+| Defender (free, `defender-security`) | wordpress.org | login protection and hardening; replaces expired Defender Pro |
+| Hummingbird (free, `hummingbird-performance`) | wordpress.org | browser caching and asset minification only. Page cache stays **off** (as live); if it is turned on later, §6.4/§6.5 still hold |
+| WPvivid Backup | wordpress.org | migration; removed after sign-off |
+
+- **Removed** (live plugins not carried over): Elementor, Essential Addons, Happy Addons, Premium
+  Addons, Royal Elementor Addons, Header Footer Elementor, Hello Elementor (theme), Forminator,
+  Hustle, Ultimate Branding, WPMU DEV Dashboard, WP Admin Notification Center, Google Site Kit
+  (GA4 now loaded by `elevation-core` after consent), CookieYes (replaced by §6.8), WPCode (its only
+  live snippet is covered by `elevation-core`), Akismet (Fluent Forms honeypot + rate limit
+  instead), Hello Dolly, Astra Sites, Migrate Guru, Really Simple SSL (removed only after confirming
+  that the server itself redirects HTTP→HTTPS; otherwise kept).
+- **Pinning** (`bin/versions.lock`):
+  - WordPress core: the version tested at sign-off (currently 7.1.2). Live is upgraded from 6.8.10
+    by the migration itself.
+  - Each plugin as slug@version.
+  - Docker images by exact tag and digest: `wordpress:<core>-php8.3-apache`, `wordpress:cli`,
+    **`mariadb:10.6.x`** (matches live; MariaDB 11 collations don't import into 10.6), `node:22.x`,
+    `axllent/mailpit`, `phpmyadmin`.
+  - Table prefix **`wp6d_`** (matches live).
+
+  `setup.sh` installs exactly these. Upgrades are deliberate: bump the lock, re-run, test.
+- Rebuilding the current local environment on MariaDB 10.6 and `wp6d_` is the first
+  implementation task. The existing local data is disposable, because the seed recreates it.
 
 ## 9. Seeding and the cut-off
 
@@ -431,44 +498,56 @@ correct 301.
 
 1. **Maintenance mode** on live (a WPvivid or small maintenance plugin), and turn off every live
    form. This stops public submissions, not just staff edits.
-2. Re-run Phase 0 (fresh backup into `live-mirror`, WPCode review, entry counts). Run
-   `bin/migrate-entries.php` for the entries submitted since the last run. Verify the counts.
-3. Confirm live's PHP, core and plugin versions match `versions.lock`; upgrade live first if needed.
+2. Re-run Phase 0: a fresh WPvivid backup loaded into `elevation-mirror`, and a check for new
+   plugins, snippets or redirects since 2026-09-28. Run `bin/migrate-live-data.php` to pick up
+   entries, redirects and users added since the last run, and verify the counts.
+3. Confirm live's PHP is still 8.3 and its database is MariaDB 10.6, so the packaged site will run.
+   Tell the parent church's IT that core moves from 6.8.10 to the pinned version.
 4. Package the local site with WPvivid, **excluding** `mu-plugins/local-dev.php`, `import/`,
-   `seed/forms/live/` and any other private data. Search-replace `http://localhost:8080` →
+   `private/`, `seed/` and any other private data. Search-replace `http://localhost:8080` →
    `https://elevationmanchester.org` as part of the restore.
 5. Restore over live. Then:
    - Set `WP_ENVIRONMENT_TYPE` to `production`.
-   - **Delete the local `admin` account** after creating the named Administrators, and rotate every
-     password that existed locally.
-   - Create the Site Manager and Editor accounts (§7).
-   - Configure FluentSMTP with Resend and the YouTube API key.
-   - Re-add only the approved WPCode snippets. Resave permalinks.
+   - **Accounts**: the three live accounts (including the parent church IT account) arrive with
+     their original password hashes, copied by `migrate-live-data.php`, so their logins keep
+     working. **Delete the local `admin` account.** Assign roles per §7; who stays an Administrator
+     is decided before go-live and recorded outside git.
+   - Create Site Manager and Editor accounts for staff.
+   - Configure FluentSMTP with Resend, the YouTube API key and the GA4 measurement ID. Resave
+     permalinks.
+   - Enter the Fluent Forms Pro licence (if kept).
+   - Hand the historic FF 3 and FF 4 entries (never notified) to the welcome team.
 6. **Smoke test**: every live URL from §3 (200 or correct 301), every form end to end (a real
    email arrives at the right inbox), the announcement, live status, the sermon import, and the
    Site Manager access limits.
 7. Maintenance mode off. Keep the pre-migration backup until sign-off.
-8. **After sign-off**: delete every backup and migration file that contains form data (WPvivid
-   backups on the server and downloaded copies, the `live-mirror` volumes, CSV exports), because
-   they contain prayer and Gift Aid data. Remove WPvivid. Record the deletion date.
+8. **After sign-off**: delete every backup and migration file that contains personal data, and
+   record the deletion date. That covers WPvivid backups on the server, the downloaded part files
+   in `~/Downloads`, `private/live-backup/`, the `elevation-mirror` volumes
+   (`docker compose -f docker-compose.mirror.yml down -v`) and any CSV exports. Remove WPvivid.
 
 ## 11. Privacy notice
 
-The notice is written after Phase 0 step 5. It names the actual processors: the host (the parent
-church, via Liquid Web), Resend (email via FluentSMTP), Google Maps and YouTube (both click-gated),
-and HMRC. It covers the WordPress login cookie for staff only, the new data sets (visit plans,
-connect cards, group join requests, Alpha registrations, G-Squad sign-ups) with their purpose,
-lawful basis and retention, and Gift Aid retention of six years after the last gift. If Phase 0
-finds tracking that must stay, the "no cookie banner" position is revisited before writing, not
-after.
+The notice is written from Phase 0's findings. It names the actual processors: the host (the
+parent church, via Liquid Web), Resend (email via FluentSMTP), **Google Analytics 4** (only with
+consent: what is measured, the `_ga` cookies and their lifetime, IP handling, how to withdraw),
+Google Maps and YouTube (consent or click-to-load), and HMRC.
+
+The cookies section replaces the redesign's "no cookies" claim. It lists the consent record
+(localStorage), the GA4 cookies (analytics consent only) and the WordPress login cookies (staff
+only). It links to the consent controls.
+
+It also covers the new data sets (visit plans, connect cards, group join requests, Alpha
+registrations, G-Squad sign-ups, newsletter), each with its purpose, lawful basis and retention, and
+Gift Aid retention of six years after the last gift.
 
 ## 12. Testing and definition of done
 
 - **PHPUnit** (pure functions): `Event_Time` (London midnight boundary, BST/GMT change, multi-day
   in progress, TBC, same-day range), Gift Aid validators and postcode normaliser, the next-8-service-
   dates generator, the sermon importer's "should import" rule (live/upcoming/known-ID exclusions),
-  the entry field maps in `migrate-entries.php`, the redirect map, and settings token replacement
-  (unknown keys and escaping).
+  the entry field maps in `migrate-live-data.php`, the consent-state reducer (defaults, legacy key
+  migration, withdrawal), and settings token replacement (unknown keys and escaping).
 - **Visual parity with matching data**: run the redesign against a **local Supabase**
   (`supabase start`, apply its migrations, load `seed/fixtures/` = the same events, announcement and
   settings the WordPress seed uses). Compare every page at 1440px and 390px. For sermons, connect
@@ -476,15 +555,21 @@ after.
   language, and review them with the user instead.
 - **Behaviour**: header states and the 1024px breakpoint, overlay focus/Escape/scroll lock, About
   dropdown, slideshow and reduced motion, reveal, calendar, announcement show/dismiss/re-show and
-  activation within one page view despite `max-age=600`, live-status swap via REST, consent
-  gate and controls, sermon import (a mocked YouTube response), directory filters, the Join Group
-  pre-selection, and every §6.9 redirect plus every live URL.
+  activation within one page view despite `max-age=600`, live-status swap via REST, sermon import
+  (a mocked YouTube response), directory filters, the Join Group pre-selection, and every §6.9
+  redirect plus every live URL and short link.
+- **Consent**, checked in the network panel: **no request to any Google domain before consent**.
+  GA4 loads after "Accept" or after the analytics toggle. "Reject" loads nothing. Withdrawing clears
+  the `_ga*` cookies. Embeds follow their own category or click-to-load. The banner doesn't reappear
+  after a choice, and "Cookie settings" reopens it. It is keyboard and screen-reader operable.
 - **Forms**: every form submitted locally. **Mailpit** shows each notification with the right
   recipient, subject and reply-to (including the urgent prayer subject, the group-leader routing
   and the visitor confirmation). Validation messages for each rule. The postcode is stored
   normalised. The Site Manager can't open the Prayer or Gift Aid entries. Gift Aid entry deletion
   is blocked.
-- **Entry migration dry run** against the `live-mirror`, with counts matching.
+- **Live data migration dry run** against `elevation-mirror`: FF 3→21, FF 4→27, FF 5→134, FF 7→1
+  entries, 10 Redirection items and 3 users arrive. A second run changes nothing. A migrated user
+  can log in with their existing password.
 - **Hygiene**: a clean `debug.log`, no console errors, Lighthouse accessibility ≥95 on Home, I'm
   New and Give, and AA contrast.
 - **Reproducibility**: `docker compose down -v && bin/setup.sh` yields the finished site twice,
@@ -520,3 +605,20 @@ after.
 | Email untestable locally | Mailpit (§2, §12) |
 | Postcode normalisation hook; deletion not prevented | §6.10 |
 | Added: sermons/series, connect-group directory, visit plans | §6.3, §6.6, §6.7 |
+
+## 15. Phase 0 changes (revision 3)
+
+| Finding (live backup, 2026-09-28) | Change |
+|---|---|
+| Live DB is MariaDB 10.6, prefix `wp6d_` | §8: local pinned to 10.6 and `wp6d_` |
+| GA4 (Site Kit) + CookieYes banner live | §6.8: consent banner covering GA4 and embeds; §11 rewritten |
+| WPMU DEV membership expired | §8: free wordpress.org builds; Pro suite removed |
+| Fluent Forms Pro licensed | §8: kept, never required |
+| 10 Redirection short links with heavy traffic | §6.9: Redirection plugin kept, items migrated |
+| FF 4 is "Reserve a seat", not a community sign-up | §6.10: → Plan a Visit; `/join-our-community` → `#plan-a-visit` |
+| Forminator, Hustle, FF 6 have 0 entries | §6.10: retired, nothing to migrate |
+| Notifications off on FF 3/4/5 | §6.10: all notify; §10: hand the historic entries to the welcome team |
+| Alpha notifies a personal Gmail | §6.10: → `welcomeInbox` |
+| 3 live Administrators incl. parent-church IT | §10: accounts migrated with password hashes |
+| WPCode: only an SVG snippet active | §8: WPCode removed |
+| Hummingbird page cache off; browser `max-age=600` | §3, §8: Hummingbird free, page cache off |
