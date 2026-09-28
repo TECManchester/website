@@ -184,3 +184,54 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 	.site-nav .wp-block-navigation__responsive-container.is-menu-open { animation: elevation-slide-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) both; }
 }
 @keyframes elevation-slide-in { from { transform: translateX(100%); } to { transform: none; } }
+
+/* ---------- Footer ---------- */
+.site-footer { padding-top: 64px; padding-bottom: 32px; color: rgb(255 255 255 / 0.6); }
+.site-footer a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
+.site-footer a:hover, .site-footer a:focus-visible { color: var(--wp--preset--color--green); }
+.site-footer__grid { gap: 40px; margin-bottom: 44px; }
+.footer-logo img { display: block; height: 44px; width: auto; }
+@media (min-width: 640px) { .footer-logo img { height: 52px; } }
+.site-footer__mission { max-width: 280px; margin: 18px 0; font-size: 14.5px; line-height: 1.625; }
+.footer-heading {
+	margin: 0 0 18px;
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: #fff;
+}
+.footer-links { list-style: none; margin: 0; padding: 0; }
+.footer-links li { margin-bottom: 11px; font-size: 14.5px; }
+
+.footer-strip {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px 28px;
+	margin-bottom: 28px;
+	padding: 20px 24px;
+	border-radius: 14px;
+	background: rgb(255 255 255 / 0.04);
+}
+.footer-strip__item { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; }
+.footer-strip__item svg { width: 18px; height: 18px; flex-shrink: 0; }
+.footer-strip__item--strong { font-family: var(--wp--preset--font-family--sora); font-weight: 600; color: #fff; font-size: 16px; }
+.footer-strip__item--strong svg { color: var(--wp--preset--color--green); }
+
+.footer-bottom {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 12px;
+	padding-top: 24px;
+	border-top: 1px solid rgb(255 255 255 / 0.08);
+	font-size: 13px;
+}
+.footer-bottom p { margin: 0; }
+.footer-bottom__dot { color: rgb(255 255 255 / 0.25); margin: 0 6px; }
+
+@media (min-width: 782px) and (max-width: 1023.98px) {
+	.site-footer__grid { flex-wrap: wrap !important; }
+	.site-footer__grid > .wp-block-column { flex-basis: calc(50% - 20px) !important; }
+}
