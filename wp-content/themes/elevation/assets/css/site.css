@@ -1,0 +1,53 @@
+/* ---------- Base ---------- */
+html { scroll-behavior: smooth; }
+:target { scroll-margin-top: 7rem; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* ---------- Buttons ---------- */
+.wp-block-button__link { transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+@media (prefers-reduced-motion: no-preference) {
+	.wp-block-button__link:hover { transform: translateY(-2px); }
+}
+.wp-block-button__link:focus-visible { outline: 2px solid var(--wp--preset--color--green-600); outline-offset: 2px; }
+.wp-block-button.is-style-navy .wp-block-button__link { background: var(--wp--preset--color--ink); color: #fff; }
+.wp-block-button.is-style-navy .wp-block-button__link:hover { background: #20204a; color: #fff; }
+.wp-block-button.is-style-ghost .wp-block-button__link { background: transparent; color: var(--wp--preset--color--ink); border: 1.5px solid var(--wp--preset--color--grey-300); }
+.wp-block-button.is-style-ghost .wp-block-button__link:hover { background: transparent; border-color: var(--wp--preset--color--ink); }
+.wp-block-button.is-style-ghost-on-dark .wp-block-button__link { background: transparent; color: #fff; border: 1.5px solid rgb(255 255 255 / 0.35); }
+.wp-block-button.is-style-ghost-on-dark .wp-block-button__link:hover { background: transparent; color: #fff; border-color: #fff; }
+.wp-block-button.is-size-lg .wp-block-button__link { padding: 16px 30px; font-size: 16px; }
+
+/* ---------- Text ---------- */
+.is-style-eyebrow,
+.is-style-eyebrow-on-ink {
+	font-family: var(--wp--preset--font-family--sora);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--green-600);
+}
+.is-style-eyebrow-on-ink { color: var(--wp--preset--color--green); }
+
+/* ---------- Surfaces ---------- */
+.wp-block-group.is-style-card {
+	background: #fff;
+	border: 1px solid var(--wp--preset--color--grey-100);
+	border-radius: 18px;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.wp-block-group.is-style-card-ink {
+	background: rgb(255 255 255 / 0.04);
+	border: 1px solid rgb(255 255 255 / 0.1);
+	border-radius: 18px;
+	padding: 28px;
+	transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.wp-block-group.is-style-strip-green {
+	background: var(--wp--preset--color--green-100);
+	border: 1px solid rgb(132 194 36 / 0.4);
+	border-radius: 18px;
+	padding: 28px;
+}
+.wp-block-image.is-style-rounded-2xl img { border-radius: 18px; }
