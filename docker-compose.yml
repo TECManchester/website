@@ -93,6 +93,13 @@ services:
     volumes:
       - ./wp-content/plugins/elevation-core:/app
 
+  php:
+    image: php:8.3.35-cli@sha256:f1ed6d1fd0aa769ab94ca307b9deaf55fbc18434315b70e319cd79078515cd2b
+    profiles: ["tools"]
+    working_dir: /app
+    volumes:
+      - ./wp-content/plugins/elevation-core:/app
+
 volumes:
   db_data:
   wp_core:

@@ -25,7 +25,7 @@ Credentials are in `.env` (gitignored).
 docker compose up -d
 docker compose run --rm wpcli wp <command>
 docker compose run --rm node npm run build        # rebuild elevation-core blocks
-docker compose run --rm composer vendor/bin/phpunit
+docker compose run --rm php vendor/bin/phpunit
 ```
 
 ## Seeding
