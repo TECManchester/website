@@ -214,6 +214,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 	gap: 12px 28px;
 	margin-bottom: 28px;
 	padding: 20px 24px;
+	box-sizing: border-box;
 	border-radius: 14px;
 	background: rgb(255 255 255 / 0.04);
 }
