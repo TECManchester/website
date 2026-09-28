@@ -7,6 +7,10 @@ cd "$(dirname "$0")/.."
 set -a; source .env; set +a
 
 cutoff=$(grep -v '^#' seed/CUTOFF | head -1 | tr -d '[:space:]')
+if [ "$cutoff" != "none" ] && ! [[ "$cutoff" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+  echo "seed/CUTOFF must be \"none\" or a date (YYYY-MM-DD); got \"$cutoff\"." >&2
+  exit 1
+fi
 if [ "$cutoff" != "none" ] && [[ "$(date +%F)" > "$cutoff" ]] && [ "${1:-}" != "--i-know-this-is-after-cutoff" ]; then
   echo "The seed cut-off ($cutoff) has passed: the local database is now the source of truth." >&2
   echo "Re-run with --i-know-this-is-after-cutoff only if you are sure." >&2
@@ -31,9 +35,10 @@ wp option update timezone_string "Europe/London"
 wp option update WPLANG "en_GB" 2>/dev/null || true
 wp rewrite structure '/%postname%/' --hard
 
-# The header renders the site's navigation menu; keep exactly one, the seeded "header".
-for id in $(wp post list --post_type=wp_navigation --post_status=any --format=ids); do
-  [ "$(wp post get "$id" --field=post_name)" = "header" ] || wp post delete "$id" --force
+# Remove the temporary menu left by early setup; other menus (e.g. Site Manager ones) are kept.
+# The header is pinned to the "header" menu by includes/navigation.php in elevation-core.
+for id in $(wp post list --post_type=wp_navigation --post_status=any --name=header-temp --format=ids); do
+  wp post delete "$id" --force
 done
 seed_post wp_navigation header navigation/header.html "Header"
 
