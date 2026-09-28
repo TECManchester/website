@@ -24,3 +24,10 @@ require_once ELEVATION_CORE_DIR . 'includes/roles.php';
 require_once ELEVATION_CORE_DIR . 'includes/settings-page.php';
 
 register_activation_hook( __FILE__, 'elevation_install_roles' );
+
+// Every compiled block in build/blocks/ registers itself from its block.json.
+add_action( 'init', function () {
+	foreach ( glob( ELEVATION_CORE_DIR . 'build/blocks/*/block.json' ) as $block_json ) {
+		register_block_type( dirname( $block_json ) );
+	}
+} );
