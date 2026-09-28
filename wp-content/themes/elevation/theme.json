@@ -14,7 +14,8 @@
       "defaultDuotone": false,
       "palette": [
         { "slug": "green", "color": "#84C224", "name": "Green (fills only)" },
-        { "slug": "green-600", "color": "#6FA61C", "name": "Green text" },
+        { "slug": "green-600", "color": "#6FA61C", "name": "Green (hover fill)" },
+        { "slug": "green-700", "color": "#517A15", "name": "Green text" },
         { "slug": "green-100", "color": "#EAF6D6", "name": "Green tint" },
         { "slug": "ink", "color": "#0E0E2C", "name": "Ink" },
         { "slug": "ink-800", "color": "#1B1F29", "name": "Ink 800" },
@@ -97,7 +98,7 @@
       "h3": { "typography": { "fontSize": "21px" } },
       "h4": { "typography": { "fontSize": "var(--wp--preset--font-size--medium)" } },
       "link": {
-        "color": { "text": "var(--wp--preset--color--green-600)" },
+        "color": { "text": "var(--wp--preset--color--green-700)" },
         ":hover": { "color": { "text": "var(--wp--preset--color--ink)" } }
       },
       "button": {
