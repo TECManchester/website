@@ -7,9 +7,9 @@ import { join } from 'node:path';
 
 const VERSION = '1.26.0';
 const NAMES = [
-	'arrow-right', 'baby', 'building-2', 'calendar-days', 'car', 'circle-check', 'clock', 'compass',
-	'hand-coins', 'headphones', 'heart-handshake', 'house', 'mail', 'map-pin', 'monitor-play', 'phone',
-	'play', 'shield-check', 'shirt', 'sparkles', 'users',
+	'arrow-left', 'arrow-right', 'baby', 'building-2', 'calendar-days', 'car', 'chevron-left', 'chevron-right',
+	'circle-check', 'clock', 'compass', 'hand-coins', 'headphones', 'heart-handshake', 'house', 'mail', 'map-pin',
+	'monitor-play', 'phone', 'play', 'shield-check', 'shirt', 'sparkles', 'users',
 ];
 
 const dir = mkdtempSync( join( tmpdir(), 'lucide-' ) );

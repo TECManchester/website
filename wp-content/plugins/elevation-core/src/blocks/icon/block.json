@@ -7,7 +7,7 @@
   "icon": "star-empty",
   "description": "A line icon from the site's icon set.",
   "attributes": {
-    "name": { "type": "string", "enum": [ "arrow-right", "baby", "building-2", "calendar-days", "car", "circle-check", "clock", "compass", "hand-coins", "headphones", "heart-handshake", "house", "mail", "map-pin", "monitor-play", "phone", "play", "shield-check", "shirt", "sparkles", "users" ], "default": "clock" },
+    "name": { "type": "string", "enum": [ "arrow-left", "arrow-right", "baby", "building-2", "calendar-days", "car", "chevron-left", "chevron-right", "circle-check", "clock", "compass", "hand-coins", "headphones", "heart-handshake", "house", "mail", "map-pin", "monitor-play", "phone", "play", "shield-check", "shirt", "sparkles", "users" ], "default": "clock" },
     "size": { "type": "number", "default": 24 },
     "filled": { "type": "boolean", "default": false }
   },

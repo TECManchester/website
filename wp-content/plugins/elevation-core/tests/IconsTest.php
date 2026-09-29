@@ -26,6 +26,6 @@ final class IconsTest extends TestCase {
 	public function test_block_enum_matches_the_icon_set(): void {
 		$block = json_decode( (string) file_get_contents( __DIR__ . '/../src/blocks/icon/block.json' ), true );
 		$this->assertSame( Icons::names(), $block['attributes']['name']['enum'] );
-		$this->assertCount( 21, Icons::names() );
+		$this->assertCount( 24, Icons::names() );
 	}
 }

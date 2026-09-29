@@ -1,0 +1,33 @@
+/* Events (Plan 3): cards, calendar, the events page and the event page. Tokens from theme.json. */
+
+/* ---------- Event cards (elevation/event-grid, elevation/home-events) ---------- */
+.event-grid { display: grid; gap: 24px; }
+.event-grid > * { margin: 0; }
+@media (min-width: 640px) { .event-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .event-grid--cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.event-card { overflow: hidden; border: 1px solid var(--wp--preset--color--grey-100); border-radius: 18px; background: #fff; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.event-card:hover { box-shadow: var(--wp--preset--shadow--card-lg); }
+@media (prefers-reduced-motion: no-preference) { .event-card:hover { transform: translateY(-6px); } }
+.event-card__link { display: block; height: 100%; color: inherit; text-decoration: none; }
+.event-card__link:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 2px; border-radius: 18px; }
+.event-card__media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--wp--preset--color--ink); }
+.event-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.event-card:hover .event-card__media img { transform: scale(1.05); }
+.event-card__placeholder { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 20%, #2a2a5e 0%, transparent 60%); }
+.event-card__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgb(14 14 44 / 0.5), transparent); pointer-events: none; }
+.event-card__chip { position: absolute; top: 14px; left: 14px; z-index: 1; padding: 8px 12px; border-radius: 11px; background: #fff; box-shadow: var(--wp--preset--shadow--card); text-align: center; line-height: 1; }
+.event-card__day { display: block; font-family: var(--wp--preset--font-family--sora); font-size: 20px; font-weight: 800; color: var(--wp--preset--color--ink); }
+.event-card__month { display: block; margin-top: 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wp--preset--color--green-700); }
+.event-card__body { padding: 22px; }
+.event-card__title { margin: 0; font-size: 20px; text-wrap: balance; transition: color 0.2s ease; }
+.event-card:hover .event-card__title { color: var(--wp--preset--color--green-700); }
+.event-card__summary { display: -webkit-box; margin: 8px 0 0; overflow: hidden; font-size: 14px; color: var(--wp--preset--color--grey-500); -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.event-card__meta { margin-top: 14px; font-size: 14px; color: var(--wp--preset--color--grey-500); }
+.event-card__meta p { display: flex; align-items: center; gap: 8px; margin: 0; }
+.event-card__meta p + p { margin-top: 6px; }
+.event-card__meta svg { flex-shrink: 0; width: 16px; height: 16px; color: var(--wp--preset--color--green-700); }
+
+@media (prefers-reduced-motion: reduce) {
+	.event-card:hover .event-card__media img { transform: none; }
+}

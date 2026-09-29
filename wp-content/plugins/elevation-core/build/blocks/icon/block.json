@@ -10,11 +10,14 @@
     "name": {
       "type": "string",
       "enum": [
+        "arrow-left",
         "arrow-right",
         "baby",
         "building-2",
         "calendar-days",
         "car",
+        "chevron-left",
+        "chevron-right",
         "circle-check",
         "clock",
         "compass",
