@@ -83,4 +83,11 @@ final class EventTimeTest extends TestCase {
 		$this->assertSame( [ '2026-10-18' ], EventTime::dayKeys( '2026-10-18T19:00', '2026-10-17T10:00' ), 'end before start' );
 		$this->assertSame( [], EventTime::dayKeys( 'nope', '' ) );
 	}
+
+	public function test_unparseable_start_returns_empty(): void {
+		$now = self::utc( '2026-10-19T12:00:00' );
+		$this->assertSame( '', EventTime::untilKey( 'nope', '2026-10-20T10:00' ) );
+		$this->assertFalse( EventTime::isUpcoming( 'nope', '2026-10-20T10:00', $now ) );
+		$this->assertSame( [], EventTime::dayKeys( 'nope', '2026-10-20T10:00' ) );
+	}
 }

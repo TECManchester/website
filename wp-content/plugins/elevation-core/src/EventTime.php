@@ -38,7 +38,10 @@ final class EventTime {
 	/** The last day the event is on: the end's date, or the start's when there is no end. */
 	public static function untilKey( string $start, string $end ): string {
 		$startKey = self::dateKey( $start );
-		$endKey   = self::dateKey( $end );
+		if ( '' === $startKey ) {
+			return '';
+		}
+		$endKey = self::dateKey( $end );
 		return ( '' !== $endKey && $endKey > $startKey ) ? $endKey : $startKey;
 	}
 
