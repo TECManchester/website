@@ -602,3 +602,9 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .story-text > p { margin: 0; font-size: 18px; color: var(--wp--preset--color--grey-500); text-wrap: pretty; }
 .story-text > p + p { margin-top: 20px; }
 .story-text strong { font-weight: 500; color: var(--wp--preset--color--ink); }
+
+.gift-aid-note { max-width: 576px; margin: 24px auto 0 !important; text-align: center; font-size: 12px; color: var(--wp--preset--color--grey-500); }
+.give-thanks { text-align: center; }
+.give-thanks > h2 { font-size: 24px; font-weight: 600; }
+.give-thanks > p { margin-top: 16px; color: var(--wp--preset--color--grey-500); }
+.aside-stack .address-block > p:first-child { font-weight: 400; }

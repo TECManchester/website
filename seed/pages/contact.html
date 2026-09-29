@@ -1,0 +1,121 @@
+<!-- wp:group {"tagName":"section","align":"full","className":"is-style-page-hero","backgroundColor":"ink","textColor":"white","style":{"spacing":{"padding":{"top":"70px","bottom":"60px"}}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
+<section class="wp-block-group alignfull is-style-page-hero has-white-color has-ink-background-color has-text-color has-background" style="padding-top:70px;padding-bottom:60px"><!-- wp:paragraph {"className":"is-style-eyebrow-on-ink"} -->
+<p class="is-style-eyebrow-on-ink">Say hello</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":1,"textColor":"white"} -->
+<h1 class="wp-block-heading has-white-color has-text-color">Get in touch</h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"className":"is-style-lead-on-ink"} -->
+<p class="is-style-lead-on-ink">Questions about visiting, joining a Connect Group, serving, or anything else — this reaches a real person.</p>
+<!-- /wp:paragraph --></section>
+<!-- /wp:group -->
+
+<!-- wp:group {"tagName":"section","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
+<section class="wp-block-group alignfull" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)"><!-- wp:group {"className":"split split--form","layout":{"type":"default"}} -->
+<div class="wp-block-group split split--form"><!-- wp:group {"className":"form-slot form-slot--contact","layout":{"type":"default"}} -->
+<div class="wp-block-group form-slot form-slot--contact"></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"aside-stack","layout":{"type":"default"}} -->
+<div class="wp-block-group aside-stack"><!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group"><!-- wp:group {"className":"aside-heading","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group aside-heading"><!-- wp:elevation/icon {"name":"map-pin","size":20} /-->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Where we meet</h2>
+<!-- /wp:heading --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"address-block","layout":{"type":"default"}} -->
+<div class="wp-block-group address-block"><!-- wp:paragraph -->
+<p>{location.venue}</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>{location.campus}</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>{location.city} {location.postcode}</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:paragraph -->
+<p><a href="{location.mapsUrl}" target="_blank" rel="noreferrer noopener">Get directions</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group"><!-- wp:group {"className":"aside-heading","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group aside-heading"><!-- wp:elevation/icon {"name":"clock","size":20} /-->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">{service.day} service</h2>
+<!-- /wp:heading --></div>
+<!-- /wp:group -->
+
+<!-- wp:paragraph {"className":"aside-text"} -->
+<p class="aside-text">{service.day}s at {service.startTime}</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group"><!-- wp:group {"className":"aside-heading","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group aside-heading"><!-- wp:elevation/icon {"name":"mail","size":20} /-->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Email</h2>
+<!-- /wp:heading --></div>
+<!-- /wp:group -->
+
+<!-- wp:paragraph -->
+<p><a href="mailto:{contact.email}">{contact.email}</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group"><!-- wp:group {"className":"aside-heading","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group aside-heading"><!-- wp:elevation/icon {"name":"phone","size":20} /-->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Phone</h2>
+<!-- /wp:heading --></div>
+<!-- /wp:group -->
+
+<!-- wp:paragraph -->
+<p><a href="tel:{contact.phoneTel}">{contact.phoneLabel}</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group"><!-- wp:heading -->
+<h2 class="wp-block-heading">Follow us</h2>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li><a href="{socials.youtube.url}" target="_blank" rel="noreferrer noopener"><strong>{socials.youtube.name}</strong> {socials.youtube.handle}</a></li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li><a href="{socials.instagram.url}" target="_blank" rel="noreferrer noopener"><strong>{socials.instagram.name}</strong> {socials.instagram.handle}</a></li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li><a href="{socials.facebook.url}" target="_blank" rel="noreferrer noopener"><strong>{socials.facebook.name}</strong> {socials.facebook.handle}</a></li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li><a href="{socials.x.url}" target="_blank" rel="noreferrer noopener"><strong>{socials.x.name}</strong> {socials.x.handle}</a></li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></section>
+<!-- /wp:group -->
+
+<!-- wp:group {"align":"full","className":"map-band","layout":{"type":"default"}} -->
+<div class="wp-block-group alignfull map-band"><!-- wp:elevation/embed-gate {"height":420,"align":"full"} /--></div>
+<!-- /wp:group -->

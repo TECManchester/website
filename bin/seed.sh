@@ -75,6 +75,16 @@ seed_post page about pages/about.html "About" \
   --meta-description="Our story, our vision and values, and the people who lead {church.name} — an expression of The Elevation Church."
 seed_post page what-we-believe pages/what-we-believe.html "What We Believe" --parent=about \
   --meta-description="The statement of faith of {church.name} — one God in three persons, salvation by grace through faith, the Baptism of the Holy Spirit, and healing in the atonement."
+seed_post page watch pages/watch.html "Watch" \
+  --meta-description="Watch {church.name} live on {service.day}s at {service.startTime}, or catch up on recent messages."
+seed_post page get-involved pages/get-involved.html "Get Involved" \
+  --meta-description="Connect Groups, serving on the G-Squad, The Seeds and 412 Nation, and the support ministries at {church.name}."
+seed_post page give pages/give.html "Give" \
+  --meta-description="Give to {church.name} online, by bank transfer or by cheque. UK taxpayers can Gift Aid their gift to add 25% at no extra cost."
+seed_post page prayer pages/prayer.html "Prayer" \
+  --meta-description="Send a prayer request to {church.name}. Our team will pray, and nothing you share is made public."
+seed_post page contact pages/contact.html "Contact" \
+  --meta-description="Get in touch with {church.name} — {location.venue}, {location.campus}. {service.day}s at {service.startTime}."
 
 wp option update show_on_front page
 wp option update page_on_front "$(wp post list --post_type=page --name=home --field=ID)"
