@@ -28,6 +28,7 @@ require_once ELEVATION_CORE_DIR . 'includes/settings-page.php';
 require_once ELEVATION_CORE_DIR . 'includes/cli.php';
 require_once ELEVATION_CORE_DIR . 'includes/navigation.php';
 require_once ELEVATION_CORE_DIR . 'includes/consent.php';
+require_once ELEVATION_CORE_DIR . 'includes/editor.php';
 
 register_activation_hook( __FILE__, 'elevation_install_roles' );
 

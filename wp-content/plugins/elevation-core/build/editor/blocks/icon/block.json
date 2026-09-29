@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/icon",
+  "title": "Icon",
+  "category": "design",
+  "icon": "star-empty",
+  "description": "A line icon from the site's icon set.",
+  "attributes": {
+    "name": {
+      "type": "string",
+      "enum": [
+        "arrow-right",
+        "baby",
+        "building-2",
+        "calendar-days",
+        "car",
+        "circle-check",
+        "clock",
+        "compass",
+        "hand-coins",
+        "headphones",
+        "heart-handshake",
+        "house",
+        "mail",
+        "map-pin",
+        "monitor-play",
+        "phone",
+        "play",
+        "shield-check",
+        "shirt",
+        "sparkles",
+        "users"
+      ],
+      "default": "clock"
+    },
+    "size": {
+      "type": "number",
+      "default": 24
+    },
+    "filled": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "supports": {
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true
+    },
+    "spacing": {
+      "margin": true
+    }
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}
