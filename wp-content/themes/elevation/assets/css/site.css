@@ -593,3 +593,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .sunday-strip__text > .sunday-strip__line { margin-top: 8px; gap: 8px; font-size: 15px; }
 .sunday-strip__line p { margin: 0; }
 .sunday-strip .wp-block-elevation-icon { color: var(--wp--preset--color--green-700); }
+
+/* Give */
+.give-separator { margin: 56px 0 !important; border: 0; border-top: 1px solid rgb(14 14 44 / 0.1); opacity: 1; }
+.is-style-card-flat > .cheque-payee { margin-top: 8px; font-size: 16px; font-weight: 600; color: var(--wp--preset--color--ink); }
