@@ -85,6 +85,9 @@ function elevation_settings_label( string $key ): string {
 	$words = trim( preg_replace( '/([A-Z0-9]+)/', ' $1', $last ) );
 	$label = ucfirst( strtolower( $words ) );
 	$label = preg_replace( '/\burl\b/i', 'URL', $label );
+	if ( 'contact.connectGroupInbox' === $key ) {
+		return __( 'Connect Groups inbox', 'elevation-core' );
+	}
 	// Nested groups (socials.youtube.url) lead with their brand so the four socials read differently.
 	if ( count( $parts ) > 1 ) {
 		$brand = end( $parts );
@@ -142,6 +145,9 @@ function elevation_render_settings_page(): void {
 									<textarea class="large-text" rows="3" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" placeholder="<?php echo esc_attr( $default ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
 								<?php else : ?>
 									<input class="regular-text" type="<?php echo esc_attr( $type ); ?>" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $value ); ?>" placeholder="<?php echo esc_attr( $is_secret ? '' : $default ); ?>" autocomplete="<?php echo $is_secret ? 'new-password' : 'off'; ?>">
+									<?php if ( 'contact.connectGroupInbox' === $key ) : ?>
+										<p class="description"><?php esc_html_e( "Where 'Ask to join' requests from the Connect Groups page go.", 'elevation-core' ); ?></p>
+									<?php endif; ?>
 									<?php if ( $is_secret ) : ?>
 										<p class="description">
 											<strong><?php echo $has_key ? esc_html__( 'A key is saved.', 'elevation-core' ) : esc_html__( 'No key saved.', 'elevation-core' ); ?></strong>

@@ -37,11 +37,12 @@ final class Settings {
 				'mapsQuery' => 'Mary Seacole Building, University of Salford, M6 6PU',
 			],
 			'contact'   => [
-				'email'        => 'info@elevationmanchester.org',
-				'phoneLabel'   => '07469 062220',
-				'phoneTel'     => '+447469062220',
-				'prayerInbox'  => '',
-				'welcomeInbox' => 'info@elevationmanchester.org',
+				'email'             => 'info@elevationmanchester.org',
+				'phoneLabel'        => '07469 062220',
+				'phoneTel'          => '+447469062220',
+				'prayerInbox'       => '',
+				'welcomeInbox'      => 'info@elevationmanchester.org',
+				'connectGroupInbox' => 'connectgroup@elevationmanchester.org',
 			],
 			'socials'   => [
 				'youtube'   => [ 'name' => 'YouTube', 'handle' => '@TheElevationChurchManchester', 'url' => 'https://www.youtube.com/@TheElevationChurchManchester' ],

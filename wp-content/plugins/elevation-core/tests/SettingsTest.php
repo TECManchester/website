@@ -13,6 +13,7 @@ final class SettingsTest extends TestCase {
 		$this->assertSame( 'Mary Seacole Building', Settings::get( $s, 'location.venue' ) );
 		$this->assertSame( 'info@elevationmanchester.org', Settings::get( $s, 'contact.email' ) );
 		$this->assertSame( 'info@elevationmanchester.org', Settings::get( $s, 'contact.welcomeInbox' ) );
+		$this->assertSame( 'connectgroup@elevationmanchester.org', Settings::get( $s, 'contact.connectGroupInbox' ) );
 		$this->assertSame( '1195403', Settings::get( $s, 'church.charityNumber' ) );
 		$this->assertSame( 'G-0Q3764FCYN', Settings::get( $s, 'analytics.ga4MeasurementId' ) );
 	}

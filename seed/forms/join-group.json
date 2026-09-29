@@ -11,10 +11,10 @@
     { "type": "textarea", "name": "message", "label": "Anything you'd like the leader to know?", "rows": 4 }
   ],
   "notifications": [
-    { "name": "Group leader", "role": "group-leader", "if": "group_id", "to": "{contact.welcomeInbox}", "replyTo": "{inputs.email}",
+    { "name": "Group leader", "role": "group-leader", "if": "group_id", "to": "{contact.connectGroupInbox}", "replyTo": "{inputs.email}",
       "subject": "Connect Group request: {elevation.groupName}",
       "body": [ "<p>Someone would like to join {elevation.groupName}. Please get in touch with them.</p>", "{all_data_without_hidden_fields}" ] },
-    { "name": "Welcome team", "to": "{contact.welcomeInbox}", "replyTo": "{inputs.email}",
+    { "name": "Connect Groups inbox", "to": "{contact.connectGroupInbox}", "replyTo": "{inputs.email}",
       "subject": "Connect Group request: {elevation.groupName}",
       "body": [ "<p>A Connect Group request from the website. Group: {elevation.groupName}.</p>", "{all_data_without_hidden_fields}" ] }
   ]
