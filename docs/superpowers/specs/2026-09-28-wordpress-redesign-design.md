@@ -206,7 +206,7 @@ templates for the post types in §6.
 
 - Settings → Church, one option `elevation_settings`. Groups and defaults as `church.ts`
   (inventory §3): church, service (day, start time, doors-open), location, contact (email, phone,
-  `prayerInbox`, `welcomeInbox` = `info@elevationmanchester.org`), socials, giving, hero slides (media, focal point, alt), YouTube
+  `prayerInbox`, `welcomeInbox` = `info@elevationmanchester.org`, `connectGroupInbox` = `connectgroup@elevationmanchester.org`), socials, giving, hero slides (media, focal point, alt), YouTube
   (API key, channel handle). Derived values: `location.full`, `mapsUrl`, `embedUrl`.
 - Capability `manage_church_settings` (Site Manager and Administrator, §7). The API key is never
   output to the front end.
