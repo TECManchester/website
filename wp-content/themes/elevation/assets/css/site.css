@@ -385,11 +385,12 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 
 /* Dark cards (home "Don't do life alone") */
 .wp-block-group.is-style-card-ink { position: relative; }
-:where(.wp-block-group.is-style-card-ink) > * { margin-block: 0; }
+.wp-block-group.is-style-card-ink > * { margin-block: 0; }
 .wp-block-group.is-style-card-ink:hover { background: rgb(255 255 255 / 0.08); border-color: rgb(132 194 36 / 0.4); }
 @media (prefers-reduced-motion: no-preference) { .wp-block-group.is-style-card-ink:hover { transform: translateY(-6px); } }
 .is-style-card-ink .card__tile { width: 50px; height: 50px; margin-bottom: 18px; border-radius: 13px; background: rgb(132 194 36 / 0.16); }
-.is-style-card-ink h3 { margin-bottom: 6px; font-size: 19px; color: #fff; }
+.wp-block-group.is-style-card-ink > h3 { margin-bottom: 6px; }
+.is-style-card-ink h3 { font-size: 19px; color: #fff; }
 .is-style-card-ink h3 a { color: inherit; text-decoration: none; }
 .is-style-card-ink h3 a::before { content: ""; position: absolute; inset: 0; border-radius: 18px; }
 .is-style-card-ink h3 a:focus-visible { outline: none; }
