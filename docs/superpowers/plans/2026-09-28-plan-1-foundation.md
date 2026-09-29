@@ -2572,7 +2572,7 @@ git add -A wp-content/themes/elevation wp-content/plugins/elevation-core bin see
 git commit -m "Foundation acceptance fixes
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" || true
-git tag plan-1-foundation
+git tag plan-1-done
 ```
 
 Then update `docs/superpowers/plans/2026-09-28-roadmap.md`: set Plan 1's status to "done".

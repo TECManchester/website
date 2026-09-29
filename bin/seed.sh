@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 set -a; source .env; set +a
 
-cutoff=$(grep -v '^#' seed/CUTOFF | head -1 | tr -d '[:space:]')
+cutoff=$( { grep -v '^#' seed/CUTOFF || true; } | head -1 | tr -d '[:space:]')
 if [ "$cutoff" != "none" ] && ! [[ "$cutoff" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
   echo "seed/CUTOFF must be \"none\" or a date (YYYY-MM-DD); got \"$cutoff\"." >&2
   exit 1

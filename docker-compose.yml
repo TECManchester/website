@@ -40,7 +40,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "${WP_PORT}:80"
+      - "127.0.0.1:${WP_PORT}:80"
     environment: *wp-env
     volumes:
       - wp_core:/var/www/html
@@ -67,7 +67,7 @@ services:
     image: axllent/mailpit:v1.31.3@sha256:ed9b00c609e77e99c79b93f1178255ebc271868920f2c69a8d166bd5634ed10d
     restart: unless-stopped
     ports:
-      - "8025:8025"
+      - "127.0.0.1:8025:8025"
 
   phpmyadmin:
     image: phpmyadmin:5@sha256:0b38dba8580a95729813799e36623042ac5e23af19d8c50f8003b19f4b980726
@@ -75,7 +75,7 @@ services:
     depends_on:
       - db
     ports:
-      - "8081:80"
+      - "127.0.0.1:8081:80"
     environment:
       PMA_HOST: db
       UPLOAD_LIMIT: 256M

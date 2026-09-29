@@ -15,6 +15,7 @@ Credentials are in `.env` (gitignored).
 ## Build from nothing
 
 ```bash
+cp .env.example .env  # then edit the passwords in .env
 ./bin/setup.sh        # pinned WordPress + plugins (bin/versions.lock), then ./bin/seed.sh
 ./bin/check-env.sh    # verify versions, table prefix and database match the lock
 ```
