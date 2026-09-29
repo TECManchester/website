@@ -4,6 +4,7 @@
 .ecm-section { box-sizing: border-box; padding-block: var(--wp--preset--spacing--60); margin-block: 0 !important; }
 .ecm-section__inner { max-width: 1240px; margin-inline: auto; }
 .ecm-section__inner > * { margin-block: 0; }
+.ecm-section__inner > .section-heading { margin-bottom: 3.25rem; }
 /* "Recent messages" turns grey under an active live or upcoming player (inventory §1 Watch). */
 .wp-block-elevation-live-player.is-active + .watch-messages { background: var(--wp--preset--color--grey-50); }
 .watch-messages__more { justify-content: center; margin-top: 2.75rem !important; }
@@ -14,7 +15,7 @@
 @media (min-width: 640px) { .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .video-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .video-card__link { display: block; color: inherit; text-decoration: none; }
-.video-card__link:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 4px; border-radius: 14px; }
+.video-card__link:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 2px; border-radius: 14px; }
 .video-card__media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 14px; background: var(--wp--preset--color--ink); box-shadow: var(--wp--preset--shadow--card); transition: transform 0.25s ease, box-shadow 0.25s ease; }
 .video-card__link:hover .video-card__media { box-shadow: var(--wp--preset--shadow--card-lg); }
 @media (prefers-reduced-motion: no-preference) { .video-card__link:hover .video-card__media { transform: translateY(-4px); } }
@@ -29,8 +30,8 @@
 .video-card__link:hover .video-card__title { color: var(--wp--preset--color--green-700); }
 .video-card__date { margin: 4px 0 0; font-size: 13.5px; color: var(--wp--preset--color--grey-500); }
 
-/* ---------- Live badge (redesign LiveBadge; #D64545 is the redesign's exact red, no preset) ---------- */
-.live-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 9999px; background: #D64545; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+/* ---------- Live badge (redesign LiveBadge; #CC3B3B is the nearest AA-passing shade (4.93:1 with white) of the redesign's #D64545, no preset) ---------- */
+.live-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 9999px; background: #CC3B3B; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
 .live-badge__dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
 @media (prefers-reduced-motion: no-preference) {
 	.live-badge__dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; opacity: 0.75; animation: live-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
