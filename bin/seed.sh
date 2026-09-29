@@ -65,6 +65,12 @@ for id in $(wp post list --post_type=wp_navigation --post_status=any --name=head
 done
 seed_post wp_navigation header navigation/header.html "Header"
 
+# WordPress's sample content would shadow /sample-page and /privacy-policy, which now redirect (Task 13).
+for spec in page:sample-page page:privacy-policy post:hello-world; do
+  ids=$(wp post list --post_type="${spec%%:*}" --name="${spec#*:}" --post_status=any --format=ids)
+  [ -n "$ids" ] && wp post delete $ids --force
+done
+
 seed_post page home pages/home.html "Home" \
   --seo-title="%%sitename%% %%sep%% %%sitedesc%%" \
   --meta-description="A Spirit-filled church family in Manchester on one mission: making greatness common. Join us {service.day}s at {service.startTime}, {location.venue}, {location.campus}."
@@ -85,6 +91,9 @@ seed_post page prayer pages/prayer.html "Prayer" \
   --meta-description="Send a prayer request to {church.name}. Our team will pray, and nothing you share is made public."
 seed_post page contact pages/contact.html "Contact" \
   --meta-description="Get in touch with {church.name} — {location.venue}, {location.campus}. {service.day}s at {service.startTime}."
+seed_post page privacy pages/privacy.html "Privacy notice" \
+  --meta-description="How {church.name} collects, uses and protects your personal information, and the choices you have."
+wp option update wp_page_for_privacy_policy "$(wp post list --post_type=page --name=privacy --field=ID)"
 
 wp option update show_on_front page
 wp option update page_on_front "$(wp post list --post_type=page --name=home --field=ID)"
