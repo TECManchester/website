@@ -583,3 +583,13 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 	*, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 	.is-style-card:hover .card__media img, .is-style-portrait:hover .wp-block-cover__image-background, .watch-tile:hover .watch-tile__play { transform: none; }
 }
+
+/* Sunday strip */
+.sunday-strip { display: flex; flex-direction: column; gap: 20px; }
+.sunday-strip > * { margin-block: 0; }
+@media (min-width: 640px) { .sunday-strip { flex-direction: row; align-items: center; justify-content: space-between; } }
+.sunday-strip__text > * { margin-block: 0; }
+.sunday-strip__text > h2 { margin-top: 6px; font-size: 24px; }
+.sunday-strip__text > .sunday-strip__line { margin-top: 8px; gap: 8px; font-size: 15px; }
+.sunday-strip__line p { margin: 0; }
+.sunday-strip .wp-block-elevation-icon { color: var(--wp--preset--color--green-700); }
