@@ -208,15 +208,19 @@
 	}
 
 	window.addEventListener( 'storage', function ( event ) {
-		if ( event.key !== S.KEY ) {
-			return;
+		if ( event.key !== S.KEY && event.key !== null ) {
+			return; // Another key changed. A null key means another tab called localStorage.clear().
 		}
 		const before = state;
-		state = S.parse( event.newValue, null, Date.now() );
+		state = S.parse( event.key === null ? null : event.newValue, null, Date.now() );
 		if ( S.withdrewAnalytics( before, state ) ) {
 			clearAnalytics();
 		}
 		sync();
+		window.dispatchEvent( new CustomEvent( EVENT, { detail: state } ) );
+		if ( ! state ) {
+			showBanner( false );
+		}
 	} );
 
 	document.querySelectorAll( '[data-ecm-embed-load]' ).forEach( function ( button ) {
