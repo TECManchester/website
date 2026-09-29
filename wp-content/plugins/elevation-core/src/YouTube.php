@@ -166,13 +166,15 @@ final class YouTube {
 		}
 		try {
 			$dt = new DateTimeImmutable( $value );
-			// Verify the date part survives: Y-m-d must equal input's first 10 characters after parsing in UTC.
-			$utc = $dt->setTimezone( new DateTimeZone( 'UTC' ) );
-			$parsed_date = $utc->format( 'Y-m-d' );
+			// Verify the date part survives in the input's own timezone (before UTC conversion).
+			// This allows valid timestamps like 2026-10-04T23:30:00-05:00 (which is 2026-10-05 in UTC).
+			$parsed_date = $dt->format( 'Y-m-d' );
 			$input_date  = substr( $value, 0, 10 );
 			if ( $parsed_date !== $input_date ) {
 				return '';
 			}
+			// Now convert to UTC for the final timestamp.
+			$utc = $dt->setTimezone( new DateTimeZone( 'UTC' ) );
 			return $utc->format( 'Y-m-d\TH:i:s\Z' );
 		} catch ( \Exception ) {
 			return '';

@@ -178,4 +178,16 @@ final class YouTubeTest extends TestCase {
 		] ) ] ], [ 'aaaaaaaaaaa' ] )[0];
 		$this->assertSame( '', $v['thumbnail'], 'look-alike host rejected' );
 	}
+
+	public function test_iso_with_timezone_offsets_crossing_midnight(): void {
+		// Valid timestamp with negative offset that crosses midnight in UTC.
+		// 2026-10-04T23:30:00-05:00 is 2026-10-05T04:30:00Z.
+		$v = YouTube::videos( [ 'items' => [ self::video( 'aaaaaaaaaaa', [ 'publishedAt' => '2026-10-04T23:30:00-05:00' ] ) ] ], [ 'aaaaaaaaaaa' ] )[0];
+		$this->assertSame( '2026-10-05T04:30:00Z', $v['publishedAt'], 'offset crossing midnight accepted' );
+
+		// Valid timestamp with positive offset that crosses midnight backward in UTC.
+		// 2026-10-05T00:30:00+01:00 is 2026-10-04T23:30:00Z, which in London (BST, +01:00) is 2026-10-05T00:30:00.
+		// So the London date is 5 Oct 2026.
+		$this->assertSame( '5 Oct 2026', YouTube::displayDate( '2026-10-05T00:30:00+01:00' ), 'positive offset in London date calculation' );
+	}
 }
