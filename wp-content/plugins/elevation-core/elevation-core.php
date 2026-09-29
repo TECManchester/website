@@ -39,6 +39,7 @@ require_once ELEVATION_CORE_DIR . 'includes/events.php';
 require_once ELEVATION_CORE_DIR . 'includes/event-render.php';
 require_once ELEVATION_CORE_DIR . 'includes/youtube.php';
 require_once ELEVATION_CORE_DIR . 'includes/youtube-render.php';
+require_once ELEVATION_CORE_DIR . 'includes/live.php';
 
 register_activation_hook( __FILE__, 'elevation_install_roles' );
 

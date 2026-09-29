@@ -1,6 +1,6 @@
 /**
  * Consent runtime (spec §6.8): the banner, GA4 after analytics consent, embed gates and the
- * Privacy page controls. Needs consent-state.js; config in window.ecmConsentConfig = { ga4 }.
+ * Privacy page controls; ecmConsent.scan(root) wires up embed gates swapped in later (live status). Needs consent-state.js; config in window.ecmConsentConfig = { ga4 }.
  */
 ( function () {
 	const S = window.ecmConsentState;
@@ -236,6 +236,17 @@
 		},
 		open: function () {
 			showBanner( true );
+		},
+		/** Wire up embed gates added after load (the live swap): enable their buttons, open them if allowed. */
+		scan: function ( root ) {
+			( root || document ).querySelectorAll( '[data-ecm-embed-load]' ).forEach( function ( button ) {
+				button.disabled = false;
+			} );
+			if ( state && state.embeds ) {
+				( root || document ).querySelectorAll( '[data-ecm-embed]:not(.is-loaded)' ).forEach( function ( gate ) {
+					openEmbed( gate, false );
+				} );
+			}
 		},
 	};
 } )();

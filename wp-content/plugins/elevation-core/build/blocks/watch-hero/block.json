@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/watch-hero",
+  "title": "Watch: page hero",
+  "category": "widgets",
+  "icon": "video-alt3",
+  "description": "The Watch page hero. It says “We're live right now” while the church is streaming.",
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "viewScript": "elevation-live-status",
+  "render": "file:./render.php"
+}

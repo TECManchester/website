@@ -37,3 +37,30 @@
 	.live-badge__dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; opacity: 0.75; animation: live-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
 }
 @keyframes live-ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+
+/* ---------- Watch hero, live player and next stream (redesign live-player.tsx) ---------- */
+.watch-hero { padding-top: 70px; padding-bottom: 60px; margin-block: 0 !important; }
+.watch-hero .ecm-section__inner > * + * { margin-top: 12px; }
+.watch-hero .is-style-lead-on-ink { max-width: 560px; }
+.live-player { display: grid; gap: 48px; align-items: center; }
+@media (min-width: 1024px) { .live-player { grid-template-columns: 1.3fr 1fr; } }
+.live-player__video .wp-block-elevation-embed-gate { border-radius: 18px; overflow: hidden; box-shadow: var(--wp--preset--shadow--card-lg); }
+.live-player__text > * { margin: 0; }
+.live-player__text h2 { margin-top: 16px; font-size: 34px; text-wrap: balance; }
+.live-player__text p { margin-top: 12px; color: var(--wp--preset--color--grey-500); }
+.live-player__text .wp-block-buttons { gap: 12px; margin-top: 24px; }
+.upcoming-stream { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; padding: 28px; border: 1px solid rgb(132 194 36 / 0.4); border-radius: 18px; background: var(--wp--preset--color--green-100); }
+@media (min-width: 640px) { .upcoming-stream { flex-direction: row; align-items: center; justify-content: space-between; } }
+.upcoming-stream h2 { margin: 8px 0 0; font-size: 24px; }
+.upcoming-stream > div > p { margin: 0; }
+.upcoming-stream__when { margin-top: 8px !important; font-size: 14px; color: var(--wp--preset--color--grey-500); }
+
+/* ---------- Home watch tile (block version of the Plan 2 group; .watch-tile/.watch-intro are in site.css) ---------- */
+a.watch-tile { color: inherit; text-decoration: none; }
+a.watch-tile:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 4px; }
+.watch-tile > .watch-tile__image { position: absolute !important; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
+.watch-tile > .watch-tile__badge { position: absolute !important; top: 16px; left: 16px; z-index: 2; }
+.watch-tile__badge .watch-tile__chip { display: inline-block; padding: 6px 12px; border-radius: 8px; background: rgb(14 14 44 / 0.7); backdrop-filter: blur(12px); color: #fff; font-family: var(--wp--preset--font-family--sora); font-size: 12px; font-weight: 600; }
+a.watch-tile .watch-tile__play { display: grid; place-items: center; }
+a.watch-tile:hover .watch-tile__play { background: var(--wp--preset--color--green); }
+@media (prefers-reduced-motion: no-preference) { a.watch-tile:hover .watch-tile__play { transform: scale(1.08); } }
