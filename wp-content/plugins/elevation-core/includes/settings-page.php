@@ -161,6 +161,7 @@ function elevation_render_settings_page(): void {
 
 function elevation_render_hero_fields( array $stored ): void {
 	?>
+	<style>.elevation-slide__preview:not([hidden]){display:block}</style>
 	<h2><?php esc_html_e( 'Home page slideshow', 'elevation-core' ); ?></h2>
 	<p><?php esc_html_e( 'Up to six photos behind the home page headline. Keep the subject right of centre; the left side sits under the text. Focal point is the part to keep in frame on phones, as "horizontal% vertical%" (e.g. 62% 30%).', 'elevation-core' ); ?></p>
 	<table class="form-table" role="presentation">
@@ -174,7 +175,7 @@ function elevation_render_hero_fields( array $stored ): void {
 				<th scope="row"><?php echo esc_html( sprintf( __( 'Slide %d', 'elevation-core' ), $n ) ); ?></th>
 				<td>
 					<input type="hidden" class="elevation-slide__id" name="<?php echo esc_attr( $name ); ?>[image]" value="<?php echo esc_attr( $id ?: '' ); ?>">
-					<img class="elevation-slide__preview" src="<?php echo esc_url( (string) $thumb ); ?>" alt="" style="max-width:240px;display:block;margin-bottom:8px" <?php echo $thumb ? '' : 'hidden'; ?>>
+					<img class="elevation-slide__preview" <?php echo $thumb ? 'src="' . esc_url( (string) $thumb ) . '"' : 'hidden'; ?> alt="" style="max-width:240px;margin-bottom:8px">
 					<button type="button" class="button elevation-slide__choose"><?php esc_html_e( 'Choose image', 'elevation-core' ); ?></button>
 					<button type="button" class="button-link elevation-slide__remove" <?php echo $thumb ? '' : 'hidden'; ?>><?php esc_html_e( 'Remove', 'elevation-core' ); ?></button>
 					<p><label><?php esc_html_e( 'Focal point', 'elevation-core' ); ?> <input type="text" class="small-text" name="<?php echo esc_attr( $name ); ?>[focal]" value="<?php echo esc_attr( (string) ( $stored[ "$base.focal" ] ?? '' ) ); ?>" placeholder="50% 50%" pattern="\d{1,3}% \d{1,3}%"></label></p>
