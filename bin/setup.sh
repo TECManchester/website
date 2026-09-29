@@ -18,7 +18,9 @@ if [ "$actual" != "$WP_CORE" ]; then
   exit 1
 fi
 
-if ! wp core is-installed 2>/dev/null; then
+if ! wp --url="$WP_URL" core is-installed 2>/dev/null; then
+  # uploads is a host bind mount that outlives `down -v`; the seed recreates all media, so a fresh install starts empty (no -1/-2 file names).
+  [ -d wp-content/uploads ] && find wp-content/uploads -mindepth 1 -delete
   wp core install --url="$WP_URL" --title="$WP_TITLE" \
     --admin_user="$WP_ADMIN_USER" --admin_password="$WP_ADMIN_PASSWORD" \
     --admin_email="$WP_ADMIN_EMAIL" --skip-email
