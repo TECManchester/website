@@ -1,12 +1,15 @@
 <?php
 /**
- * Watch → "Recent messages" (spec §6.3): the channel's 12 latest finished videos, or the redesign's
+ * Watch → "Recent messages" (spec §6.3): the channel's 12 latest finished live streams, or the redesign's
  * fallback panel. The section turns grey under an active live or upcoming player (youtube.css).
  */
 use Elevation\Core\Icons;
 use Elevation\Core\YouTube;
 
 defined( 'ABSPATH' ) || exit;
+
+// Icons here are printed by hand, so load the icon block's stylesheet (it sizes the SVG).
+wp_enqueue_style( generate_block_asset_handle( 'elevation/icon', 'style' ) );
 
 $elevation_feed   = elevation_youtube_feed();
 $elevation_videos = YouTube::past( $elevation_feed['videos'], 12 );

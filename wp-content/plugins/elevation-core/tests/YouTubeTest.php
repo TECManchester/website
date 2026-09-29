@@ -72,6 +72,7 @@ final class YouTubeTest extends TestCase {
 			'durationSecs'   => 3723,
 			'live'           => 'none',
 			'scheduledStart' => '',
+			'wasLive'        => false,
 			'url'            => 'https://www.youtube.com/watch?v=bbbbbbbbbbb',
 		], $videos[1] );
 		$this->assertSame( 'upcoming', $videos[0]['live'] );
@@ -150,9 +151,25 @@ final class YouTubeTest extends TestCase {
 		$list = [ $v( 'u2', 'upcoming', '2026-10-18T09:30:00Z' ), $v( 'p1', 'none' ), $v( 'l1', 'live' ), $v( 'u1', 'upcoming', '2026-10-11T09:30:00Z' ), $v( 'u0', 'upcoming' ), $v( 'p2', 'none' ), $v( 'p3', 'none' ) ];
 		$this->assertSame( 'l1', YouTube::liveNow( $list )['id'] );
 		$this->assertSame( 'u1', YouTube::nextUpcoming( $list )['id'], 'soonest with a schedule' );
-		$this->assertSame( [ 'p1', 'p2' ], array_column( YouTube::past( $list, 2 ), 'id' ) );
+		$streams = array_map( fn ( $x ) => $x + [ 'wasLive' => true ], $list );
+		$this->assertSame( [ 'p1', 'p2' ], array_column( YouTube::past( $streams, 2 ), 'id' ) );
 		$this->assertNull( YouTube::liveNow( [ $v( 'p1', 'none' ) ] ) );
 		$this->assertNull( YouTube::nextUpcoming( [ $v( 'u0', 'upcoming' ) ] ) );
+	}
+
+	public function test_only_finished_live_streams_count_as_past(): void {
+		$response = [ 'items' => [
+			self::video( 'aaaaaaaaaaa', [], [ 'liveStreamingDetails' => [ 'actualStartTime' => '2026-10-04T09:25:00Z', 'actualEndTime' => '2026-10-04T11:40:00Z' ] ] ),
+			self::video( 'bbbbbbbbbbb' ),
+			self::video( 'ccccccccccc', [], [ 'liveStreamingDetails' => [ 'scheduledStartTime' => '2026-10-11T09:30:00Z' ] ] ),
+			self::video( 'ddddddddddd', [], [ 'liveStreamingDetails' => [ 'actualStartTime' => 'garbage' ] ] ),
+		] ];
+		$videos = YouTube::videos( $response, [ 'aaaaaaaaaaa', 'bbbbbbbbbbb', 'ccccccccccc', 'ddddddddddd' ] );
+		$this->assertSame( [ true, false, false, false ], array_column( $videos, 'wasLive' ), 'a stream that actually started; not an upload, a schedule alone, or junk' );
+		$this->assertSame( [ 'aaaaaaaaaaa' ], array_column( YouTube::past( $videos, 12 ), 'id' ), 'uploads and Shorts are left out' );
+		$live = YouTube::videos( [ 'items' => [ self::video( 'eeeeeeeeeee', [ 'liveBroadcastContent' => 'live' ], [ 'liveStreamingDetails' => [ 'actualStartTime' => '2026-10-11T09:25:00Z' ] ] ) ] ], [ 'eeeeeeeeeee' ] );
+		$this->assertSame( [], YouTube::past( $live, 12 ), 'a stream still on air is not past' );
+		$this->assertSame( 'eeeeeeeeeee', YouTube::liveNow( $live )['id'] );
 	}
 
 	public function test_london_formats(): void {

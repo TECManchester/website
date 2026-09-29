@@ -69,6 +69,8 @@ final class YouTube {
 				'durationSecs'   => self::parseDuration( $item['contentDetails']['duration'] ?? null ),
 				'live'           => in_array( $live, [ 'live', 'upcoming' ], true ) ? $live : 'none',
 				'scheduledStart' => self::iso( $item['liveStreamingDetails']['scheduledStartTime'] ?? '' ),
+				// A broadcast that actually went out (spec rev 4: "Recent messages" shows live streams only).
+				'wasLive'        => '' !== self::iso( $item['liveStreamingDetails']['actualStartTime'] ?? '' ),
 				'url'            => self::watchUrl( $id ),
 			];
 		}
@@ -155,9 +157,9 @@ final class YouTube {
 		return $upcoming[0] ?? null;
 	}
 
-	/** @return list<array> Finished videos, newest first. */
+	/** @return list<array> Finished live streams (not ordinary uploads or Shorts), newest first. */
 	public static function past( array $videos, int $limit ): array {
-		return array_slice( array_values( array_filter( $videos, static fn ( $v ) => 'none' === ( $v['live'] ?? '' ) ) ), 0, max( 0, $limit ) );
+		return array_slice( array_values( array_filter( $videos, static fn ( $v ) => 'none' === ( $v['live'] ?? '' ) && ! empty( $v['wasLive'] ) ) ), 0, max( 0, $limit ) );
 	}
 
 	/** "Sunday 5 October, 10:30" in London time. */

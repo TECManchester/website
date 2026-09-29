@@ -9,6 +9,9 @@ use Elevation\Core\YouTube;
 
 defined( 'ABSPATH' ) || exit;
 
+// Icons here are printed by hand, so load the icon block's stylesheet (it sizes the SVG).
+wp_enqueue_style( generate_block_asset_handle( 'elevation/icon', 'style' ) );
+
 $elevation_live  = elevation_youtube_live();
 $elevation_is_on = 'live' === $elevation_live['state'];
 $elevation_video = $elevation_is_on ? $elevation_live['video'] : ( YouTube::past( elevation_youtube_feed()['videos'], 1 )[0] ?? null );

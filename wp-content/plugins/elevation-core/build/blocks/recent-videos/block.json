@@ -5,7 +5,7 @@
   "title": "Recent messages (YouTube)",
   "category": "widgets",
   "icon": "video-alt3",
-  "description": "The 12 latest finished videos from the church's YouTube channel; each opens YouTube. Without a working API key, a link to the channel.",
+  "description": "The 12 latest finished live streams from the church's YouTube channel (not other uploads or Shorts); each opens YouTube. Without a working API key, a link to the channel.",
   "supports": {
     "html": false,
     "multiple": false
