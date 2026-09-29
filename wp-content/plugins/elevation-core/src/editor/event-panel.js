@@ -12,12 +12,23 @@ import { BaseControl, Button, DateTimePicker, Dropdown, Notice, TextControl, Tog
 
 const LOCK = 'elevation-event-details';
 const DEFAULT_VENUE = ( window.elevationEventDefaults || {} ).venue || '';
-const toMinutes = ( value ) => ( value ? String( value ).slice( 0, 16 ) : '' );
-const okUrl = ( url ) => url === '' || ( /^\/(?!\/)/.test( url ) && ! url.includes( '\\' ) ) || /^https:\/\/[a-z0-9.-]+(:\d+)?([/?#]\S*)?$/i.test( url );
-const label = ( value ) =>
-	value
-		? new Intl.DateTimeFormat( 'en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'UTC' } ).format( new Date( `${ value }:00Z` ) )
-		: 'Not set';
+const toMinutes = ( value ) => ( /^\d{4}-\d\d-\d\dT\d\d:\d\d/.test( String( value || '' ) ) ? String( value ).slice( 0, 16 ) : '' );
+const okUrl = ( url ) => {
+	if ( url === '' ) {
+		return true;
+	}
+	if ( /\s/.test( url ) || url.includes( '\\' ) ) {
+		return false;
+	}
+	return /^\/(?!\/)/.test( url ) || /^https:\/\/[a-z0-9.-]+(:\d+)?([/?#].*)?$/i.test( url );
+};
+const label = ( value ) => {
+	const date = new Date( `${ value }:00Z` );
+	if ( ! value || Number.isNaN( date.getTime() ) ) {
+		return 'Not set';
+	}
+	return new Intl.DateTimeFormat( 'en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'UTC' } ).format( date );
+};
 
 function WhenControl( { title, value, onChange, allowClear } ) {
 	return (
@@ -46,6 +57,10 @@ function WhenControl( { title, value, onChange, allowClear } ) {
 
 function EventDetailsPanel() {
 	const postType = useSelect( ( select ) => select( editorStore ).getCurrentPostType(), [] );
+	return 'event' === postType ? <EventDetailsFields /> : null;
+}
+
+function EventDetailsFields() {
 	const [ meta, setMeta ] = useEntityProp( 'postType', 'event', 'meta' );
 	const { lockPostSaving, unlockPostSaving } = useDispatch( editorStore );
 	const m = meta || {};
@@ -64,16 +79,14 @@ function EventDetailsPanel() {
 	const blocked = problems.length > 0;
 
 	useEffect( () => {
-		if ( 'event' !== postType ) {
-			return undefined;
+		if ( blocked ) {
+			lockPostSaving( LOCK );
+		} else {
+			unlockPostSaving( LOCK );
 		}
-		blocked ? lockPostSaving( LOCK ) : unlockPostSaving( LOCK );
 		return () => unlockPostSaving( LOCK );
-	}, [ postType, blocked ] );
+	}, [ blocked ] );
 
-	if ( 'event' !== postType ) {
-		return null;
-	}
 	return (
 		<PluginDocumentSettingPanel name="elevation-event-details" title="Event details" initialOpen>
 			{ ! start && <Notice status="warning" isDismissible={ false }>Add a start date and time before publishing.</Notice> }
