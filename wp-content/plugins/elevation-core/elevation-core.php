@@ -40,6 +40,7 @@ require_once ELEVATION_CORE_DIR . 'includes/settings-page.php';
 require_once ELEVATION_CORE_DIR . 'includes/cli.php';
 require_once ELEVATION_CORE_DIR . 'includes/fixtures-cli.php';
 require_once ELEVATION_CORE_DIR . 'includes/forms-cli.php';
+require_once ELEVATION_CORE_DIR . 'includes/groups-cli.php';
 require_once ELEVATION_CORE_DIR . 'includes/navigation.php';
 require_once ELEVATION_CORE_DIR . 'includes/consent.php';
 require_once ELEVATION_CORE_DIR . 'includes/editor.php';

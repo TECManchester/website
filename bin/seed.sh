@@ -110,10 +110,14 @@ seed_post page church-in-the-park-2025 pages/church-in-the-park-2025.html "Churc
 seed_post page connect-groups pages/connect-groups.html "Connect Groups" \
   --meta-description="Find a Connect Group at {church.name}: small groups across Manchester and online, by area, season of life and day of the week."
 
-# Local-only sample events (spec §9), dated relative to today. Plan 6 removes them before go-live:
+# The church's real Connect Groups (spec §6.6), from seed/groups.json. A group edited in wp-admin is skipped
+# unless SEED_FORCE names it as "group:<slug>". Leader emails are added in wp-admin, never seeded.
+group_force=$(for word in ${SEED_FORCE:-}; do case $word in (group:*) printf '%s,' "${word#group:}" ;; esac; done)
+wp elevation groups seed /seed/groups.json --force="${group_force%,}"
+
+# Local-only sample events and announcements (spec §9), dated relative to today. Plan 6 removes them before go-live:
 #   wp elevation fixtures remove
 wp elevation fixtures events /seed/fixtures/events.json
-wp elevation fixtures groups /seed/fixtures/groups.json
 wp elevation fixtures announcements /seed/fixtures/announcements.json
 
 # The church's Fluent Forms (spec §6.10), from seed/forms/*.json. A form edited in Fluent Forms is skipped
