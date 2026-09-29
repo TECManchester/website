@@ -94,17 +94,34 @@ add_action( 'fluentform/before_form_delete', static function ( $formId ) {
 	}
 }, 1 );
 
-// "Delete entries after submission" or an auto-delete period switched on for Gift Aid is switched off again
-// before the entry is stored, so the declaration is always kept.
-add_action( 'fluentform/before_insert_submission', static function ( $insertData, $data, $form ) {
-	if ( 'gift-aid' !== elevation_form_key_of( $form ) ) {
+// "Delete entries after submission" or an auto-delete period switched on for Gift Aid is switched off again, so
+// the declaration is always kept. Runs before each Gift Aid entry is stored, right after Fluent Forms saves form
+// settings, and on admin_init (Fluent Forms Pro's scheduled cleanup could otherwise act in between). Cheap no-op
+// when nothing needs changing.
+function elevation_gift_aid_keep_entries(): void {
+	$id = elevation_form_id( 'gift-aid' );
+	if ( ! $id || ! class_exists( '\FluentForm\App\Helpers\Helper' ) ) {
 		return;
 	}
 	$helper = \FluentForm\App\Helpers\Helper::class;
-	if ( $helper::isEntryAutoDeleteEnabled( $form->id ) ) {
-		$settings                               = (array) $helper::getFormMeta( $form->id, 'formSettings', [] );
+	$meta   = \FluentForm\App\Models\FormMeta::class;
+	if ( $helper::isEntryAutoDeleteEnabled( $id ) ) {
+		$settings                               = (array) $helper::getFormMeta( $id, 'formSettings', [] );
 		$settings['delete_entry_on_submission'] = 'no';
-		$helper::setFormMeta( $form->id, 'formSettings', $settings );
+		$helper::setFormMeta( $id, 'formSettings', $settings );
 	}
-	\FluentForm\App\Models\FormMeta::remove( $form->id, 'auto_delete_days' );
+	if ( $meta::where( 'form_id', $id )->where( 'meta_key', 'auto_delete_days' )->exists() ) {
+		$meta::remove( $id, 'auto_delete_days' );
+	}
+}
+add_action( 'fluentform/before_insert_submission', static function ( $insertData, $data, $form ) {
+	if ( 'gift-aid' === elevation_form_key_of( $form ) ) {
+		elevation_gift_aid_keep_entries();
+	}
 }, 1, 3 );
+add_action( 'fluentform/after_save_form_settings', static function ( $formId ) {
+	if ( 'gift-aid' === elevation_form_key( (int) $formId ) ) {
+		elevation_gift_aid_keep_entries();
+	}
+}, 20 );
+add_action( 'admin_init', 'elevation_gift_aid_keep_entries' );
