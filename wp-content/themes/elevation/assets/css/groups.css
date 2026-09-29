@@ -13,7 +13,7 @@
 	font: inherit;
 	color: var(--wp--preset--color--ink);
 }
-.group-filters__field input { padding-right: 12px; background: #fff; }
+.group-filters__field input { box-sizing: border-box; padding-right: 12px; background: #fff; }
 .group-filters__field select:focus-visible, .group-filters__field input:focus-visible, .group-filters__clear:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 2px; }
 .group-filters__clear { align-self: center; font-size: 14px; color: var(--wp--preset--color--green-700); }
 .group-directory__note { margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: var(--wp--preset--color--grey-700); }
