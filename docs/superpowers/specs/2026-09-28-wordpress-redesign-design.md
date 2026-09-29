@@ -1,6 +1,6 @@
 # Elevation Church Manchester — WordPress redesign
 
-Date: 2026-09-28 (revision 3: Phase 0 findings from the live backup)
+Date: 2026-09-28 (revision 3: Phase 0 findings from the live backup; revision 4, 2026-09-29: messages come straight from the YouTube channel, §16)
 Status: revised, awaiting spec review
 
 ## 1. Goal
@@ -13,7 +13,7 @@ Success means:
 
 - Every public page of the redesign exists in WordPress and matches it visually, side by side at
   desktop (1440px) and mobile (390px) widths, with matching data (§12).
-- Church staff can edit pages, events, sermons, connect groups and announcements as **Editors**,
+- Church staff can edit pages, events, connect groups and announcements as **Editors**,
   and settings and menus as **Site Managers** (§7), in standard WordPress admin. No page builder is
   used. Changing a block's *behaviour* still needs a developer (§3, "Developer dependency").
 - The environment is reproducible: pinned core, plugin and image versions, and one command from
@@ -32,8 +32,8 @@ redesign", that inventory, and ultimately the redesign source, is authoritative.
 | Build method | Custom block theme (Site Editor, `theme.json`, patterns). No Elementor. |
 | Structure | `elevation` theme (presentation) + `elevation-core` plugin (functionality) |
 | Go-live | Replace the whole live site with the finished local site in one migration |
-| Features at launch | Events + calendar, sermons + series, connect-group directory, visit plans, forms, YouTube live, announcements |
-| Sermons | Auto-imported from YouTube as drafts; staff add speaker and series, then publish |
+| Features at launch | Events + calendar, messages from the YouTube channel, connect-group directory, visit plans, forms, YouTube live, announcements |
+| Messages | Shown straight from the church's YouTube channel and opened on YouTube; nothing is stored or edited in WordPress (§6.3) |
 | Old pages | Redirect replaced pages; keep Resources, Alpha, ETracts and Church in the Park 2025, restyled |
 | Old forms | Mapped onto new features; live entries migrated (§6.10) |
 | Forms | Fluent Forms (free), styled by the theme |
@@ -112,7 +112,6 @@ wp-content/
     theme.json, style.css, functions.php
     templates/                  front-page, page, 404, index, search,
                                 single-event, archive-event,
-                                single-sermon, archive-sermon, taxonomy-series,
                                 archive-connect_group
     parts/                      header.html, footer.html
     patterns/                   section patterns (§5.3), one PHP file each
@@ -191,8 +190,7 @@ templates for the post types in §6.
 | I'm New | `/im-new` | redesign + ids `what-to-expect`, `find-us`, `kids` + **Plan a Visit form** (`#plan-a-visit`) + **Connect card** (`#connect-card`) |
 | About | `/about` | redesign (ids `our-story`, `vision-values`, `leadership`) |
 | What We Believe | `/about/what-we-believe` | redesign |
-| Watch | `/watch` | redesign, with curated sermons (§6.3) |
-| Sermons | `/sermons`, `/sermons/{slug}`, `/sermons/series/{slug}` | new (§6.3) |
+| Watch | `/watch` | redesign: the channel feed and live status (§6.3, §6.4) |
 | Events | `/events`, `/events/{slug}` | §6.2 |
 | Get Involved | `/get-involved` | redesign; `#connect-groups` shows the directory teaser; `#serve` gets the **G-Squad form** |
 | Connect Groups | `/connect-groups` | new directory (§6.6) |
@@ -239,37 +237,32 @@ templates for the post types in §6.
   event that finished minutes ago; that is acceptable. The calendar highlights "today" using the
   browser clock.
 
-### 6.3 Sermons and series
+### 6.3 Messages (the YouTube channel feed)
 
-- Post type `sermon` (`/sermons/`, `/sermons/{slug}/`): title, editor (notes), excerpt, thumbnail
-  (defaults to the YouTube thumbnail). Meta: `youtube_id` (required, unique), `preached_on` (date),
-  `duration_secs`. Taxonomies: `series` (hierarchical off; term meta: image, description;
-  `/sermons/series/{slug}/`) and `speaker` (`/sermons/?speaker=…` filter).
-- **Auto-import**: a WP-Cron job, hourly. It reads the uploads playlist (§6.4 client) and creates a
-  **draft** sermon for each completed video (not live, not upcoming) whose `youtube_id` isn't
-  already known. It fills title, description, `preached_on` (the publish date in London), duration
-  and thumbnail. It never touches existing posts and never publishes. It also offers a manual
-  "Import now" button (Site Manager). Its first run imports at most the last 50 videos; staff can
-  bulk-trash anything unwanted. WP-Cron runs on traffic, and a missed hour just means the next
-  visit catches up.
-- **Admin**: a "Needs details" view listing draft sermons (speaker or series missing), so the weekly
-  task is obvious.
+- Messages are **not** stored in WordPress. The site shows the church's YouTube channel (settings
+  `youtube.channelHandle`, `youtube.apiKey`) through the §6.4 client, and every message card opens the
+  video on YouTube in a new tab, as the redesign does.
 - **Public**:
-  - `/watch`: live player / upcoming strip (§6.4), "Recent messages" = the latest 12 **published
-    sermons** (falling back to the raw YouTube feed until at least one is published), a "Series"
-    row, and "See everything on YouTube".
-  - `/sermons`: a grid with series and speaker filters (GET params, server-rendered, paginated 12).
-  - Single: the video in the consent gate, title, speaker, series link, date, notes, "More from this
-    series".
-  - Series: header image, description, sermons in order.
-  - Home watch section: shows the latest published sermon when not live.
+  - `/watch`: live player / upcoming strip (§6.4), "Recent messages" = the 12 latest finished
+    videos (not live, not upcoming) as the redesign's video cards, "See everything on YouTube".
+    Fallback panel (redesign copy) when there is no API key or the fetch failed.
+  - Home watch section: the live stream while streaming, otherwise the latest finished video; the
+    redesign's static "Missed a Sunday?" section when there is neither.
+- **Thumbnails** would be a request to Google (`i.ytimg.com`) before consent, so the server copies
+  each shown thumbnail into `uploads/elevation-youtube/` and serves it from the site. A thumbnail that
+  can't be copied shows the ink placeholder.
+- **Configured entirely in wp-admin** (live has no server access, §3): Settings → Church holds the
+  API key and channel handle, shows the YouTube status (last successful check, or the last error and
+  when), and has a "Check YouTube now" button that clears the cache.
+- Locally, the API key may instead come from `.env` (`YOUTUBE_API_KEY`), read only by
+  `mu-plugins/local-dev.php`, so rebuilds keep working; the local site shows the real channel.
 
 ### 6.4 YouTube client and live status
 
 - `YouTube_Client`: handle → uploads playlist ID (transient, 1 day). `playlistItems.list` +
   `videos.list` = 2 units per refresh (transient, 60s). Classifies live/upcoming/none, returns
-  duration, thumbnail and scheduled start. Every failure degrades to empty results and one log
-  line. Nothing throws.
+  duration, thumbnail and scheduled start. Every failure degrades to empty results, one log line
+  and a status that Settings → Church shows (§6.3). Nothing throws.
 - **Freshness under the 10-minute HTML cache**: the server renders the last-known state. A view
   script then calls an uncacheable REST endpoint `GET /wp-json/elevation/v1/live` (`Cache-Control:
   no-store`; the answer comes from the 60s transient, so there is no extra API cost per visitor).
@@ -429,8 +422,8 @@ screen. There is no custom redirect code.
 
 | Role | Can | Cannot |
 |---|---|---|
-| **Editor** (core) | Pages, events, sermons (incl. publishing imported drafts), series and speakers, connect groups, announcements, media | Settings, menus, templates, form entries |
-| **Site Manager** (new) | Everything Editors can, plus `manage_church_settings`, `edit_theme_options` (menus, header/footer parts, templates, patterns in the Site Editor), "Import sermons now", Fluent Forms manager access to the forms marked "Site Manager" in §6.10 | Users, plugins, themes, core settings (`manage_options`), Prayer and Gift Aid entries |
+| **Editor** (core) | Pages, events, connect groups, announcements, media | Settings, menus, templates, form entries |
+| **Site Manager** (new) | Everything Editors can, plus `manage_church_settings`, `edit_theme_options` (menus, header/footer parts, templates, patterns in the Site Editor), the YouTube settings and "Check YouTube now", Fluent Forms manager access to the forms marked "Site Manager" in §6.10 | Users, plugins, themes, core settings (`manage_options`), Prayer and Gift Aid entries |
 | **Administrator** | Everything, incl. Prayer and Gift Aid entries | — |
 
 - Administrator accounts are limited to the people allowed to see Prayer and Gift Aid (named in
@@ -438,7 +431,7 @@ screen. There is no custom redirect code.
 - Fluent Forms per-form manager permission is confirmed to exist in the free version
   (`FormManagerService::hasSpecificFormsPermission`). §12 tests that a Site Manager can't reach the
   Prayer or Gift Aid entries by URL.
-- Post-type capabilities for `event`, `sermon`, `connect_group` and `announcement` map onto the
+- Post-type capabilities for `event`, `connect_group` and `announcement` map onto the
   standard post capabilities, so Editors manage them.
 - `edit_theme_options` also lets Site Managers edit templates. That is accepted: the Site Editor
   keeps revisions, and "reset to theme default" restores any template.
@@ -480,7 +473,7 @@ screen. There is no custom redirect code.
 ## 9. Seeding and the cut-off
 
 - `bin/seed.sh` builds the whole redesigned site from nothing: pages, patterns, menus, media, forms,
-  settings defaults, local-only fixtures (events, groups, sample sermons), front page, and removal
+  settings defaults, local-only fixtures (events, groups), front page, and removal
   of Elementor content and plugins.
 - **Source of truth until the cut-off**: `seed/` is authoritative. Content edits made in local
   wp-admin before the cut-off are made in `seed/` instead (or exported back into it with
@@ -518,7 +511,7 @@ screen. There is no custom redirect code.
    - Enter the Fluent Forms Pro licence (if kept).
    - Hand the historic FF 3 and FF 4 entries (never notified) to the welcome team.
 6. **Smoke test**: every live URL from §3 (200 or correct 301), every form end to end (a real
-   email arrives at the right inbox), the announcement, live status, the sermon import, and the
+   email arrives at the right inbox), the announcement, live status, the Watch feed, and the
    Site Manager access limits.
 7. Maintenance mode off. Keep the pre-migration backup until sign-off.
 8. **After sign-off**: delete every backup and migration file that contains personal data, and
@@ -545,18 +538,18 @@ Gift Aid retention of six years after the last gift.
 
 - **PHPUnit** (pure functions): `Event_Time` (London midnight boundary, BST/GMT change, multi-day
   in progress, TBC, same-day range), Gift Aid validators and postcode normaliser, the next-8-service-
-  dates generator, the sermon importer's "should import" rule (live/upcoming/known-ID exclusions),
+  dates generator, the YouTube response parsing and live/upcoming/past selection,
   the entry field maps in `migrate-live-data.php`, the consent-state reducer (defaults, legacy key
   migration, withdrawal), and settings token replacement (unknown keys and escaping).
 - **Visual parity with matching data**: run the redesign against a **local Supabase**
   (`supabase start`, apply its migrations, load `seed/fixtures/` = the same events, announcement and
-  settings the WordPress seed uses). Compare every page at 1440px and 390px. For sermons, connect
+  settings the WordPress seed uses). Compare every page at 1440px and 390px. For connect
   groups and visit plans (new, with no redesign equivalent), compare against the redesign's design
   language, and review them with the user instead.
 - **Behaviour**: header states and the 1024px breakpoint, overlay focus/Escape/scroll lock, About
   dropdown, slideshow and reduced motion, reveal, calendar, announcement show/dismiss/re-show and
-  activation within one page view despite `max-age=600`, live-status swap via REST, sermon import
-  (a mocked YouTube response), directory filters, the Join Group pre-selection, and every §6.9
+  activation within one page view despite `max-age=600`, live-status swap via REST, the Watch feed
+  against the real channel, directory filters, the Join Group pre-selection, and every §6.9
   redirect plus every live URL and short link.
 - **Consent**, checked in the network panel: **no request to any Google domain before consent**.
   GA4 loads after "Accept" or after the analytics toggle. "Reject" loads nothing. Withdrawing clears
@@ -622,3 +615,13 @@ Gift Aid retention of six years after the last gift.
 | 3 live Administrators incl. parent-church IT | §10: accounts migrated with password hashes |
 | WPCode: only an SVG snippet active | §8: WPCode removed |
 | Hummingbird page cache off; browser `max-age=600` | §3, §8: Hummingbird free, page cache off |
+
+## 16. Messages from YouTube (revision 4, 2026-09-29)
+
+| Decision (user, 2026-09-29) | Change |
+|---|---|
+| Messages are the raw YouTube feed, linking out to YouTube; not posts on the site | §2, §5.1, §5.5, §6.3 rewritten: no sermon post type, series, speakers, import or `/sermons` pages |
+| The local site shows the real channel; no mock data | §6.3: local API key from `.env` via `local-dev.php`; tests keep canned API responses only as unit-test inputs |
+| Live has wp-admin access only, so everything is configurable there | §6.3: key, handle, status and "Check YouTube now" in Settings → Church; §6.4 failures surface there, not only in a log |
+| Thumbnails without a Google request before consent | §6.3: server-side copies in `uploads/elevation-youtube/` |
+
