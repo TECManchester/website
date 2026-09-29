@@ -10,7 +10,8 @@
 .event-card:hover { box-shadow: var(--wp--preset--shadow--card-lg); }
 @media (prefers-reduced-motion: no-preference) { .event-card:hover { transform: translateY(-6px); } }
 .event-card__link { display: block; height: 100%; color: inherit; text-decoration: none; }
-.event-card__link:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 2px; border-radius: 18px; }
+.event-card__link:focus-visible { outline: none; }
+.event-card:has(.event-card__link:focus-visible) { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 2px; }
 .event-card__media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--wp--preset--color--ink); }
 .event-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
 .event-card:hover .event-card__media img { transform: scale(1.05); }
