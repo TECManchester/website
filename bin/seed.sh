@@ -69,6 +69,13 @@ seed_post page home pages/home.html "Home" \
   --seo-title="%%sitename%% %%sep%% %%sitedesc%%" \
   --meta-description="A Spirit-filled church family in Manchester on one mission: making greatness common. Join us {service.day}s at {service.startTime}, {location.venue}, {location.campus}."
 
+seed_post page im-new pages/im-new.html "I'm New" \
+  --meta-description="Planning your first visit to {church.name}? Here's what to expect on a {service.day}, where to park, and what happens with your kids."
+seed_post page about pages/about.html "About" \
+  --meta-description="Our story, our vision and values, and the people who lead {church.name} — an expression of The Elevation Church."
+seed_post page what-we-believe pages/what-we-believe.html "What We Believe" --parent=about \
+  --meta-description="The statement of faith of {church.name} — one God in three persons, salvation by grace through faith, the Baptism of the Holy Spirit, and healing in the atonement."
+
 wp option update show_on_front page
 wp option update page_on_front "$(wp post list --post_type=page --name=home --field=ID)"
 wp rewrite flush --hard
