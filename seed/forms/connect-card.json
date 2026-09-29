@@ -1,0 +1,24 @@
+{
+  "key": "connect-card",
+  "title": "Connect card",
+  "submit": "Send my connect card",
+  "success": { "heading": "Thanks for connecting", "text": "We're so glad you came. Someone from our welcome team will be in touch." },
+  "rows": [
+    { "type": "name", "name": "names" },
+    [ { "type": "email", "name": "email", "label": "Email", "autocomplete": "email" },
+      { "type": "tel", "name": "phone", "label": "Phone", "autocomplete": "tel" } ],
+    { "type": "text", "name": "postcode", "label": "Postcode", "help": "Just your postcode, not your full address — it helps us suggest a group near you.", "autocomplete": "postal-code", "class": "is-uppercase" },
+    [ { "type": "select", "name": "dropdown", "label": "How did you hear about us?", "placeholder": "Choose one",
+        "options": [ "A friend", "Family", "Social media", [ "Attended a Different Campus", "Another Elevation campus" ], "Passing by our venue", [ "others", "Other" ] ] },
+      { "type": "select", "name": "dropdown_1", "label": "What did you enjoy most about your visit?", "placeholder": "Choose one",
+        "options": [ "Worship", [ "Sermon", "The message" ], "Hospitality", [ "Altar Call", "The altar call" ], [ "Free Text", "Something else" ] ] } ],
+    { "type": "radio", "name": "input_radio", "label": "Would you consider making {church.name} your church?", "options": [ "Yes", "No", "Maybe" ], "class": "form-choices--inline" },
+    { "type": "textarea", "name": "description", "label": "Is there anything you'd like us to pray about?", "rows": 3 },
+    { "type": "textarea", "name": "description_1", "label": "Any other comments?", "rows": 3 }
+  ],
+  "notifications": [
+    { "name": "Welcome team", "to": "{contact.welcomeInbox}", "replyTo": "{inputs.email}",
+      "subject": "Connect card: {inputs.names.first_name} {inputs.names.last_name}",
+      "body": [ "<p>A connect card from the website.</p>", "{all_data}" ] }
+  ]
+}

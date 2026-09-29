@@ -29,6 +29,7 @@ require_once ELEVATION_CORE_DIR . 'src/Forms.php';
 require_once ELEVATION_CORE_DIR . 'src/FormRules.php';
 require_once ELEVATION_CORE_DIR . 'src/ServiceDates.php';
 require_once ELEVATION_CORE_DIR . 'src/RateLimit.php';
+require_once ELEVATION_CORE_DIR . 'src/FormSchema.php';
 
 require_once ELEVATION_CORE_DIR . 'includes/settings.php';
 require_once ELEVATION_CORE_DIR . 'includes/bindings.php';
@@ -36,6 +37,7 @@ require_once ELEVATION_CORE_DIR . 'includes/roles.php';
 require_once ELEVATION_CORE_DIR . 'includes/settings-page.php';
 require_once ELEVATION_CORE_DIR . 'includes/cli.php';
 require_once ELEVATION_CORE_DIR . 'includes/fixtures-cli.php';
+require_once ELEVATION_CORE_DIR . 'includes/forms-cli.php';
 require_once ELEVATION_CORE_DIR . 'includes/navigation.php';
 require_once ELEVATION_CORE_DIR . 'includes/consent.php';
 require_once ELEVATION_CORE_DIR . 'includes/editor.php';
@@ -44,6 +46,7 @@ require_once ELEVATION_CORE_DIR . 'includes/event-render.php';
 require_once ELEVATION_CORE_DIR . 'includes/youtube.php';
 require_once ELEVATION_CORE_DIR . 'includes/youtube-render.php';
 require_once ELEVATION_CORE_DIR . 'includes/live.php';
+require_once ELEVATION_CORE_DIR . 'includes/forms.php';
 
 register_activation_hook( __FILE__, 'elevation_install_roles' );
 

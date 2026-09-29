@@ -1,0 +1,33 @@
+{
+  "key": "plan-a-visit",
+  "title": "Plan a Visit",
+  "submit": "Plan my visit",
+  "success": { "heading": "We can't wait to meet you", "text": "Thank you — we've emailed you the time, the address and everything you need. See you soon!" },
+  "rows": [
+    { "type": "name", "name": "names" },
+    [ { "type": "email", "name": "email", "label": "Email", "autocomplete": "email" },
+      { "type": "tel", "name": "phone", "label": "Phone", "autocomplete": "tel" } ],
+    { "type": "select", "name": "visit_date", "label": "Which {service.day} are you coming?", "placeholder": "Choose a date", "dynamic": true },
+    [ { "type": "number", "name": "adults", "label": "Adults", "value": "1", "min": 1, "max": 20 },
+      { "type": "number", "name": "children", "label": "Children", "value": "0", "min": 0, "max": 20 } ],
+    { "type": "text", "name": "children_ages", "label": "Children's ages", "help": "For example: 3 and 7. Please don't include names." },
+    { "type": "textarea", "name": "notes", "label": "Anything we should know?", "help": "Questions, access needs, or anything that would help us look after you.", "rows": 4 }
+  ],
+  "notifications": [
+    { "name": "Welcome team", "to": "{contact.welcomeInbox}", "replyTo": "{inputs.email}",
+      "subject": "Visit plan: {inputs.names.first_name} {inputs.names.last_name}, {elevation.visitDate}",
+      "body": [ "<p>Someone is planning to visit on {elevation.visitDate}.</p>", "{all_data}" ] },
+    { "name": "Visitor confirmation", "to": "field:email", "replyTo": "{contact.welcomeInbox}",
+      "subject": "See you on {elevation.visitDate}",
+      "body": [
+        "<p>Hi {inputs.names.first_name},</p>",
+        "<p>Thank you for letting us know you're coming — we can't wait to meet you.</p>",
+        "<p><strong>When:</strong> {elevation.visitDate} at {service.startTime}. {service.arrivalNote}.</p>",
+        "<p><strong>Where:</strong> {location.full}<br><a href=\"{location.mapsUrl}\">Open in Google Maps</a></p>",
+        "<p><strong>What to expect:</strong> come as you are. Someone from our welcome team will meet you at the door, help you find a seat and answer any questions.</p>",
+        "<p><strong>Bringing children?</strong> The Seeds is our church for children, running during the service in a safe, friendly space. Let the welcome team know when you arrive and they'll show you where to go.</p>",
+        "<p>If anything changes, or you have a question before you come, just reply to this email.</p>",
+        "<p>See you soon,<br>{church.name}</p>"
+      ] }
+  ]
+}

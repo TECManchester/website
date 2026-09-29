@@ -112,6 +112,11 @@ seed_post page church-in-the-park-2025 pages/church-in-the-park-2025.html "Churc
 #   wp elevation fixtures remove
 wp elevation fixtures events /seed/fixtures/events.json
 
+# The church's Fluent Forms (spec §6.10), from seed/forms/*.json. A form edited in Fluent Forms is skipped
+# unless SEED_FORCE names it as "form:<key>".
+form_force=$(for word in ${SEED_FORCE:-}; do case $word in (form:*) printf '%s,' "${word#form:}" ;; esac; done)
+wp elevation forms seed /seed/forms --force="${form_force%,}"
+
 wp option update show_on_front page
 wp option update page_on_front "$(wp post list --post_type=page --name=home --field=ID)"
 wp redirection database install >/dev/null

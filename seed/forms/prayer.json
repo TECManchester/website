@@ -1,0 +1,19 @@
+{
+  "key": "prayer",
+  "title": "Prayer",
+  "submit": "Send prayer request",
+  "success": { "heading": "We're praying", "text": "Thank you — we've received your request and our prayer team will be praying." },
+  "rows": [
+    [ { "type": "text", "name": "name", "label": "Your name", "help": "Optional — you're welcome to stay anonymous.", "autocomplete": "name" },
+      { "type": "email", "name": "email", "label": "Email", "help": "Only if you'd like us to follow up.", "autocomplete": "email" } ],
+    { "type": "tel", "name": "phone", "label": "Phone", "autocomplete": "tel" },
+    { "type": "textarea", "name": "request", "label": "What can we pray for?", "rows": 6 },
+    { "type": "checkbox", "name": "share_with_team", "label": "Share this with our wider prayer team.", "adminLabel": "Share with the wider prayer team", "help": "Leave unticked and only the pastoral team will see it.", "class": "form-tick" },
+    { "type": "checkbox", "name": "is_urgent", "label": "This is urgent.", "adminLabel": "Urgent", "class": "form-tick" }
+  ],
+  "notifications": [
+    { "name": "Prayer inbox", "to": "{contact.prayerInbox}", "replyTo": "{inputs.email}",
+      "subject": "New prayer request",
+      "body": [ "{elevation.urgentLine}", "<p>From: {elevation.prayerFrom}<br>Email: {inputs.email}<br>Phone: {inputs.phone}<br>Share with the wider prayer team: {elevation.shareWithTeam}</p>", "<p><strong>Request:</strong></p>", "<p>{inputs.request}</p>" ] }
+  ]
+}
