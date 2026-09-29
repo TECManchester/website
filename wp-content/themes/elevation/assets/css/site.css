@@ -385,7 +385,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 
 /* Dark cards (home "Don't do life alone") */
 .wp-block-group.is-style-card-ink { position: relative; }
-.wp-block-group.is-style-card-ink > * { margin-block: 0; }
+:where(.wp-block-group.is-style-card-ink) > * { margin-block: 0; }
 .wp-block-group.is-style-card-ink:hover { background: rgb(255 255 255 / 0.08); border-color: rgb(132 194 36 / 0.4); }
 @media (prefers-reduced-motion: no-preference) { .wp-block-group.is-style-card-ink:hover { transform: translateY(-6px); } }
 .is-style-card-ink .card__tile { width: 50px; height: 50px; margin-bottom: 18px; border-radius: 13px; background: rgb(132 194 36 / 0.16); }
@@ -398,7 +398,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 
 /* Flat card (the redesign's shadcn Card) */
 .wp-block-group.is-style-card-flat { box-sizing: border-box; height: 100%; padding: 16px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(14 14 44 / 0.1); }
-.wp-block-group.is-style-card-flat > * { margin-block: 0; }
+:where(.wp-block-group.is-style-card-flat) > * { margin-block: 0; }
 .is-style-card-flat > * + * { margin-top: 8px; }
 .is-style-card-flat > h2, .is-style-card-flat > h3 { margin-top: 16px; font-size: 18px; font-weight: 600; }
 .is-style-card-flat > h3.has-large-font-size { margin-top: 0; font-size: 20px; }
@@ -576,4 +576,9 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 @media (prefers-reduced-motion: no-preference) {
 	html[data-reveal-ready] .reveal { transition: opacity 0.7s ease, transform 0.7s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease; }
 	html[data-reveal-ready] .reveal:not(.is-visible) { opacity: 0; transform: translateY(24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+	.is-style-card:hover .card__media img, .is-style-portrait:hover .wp-block-cover__image-background, .watch-tile:hover .watch-tile__play { transform: none; }
 }
