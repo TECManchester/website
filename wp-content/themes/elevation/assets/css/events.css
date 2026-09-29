@@ -60,3 +60,50 @@ button.event-calendar__day.is-selected::after { background: var(--wp--preset--co
 .event-calendar__event-title { display: block; font-family: var(--wp--preset--font-family--sora); font-weight: 600; color: var(--wp--preset--color--ink); }
 .event-calendar__event-time { display: block; font-size: 14px; color: var(--wp--preset--color--grey-500); }
 .event-calendar__caption { margin: 16px 0 0; padding: 0 4px; font-size: 12px; line-height: 1.6; color: var(--wp--preset--color--grey-500); }
+
+/* ---------- Events page (templates/archive-event.html) ---------- */
+.events-layout { display: grid; gap: 48px; margin-top: 3.5rem !important; }
+.events-layout > * { margin-block: 0; min-width: 0; }
+@media (min-width: 1024px) {
+	.events-layout { grid-template-columns: minmax(0, 1fr) 340px; gap: 56px; }
+	.events-layout__aside { position: sticky; top: 7rem; align-self: start; }
+}
+.section-heading.is-compact { margin-bottom: 2rem; }
+.panel-diary { box-sizing: border-box; padding: 48px; border: 1px solid var(--wp--preset--color--grey-100); border-radius: 18px; background: #fff; text-align: center; }
+.panel-diary > * { margin-block: 0; }
+.panel-diary .wp-block-elevation-icon { justify-content: center; margin-inline: auto; color: var(--wp--preset--color--green-700); }
+.panel-diary > h3 { margin-top: 20px; font-size: 20px; }
+.panel-diary > p { max-width: 448px; margin: 12px auto 0; line-height: 1.625; color: var(--wp--preset--color--grey-500); }
+.panel-diary > .wp-block-buttons { justify-content: center; gap: 12px; margin-top: 28px; }
+
+/* ---------- Event page (templates/single-event.html) ---------- */
+.event-hero { position: relative; overflow: hidden; padding-block: 64px; }
+@media (min-width: 640px) { .event-hero { padding-block: 80px; } }
+.event-hero::before { content: ""; position: absolute; top: -200px; right: -100px; width: 500px; height: 500px; border-radius: 50%; background: var(--glow); pointer-events: none; }
+.event-hero > * { position: relative; z-index: 1; margin-block: 0; }
+.event-hero > .event-hero__image { position: absolute; inset: 0; z-index: 0; max-width: none !important; width: 100%; height: 100%; margin: 0 !important; }
+.event-hero > .event-hero__image img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
+.event-hero > .event-hero__image::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--wp--preset--color--ink), rgb(14 14 44 / 0.8), transparent); }
+.event-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 28px; font-size: 14px; color: rgb(255 255 255 / 0.7); text-decoration: none; transition: color 0.2s ease; }
+.event-back:hover { color: var(--wp--preset--color--green); }
+.event-back svg { width: 16px; height: 16px; }
+.event-hero__title { max-width: 48rem; margin-inline: max(0px, calc((100% - 1240px) / 2)) auto !important; font-size: clamp(32px, 5vw, 52px); font-weight: 800; text-wrap: balance; }
+.event-summary { max-width: 42rem; margin: 16px 0 0; font-size: 18px; color: rgb(255 255 255 / 0.75); text-wrap: pretty; }
+.event-details { display: flex; flex-wrap: wrap; gap: 16px 32px; margin: 32px 0 0; padding: 0; list-style: none; }
+.event-details li { display: flex; align-items: center; gap: 10px; font-family: var(--wp--preset--font-family--sora); font-weight: 600; color: #fff; }
+.event-details svg { flex-shrink: 0; width: 20px; height: 20px; color: var(--wp--preset--color--green); }
+.event-meta--cta { margin-top: 36px !important; }
+
+.event-body { display: grid; gap: 48px; }
+.event-body > * { margin-block: 0; min-width: 0; }
+@media (min-width: 1024px) { .event-body { grid-template-columns: minmax(0, 1fr) 320px; gap: 64px; } }
+.event-body__main > * { margin-block: 0; }
+.event-body__main .wp-block-post-content > p { font-size: 18px; line-height: 1.625; text-wrap: pretty; }
+.event-body__main .wp-block-post-content > * + * { margin-top: 20px; }
+.event-no-description { margin: 0; font-size: 18px; color: var(--wp--preset--color--grey-500); }
+.event-getting-there { box-sizing: border-box; padding: 24px; border: 1px solid var(--wp--preset--color--grey-100); border-radius: 18px; }
+.event-getting-there h2 { margin: 0; font-size: 18px; }
+.event-getting-there address { margin-top: 12px; font-size: 14px; font-style: normal; color: var(--wp--preset--color--grey-500); }
+.event-getting-there address p { margin: 0 0 4px; }
+.event-getting-there .wp-block-buttons { flex-direction: column; align-items: stretch; gap: 10px; margin-top: 20px; }
+.event-getting-there .wp-block-button, .event-getting-there .wp-block-button__link { width: 100%; box-sizing: border-box; text-align: center; }

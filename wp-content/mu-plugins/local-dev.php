@@ -86,6 +86,11 @@ add_action( 'wp_footer', function () {
 			$sources[] = array( 'pattern ' . $pattern['name'], $pattern['content'] );
 		}
 	}
+	foreach ( get_block_templates( array(), 'wp_template' ) as $template ) {
+		if ( 'elevation' === $template->theme ) {
+			$sources[] = array( 'template ' . $template->slug, $template->content );
+		}
+	}
 	?>
 <script type="application/json" id="elevation-validate-data"><?php echo wp_json_encode( array( 'sources' => $sources ), JSON_HEX_TAG | JSON_HEX_AMP ); ?></script>
 <script>
