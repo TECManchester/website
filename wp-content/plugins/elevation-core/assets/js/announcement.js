@@ -57,7 +57,12 @@
 			const wrap = el( 'div', 'wp-block-button' );
 			const link = el( 'a', 'wp-block-button__link wp-element-button', a.ctaLabel );
 			link.href = a.ctaUrl;
-			link.addEventListener( 'click', () => store.set( key, Date.now() ) );
+			link.addEventListener( 'click', () => {
+				// Close the dialog so an on-page anchor leaves no modal open with scroll locked. The 'close' event is
+				// queued, so a link that navigates away could beat it: record the dismissal now as well.
+				store.set( key, Date.now() );
+				dialog.close();
+			} );
 			wrap.appendChild( link );
 			actions.appendChild( wrap );
 		}

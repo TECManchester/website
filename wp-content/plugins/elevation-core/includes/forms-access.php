@@ -125,3 +125,10 @@ add_action( 'fluentform/after_save_form_settings', static function ( $formId ) {
 	}
 }, 20 );
 add_action( 'admin_init', 'elevation_gift_aid_keep_entries' );
+
+// Fluent Forms' dashboard widget lists recent entries, including Prayer and Gift Aid: administrators only.
+add_action( 'wp_dashboard_setup', static function () {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		remove_meta_box( 'fluentform_stat_widget', 'dashboard', 'normal' );
+	}
+}, 100 );

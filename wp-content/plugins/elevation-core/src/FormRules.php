@@ -15,6 +15,8 @@ final class FormRules {
 	private const POSTCODE_RE = '/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i';
 	private const PHONE_RE    = '/^\+?[0-9 ()\-.]{7,40}$/';
 	private const PHONES      = [ 'phone', 'input_text_2' ];
+	/** Name fields: links and addresses are refused, because confirmation emails greet the visitor by name. */
+	private const NAMES       = [ 'name', 'names.first_name', 'names.last_name', 'first_name', 'last_name' ];
 
 	private const FIRST = 'Please tell us your first name.';
 	private const LAST  = 'Please tell us your last name.';
@@ -54,12 +56,12 @@ final class FormRules {
 
 	/** Field path => [maximum characters, name used in the "too long" message]. */
 	private const LIMITS = [
-		'name'             => [ 120, 'Your name' ],
-		'names.first_name' => [ 120, 'First name' ],
-		'names.last_name'  => [ 120, 'Last name' ],
+		'name'             => [ 50, 'Your name' ],
+		'names.first_name' => [ 50, 'First name' ],
+		'names.last_name'  => [ 50, 'Last name' ],
 		'title'            => [ 20, 'Title' ],
-		'first_name'       => [ 120, 'First name' ],
-		'last_name'        => [ 120, 'Surname' ],
+		'first_name'       => [ 50, 'First name' ],
+		'last_name'        => [ 50, 'Surname' ],
 		'email'            => [ 254, 'Email' ],
 		'phone'            => [ 40, 'Phone' ],
 		'input_text_2'     => [ 40, 'Phone' ],
@@ -105,6 +107,12 @@ final class FormRules {
 		foreach ( self::LIMITS as $path => [ $max, $label ] ) {
 			if ( ! isset( $errors[ $path ] ) && mb_strlen( self::text( $data, $path ) ) > $max ) {
 				$errors[ $path ] = "$label is too long — keep it under $max characters.";
+			}
+		}
+		foreach ( self::NAMES as $path ) {
+			$name = self::text( $data, $path );
+			if ( ! isset( $errors[ $path ] ) && '' !== $name && preg_match( '#://|www\.|@#i', $name ) ) {
+				$errors[ $path ] = 'Please enter just your name.';
 			}
 		}
 		$email = self::text( $data, 'email' );

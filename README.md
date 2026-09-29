@@ -56,7 +56,10 @@ docker compose run --rm -T wpcli wp elevation fixtures events /seed/fixtures/eve
 - The nine church forms are Fluent Forms, created from `seed/forms/*.json` by `bin/seed.sh`
   (`wp elevation forms seed /seed/forms`). Each has a fixed key (`contact`, `prayer`, `gift-aid`, `newsletter`,
   `g-squad`, `plan-a-visit`, `join-group`, `connect-card`, `alpha`); pages place them with the
-  `elevation/form` block. Required fields and validation messages live in `src/FormRules.php`.
+  `elevation/form` block. Required fields and validation messages live in `wp-content/plugins/elevation-core/src/FormRules.php`.
+- Required fields and field keys are set in code. Don't delete or rename fields in Fluent Forms: wording, labels
+  and emails can be edited there, but a field that is deleted or renamed simply stops being checked (Gift Aid, the
+  visit date and the group check always apply), and the emails and entry maps that use its key stop working.
 - A form edited in wp-admin → Fluent Forms is left alone by the seed; `SEED_FORCE="form:contact" ./bin/seed.sh`
   overwrites it.
 - Recipients and email wording use settings smartcodes (`{contact.welcomeInbox}`, `{service.startTime}`, …),

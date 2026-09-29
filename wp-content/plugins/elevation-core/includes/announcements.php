@@ -92,7 +92,7 @@ add_filter( 'rest_pre_dispatch', static function ( $result, WP_REST_Server $serv
 	return $result;
 }, 10, 3 );
 
-/** Switching one on switches the others off (spec §6.5). Only a published announcement counts. */
+/** Switching one on switches every other announcement off, whatever its status (spec §6.5). Only a published announcement triggers it. */
 function elevation_announcement_deactivate_others( int $keep ): void {
 	$others = get_posts( [
 		'post_type'      => 'announcement',

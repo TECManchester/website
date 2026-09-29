@@ -54,6 +54,31 @@ final class FormRulesTest extends TestCase {
 		$this->assertSame( [], FormRules::errors( 'contact', [ 'message' => str_repeat( '🙏', 5000 ) ] + self::CONTACT ) );
 	}
 
+	public function test_names_are_short_and_never_links_or_addresses(): void {
+		$visit = [ 'names' => [ 'first_name' => 'Ada', 'last_name' => 'Lovelace' ], 'email' => 'a@example.com', 'visit_date' => '2026-10-04', 'adults' => '2' ];
+		$ctx   = [ 'visitDates' => [ '2026-10-04' ] ];
+		$this->assertSame( [], FormRules::errors( 'plan-a-visit', $visit, $ctx ) );
+		$long = $visit;
+		$long['names']['first_name'] = str_repeat( 'a', 51 );
+		$this->assertSame( [ 'names.first_name' => 'First name is too long — keep it under 50 characters.' ], FormRules::errors( 'plan-a-visit', $long, $ctx ) );
+		$fifty = $visit;
+		$fifty['names']['first_name'] = str_repeat( 'a', 50 );
+		$this->assertSame( [], FormRules::errors( 'plan-a-visit', $fifty, $ctx ) );
+		foreach ( [ 'see http://x.co', 'https://x.co', 'www.x.co', 'a@b.c' ] as $bad ) {
+			$link = $visit;
+			$link['names']['last_name'] = $bad;
+			$this->assertSame( [ 'names.last_name' => 'Please enter just your name.' ], FormRules::errors( 'plan-a-visit', $link, $ctx ), $bad );
+		}
+		$this->assertSame( [ 'name' => 'Please enter just your name.' ], FormRules::errors( 'contact', [ 'name' => 'http://x.co' ] + self::CONTACT ) );
+		$this->assertSame( [ 'name' => 'Your name is too long — keep it under 50 characters.' ], FormRules::errors( 'prayer', [ 'name' => str_repeat( 'n', 51 ), 'request' => 'x' ] ) );
+	}
+
+	public function test_gift_aid_names_are_limited_too(): void {
+		$errors = FormRules::errors( 'gift-aid', [ 'first_name' => str_repeat( 'a', 51 ), 'last_name' => 'www.x.co', 'address_line1' => '1 High St', 'postcode' => 'M1 1AA', 'declaration_accepted' => 'yes' ] );
+		$this->assertSame( 'First name is too long — keep it under 50 characters.', $errors['first_name'] );
+		$this->assertSame( 'Please enter just your name.', $errors['last_name'] );
+	}
+
 	public function test_html_is_just_text_to_the_rules(): void {
 		$this->assertSame( [], FormRules::errors( 'contact', [ 'message' => '<script>alert(1)</script> & "quotes"' ] + self::CONTACT ) );
 	}

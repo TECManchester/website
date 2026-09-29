@@ -61,7 +61,20 @@ add_filter( 'fluentform/editor_shortcode_callback_group_elevation', static funct
 	return in_array( $property, [ 'declaration', 'elevation.declaration' ], true ) ? esc_html( FormRules::DECLARATION_TEXT ) : $value;
 }, 10, 3 );
 
-add_filter( 'fluentform/validation_errors', static function ( $errors, $formData, $form ) {
+/**
+ * Whether a field path ("email", "names.first_name") is in the submitted form. $fields is the form's input
+ * list keyed by field name, as Fluent Forms passes it to the validation filter.
+ */
+function elevation_form_has_field( array $fields, string $path ): bool {
+	$parts = explode( '.', $path );
+	if ( ! isset( $fields[ $parts[0] ] ) ) {
+		return false;
+	}
+	$sub = $fields[ $parts[0] ]['fields'] ?? null;
+	return count( $parts ) < 2 || ! is_array( $sub ) || isset( $sub[ $parts[1] ] );
+}
+
+add_filter( 'fluentform/validation_errors', static function ( $errors, $formData, $form, $fields = null ) {
 	$key = elevation_form_key_of( $form );
 	if ( null === $key ) {
 		return $errors;
@@ -74,6 +87,11 @@ add_filter( 'fluentform/validation_errors', static function ( $errors, $formData
 		$context['groupIds'] = function_exists( 'elevation_joinable_group_ids' ) ? elevation_joinable_group_ids() : [];
 	}
 	foreach ( FormRules::errors( $key, (array) $formData, $context ) as $path => $message ) {
+		// A field staff deleted or renamed in Fluent Forms can't be filled in, so it can't block the form.
+		// Kept whatever the form holds: Gift Aid (HMRC), the visit date and the group check.
+		if ( is_array( $fields ) && $fields && 'gift-aid' !== $key && ! in_array( $path, [ 'visit_date', 'restricted' ], true ) && ! elevation_form_has_field( $fields, $path ) ) {
+			continue;
+		}
 		$field            = elevation_form_error_key( $path );
 		// Fluent Forms' own message for the same rule wins, except for the visit date: its option check says only
 		// "The given data was invalid" for a date that was on an older page, and ours explains it.
@@ -86,7 +104,7 @@ add_filter( 'fluentform/validation_errors', static function ( $errors, $formData
 		}
 	}
 	return $errors;
-}, 10, 3 );
+}, 10, 4 );
 
 /** "names.first_name" → "names[first_name]", the key Fluent Forms uses for a sub-field's errors (checked locally). */
 function elevation_form_error_key( string $path ): string {
@@ -182,6 +200,20 @@ add_filter( 'fluentform/email_subject', static function ( $subject, $notificatio
 	}
 	return $key ? elevation_form_placeholders( (string) $subject, (array) $data, false ) : $subject;
 }, 10, 4 );
+
+// A Join Group request for a group with no leader email: an empty subject makes Fluent Forms skip the
+// "Group leader" notification (it would otherwise call wp_mail with no recipient and log a failed send).
+add_filter( 'fluentform/email_subject', static function ( $subject, $notification, $data, $form ) {
+	if ( 'join-group' === elevation_form_key_of( $form ) && 'group-leader' === ( $notification['elevation'] ?? '' )
+		&& function_exists( 'elevation_group_leader_email' ) && '' === elevation_group_leader_email( (int) ( ( (array) $data )['group_id'] ?? 0 ) ) ) {
+		return '';
+	}
+	return $subject;
+}, 20, 4 );
+
+// Church emails carry no "Powered by FluentForm" credit, and Fluent Forms' form analytics never store visitor IPs.
+add_filter( 'fluentform/email_template_footer_credit', '__return_empty_string' );
+add_filter( 'fluentform/disabled_analytics', '__return_true', 20 );
 
 add_filter( 'fluentform/submission_message_parse', static function ( $body, $entryId, $data, $form ) {
 	$body = elevation_form_placeholders( (string) $body, (array) $data, true );

@@ -127,13 +127,17 @@ function elevation_group( WP_Post $post ): array {
 
 // The "Group leader" notification of the Join Group form goes to the chosen group's leader, looked up here.
 // No group, an unknown group or no leader email: the recipient is empty and Fluent Forms sends nothing.
+/** The chosen group's valid leader email, or '' when the group is unknown or has none. */
+function elevation_group_leader_email( int $id ): string {
+	$email = '' !== elevation_group_name( $id ) ? sanitize_email( (string) get_post_meta( $id, 'group_leader_email', true ) ) : '';
+	return is_email( $email ) ? $email : '';
+}
+
 add_filter( 'fluentform/email_to', static function ( $to, $notification, $data, $form ) {
 	if ( 'join-group' !== elevation_form_key_of( $form ) || 'group-leader' !== ( $notification['elevation'] ?? '' ) ) {
 		return $to;
 	}
-	$id    = (int) ( $data['group_id'] ?? 0 );
-	$email = '' !== elevation_group_name( $id ) ? sanitize_email( (string) get_post_meta( $id, 'group_leader_email', true ) ) : '';
-	return is_email( $email ) ? $email : '';
+	return elevation_group_leader_email( (int) ( $data['group_id'] ?? 0 ) );
 }, 10, 4 );
 
 // The line above the Join Group form: which group this request is for.
