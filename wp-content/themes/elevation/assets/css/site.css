@@ -608,3 +608,6 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .give-thanks > h2 { font-size: 24px; font-weight: 600; }
 .give-thanks > p { margin-top: 16px; color: var(--wp--preset--color--grey-500); }
 .aside-stack .address-block > p:first-child { font-weight: 400; }
+
+/* Galleries (kept pages) */
+.wp-block-gallery.has-nested-images figure.wp-block-image img { border-radius: 14px; }

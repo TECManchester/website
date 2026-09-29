@@ -39,6 +39,7 @@ wp eval '$o = (array) get_option( "wds_onpage_options", [] );
   $o["preset-separator"] = "pipe";
   update_option( "wds_onpage_options", $o );'
 
+./bin/fetch-live-media.sh || { echo "Couldn't fetch or verify the kept pages' images (bin/fetch-live-media.sh)." >&2; exit 1; }
 # Media first: pages refer to it by path. Sorted, so attachment IDs are the same on every rebuild.
 media_files=$(cd seed/media && { find redesign live -type f \( -name '*.jpg' -o -name '*.jpeg' -o -name '*.png' \) 2>/dev/null || true; } | LC_ALL=C sort | sed 's#^#/seed/media/#')
 # shellcheck disable=SC2086
@@ -94,6 +95,14 @@ seed_post page contact pages/contact.html "Contact" \
 seed_post page privacy pages/privacy.html "Privacy notice" \
   --meta-description="How {church.name} collects, uses and protects your personal information, and the choices you have."
 wp option update wp_page_for_privacy_policy "$(wp post list --post_type=page --name=privacy --field=ID)"
+seed_post page resources pages/resources.html "Resources" \
+  --meta-description="Free resources from {church.name}: the Godman Akinlabi podcast, our mission and what we believe."
+seed_post page alpha pages/alpha.html "Alpha" --parent=resources \
+  --meta-description="Try Alpha online with {church.name}. Sign up below."
+seed_post page etracts pages/etracts.html "ETracts" --parent=resources \
+  --meta-description="E-tracts from {church.name} to read and share."
+seed_post page church-in-the-park-2025 pages/church-in-the-park-2025.html "Church In The Park 2025" \
+  --meta-description="Over 500 people joined {church.name} in the park on 17 August 2025. Relive the best moments."
 
 wp option update show_on_front page
 wp option update page_on_front "$(wp post list --post_type=page --name=home --field=ID)"

@@ -14,3 +14,4 @@ wp-content/plugins/*
 !wp-content/plugins/elevation-core/
 wp-content/plugins/elevation-core/node_modules/
 wp-content/plugins/elevation-core/vendor/
+seed/media/live/
