@@ -2,7 +2,7 @@
   "key": "join-group",
   "title": "Join a Connect Group",
   "submit": "Ask to join",
-  "success": { "heading": "Request sent", "text": "Thank you — the group leader or our welcome team will be in touch soon." },
+  "success": { "heading": "Request sent", "text": "Thank you — the group leader or our Connect Groups team will be in touch soon." },
   "rows": [
     { "type": "hidden", "name": "group_id", "label": "Group", "value": "{get.group}" },
     { "type": "name", "name": "names" },
