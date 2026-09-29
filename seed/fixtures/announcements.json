@@ -1,0 +1,7 @@
+[
+  { "slug": "harvest-sunday", "title": "Harvest Sunday is coming",
+    "body": "Join us on {service.day} at {service.startTime} for a special harvest service, with food to share afterwards. Bring a friend!",
+    "cta_label": "Plan your visit", "cta_url": "/im-new#plan-a-visit",
+    "active": false, "starts": "", "ends": "+14 23:59", "dismiss_hours": 24,
+    "image": "redesign/events/greatness-community-summer-hangout.jpg" }
+]

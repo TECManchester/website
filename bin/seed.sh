@@ -114,6 +114,7 @@ seed_post page connect-groups pages/connect-groups.html "Connect Groups" \
 #   wp elevation fixtures remove
 wp elevation fixtures events /seed/fixtures/events.json
 wp elevation fixtures groups /seed/fixtures/groups.json
+wp elevation fixtures announcements /seed/fixtures/announcements.json
 
 # The church's Fluent Forms (spec §6.10), from seed/forms/*.json. A form edited in Fluent Forms is skipped
 # unless SEED_FORCE names it as "form:<key>".

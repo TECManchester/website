@@ -1,5 +1,6 @@
 <?php
 /** Local-only sample content (spec §9): `wp elevation fixtures events|groups <file>` and `wp elevation fixtures remove`. */
+use Elevation\Core\Announcement;
 use Elevation\Core\EventFields;
 use Elevation\Core\GroupFields;
 use Elevation\Core\Fixtures;
@@ -190,4 +191,75 @@ function elevation_fixture_group( array $row, int $index ): void {
 	update_post_meta( $id, '_elevation_fixture', 1 );
 	$image ? set_post_thumbnail( $id, $image ) : delete_post_thumbnail( $id );
 	WP_CLI::log( ( $existing ? 'Updated' : 'Created' ) . " group $slug (#$id)" );
+}
+
+function elevation_fixture_announcement( array $row, DateTimeImmutable $today, int $index ): void {
+	$slug = sanitize_title( (string) ( $row['slug'] ?? '' ) );
+	if ( '' === $slug || '' === trim( (string) ( $row['title'] ?? '' ) ) ) {
+		WP_CLI::error( "Announcement fixture #$index needs a slug and a title." );
+	}
+	try {
+		$starts = Fixtures::when( (string) ( $row['starts'] ?? '' ), $today );
+		$ends   = Fixtures::when( (string) ( $row['ends'] ?? '' ), $today );
+	} catch ( \InvalidArgumentException $e ) {
+		WP_CLI::error( "$slug: " . $e->getMessage() );
+	}
+	$meta   = [
+		'announcement_starts'        => $starts,
+		'announcement_ends'          => $ends,
+		'announcement_cta_label'     => sanitize_text_field( (string) ( $row['cta_label'] ?? '' ) ),
+		'announcement_cta_url'       => (string) ( $row['cta_url'] ?? '' ),
+		'announcement_dismiss_hours' => (int) ( $row['dismiss_hours'] ?? Announcement::DEFAULT_DISMISS_HOURS ),
+	];
+	$errors = Announcement::errors( [ 'starts' => $starts, 'ends' => $ends, 'cta_url' => $meta['announcement_cta_url'], 'dismiss_hours' => $meta['announcement_dismiss_hours'] ] );
+	if ( $errors ) {
+		WP_CLI::error( "$slug: " . implode( ' ', $errors ) );
+	}
+	$image = 0;
+	if ( ! empty( $row['image'] ) ) {
+		$media = elevation_seed_media_lookup( (string) $row['image'] );
+		$media || WP_CLI::error( "$slug: unknown media {$row['image']} (import it first)." );
+		$image = $media['id'];
+	}
+	$data = [
+		'post_type'    => 'announcement',
+		'post_name'    => $slug,
+		'post_title'   => (string) $row['title'],
+		'post_content' => Fixtures::paragraphs( (string) ( $row['body'] ?? '' ) ),
+		'post_status'  => 'publish',
+	];
+
+	$existing = get_posts( [ 'post_type' => 'announcement', 'name' => $slug, 'post_status' => [ 'any', 'trash' ], 'posts_per_page' => 1 ] )[0] ?? null;
+	if ( $existing && ! get_post_meta( $existing->ID, '_elevation_fixture', true ) ) {
+		WP_CLI::warning( "Skipped announcement $slug: a real (non-fixture) announcement already uses this slug." );
+		return;
+	}
+	if ( $existing ) {
+		$same = $existing->post_title === $data['post_title'] && $existing->post_content === $data['post_content']
+			&& 'publish' === $existing->post_status && (int) get_post_thumbnail_id( $existing ) === $image;
+		foreach ( $meta as $key => $value ) {
+			$same = $same && get_post_meta( $existing->ID, $key, true ) == $value; // phpcs:ignore Universal.Operators.StrictComparisons -- integers are stored as strings.
+		}
+		if ( $same ) {
+			WP_CLI::log( "Unchanged announcement $slug" );
+			return;
+		}
+		$data['ID'] = $existing->ID;
+	}
+	$id = wp_insert_post( wp_slash( $data ), true );
+	if ( is_wp_error( $id ) ) {
+		WP_CLI::error( "$slug: " . $id->get_error_message() );
+	}
+	foreach ( $meta as $key => $value ) {
+		update_post_meta( $id, $key, $value );
+	}
+	update_post_meta( $id, '_elevation_fixture', 1 );
+	$image ? set_post_thumbnail( $id, $image ) : delete_post_thumbnail( $id );
+	// A fixture is never switched on unless its row says so; re-seeding leaves a switch someone flipped alone.
+	if ( ! $existing ) {
+		update_post_meta( $id, 'announcement_active', ! empty( $row['active'] ) );
+	} elseif ( ! empty( $row['active'] ) ) {
+		update_post_meta( $id, 'announcement_active', true );
+	}
+	WP_CLI::log( ( $existing ? 'Updated' : 'Created' ) . " announcement $slug (#$id)" );
 }
