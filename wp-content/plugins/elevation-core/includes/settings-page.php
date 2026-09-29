@@ -117,7 +117,11 @@ function elevation_render_settings_page(): void {
 			<?php settings_fields( ELEVATION_SETTINGS_PAGE ); ?>
 			<?php foreach ( $groups as $group => $fields ) : ?>
 				<?php if ( 'hero' === $group ) { elevation_render_hero_fields( $stored ); continue; } ?>
-				<h2><?php echo esc_html( ucfirst( $group ) ); ?></h2>
+				<h2<?php echo 'youtube' === $group ? ' id="elevation-youtube"' : ''; ?>><?php echo esc_html( 'youtube' === $group ? 'YouTube' : ucfirst( $group ) ); ?></h2>
+				<?php if ( 'youtube' === $group ) : ?>
+					<p><?php esc_html_e( 'Watch and the home page show the latest videos from this channel, and switch to the live stream while you are streaming. Videos open on YouTube.', 'elevation-core' ); ?></p>
+					<?php echo elevation_youtube_status_html(); // Escaped inside. ?>
+				<?php endif; ?>
 				<table class="form-table" role="presentation">
 					<?php foreach ( $fields as $key => $default ) :
 						$name  = Settings::OPTION . '[' . str_replace( '.', '][', $key ) . ']';

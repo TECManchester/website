@@ -120,3 +120,8 @@ add_action( 'wp_footer', function () {
 </script>
 	<?php
 }, 100 );
+
+// Local only: use YOUTUBE_API_KEY from .env (passed in by docker-compose.yml) when Settings → Church has none.
+add_filter( 'elevation_youtube_api_key', function ( $key ) {
+	return '' !== trim( (string) $key ) ? $key : (string) getenv( 'YOUTUBE_API_KEY' );
+} );
