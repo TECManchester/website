@@ -15,6 +15,6 @@
 .ecm-announcement__close:focus-visible { outline: 2px solid var(--wp--preset--color--green); outline-offset: 2px; }
 .has-announcement { overflow: hidden; }
 @media (prefers-reduced-motion: no-preference) {
-	.ecm-announcement[open] { animation: ecm-announcement-in 0.2s ease-out; }
+	.ecm-announcement[open] .ecm-announcement__card { animation: ecm-announcement-in 0.2s ease-out; }
 	@keyframes ecm-announcement-in { from { opacity: 0; transform: translateY(8px); } }
 }

@@ -56,6 +56,9 @@
 		if ( stored === null || stored === undefined || stored === '' || ! Number.isFinite( at ) ) {
 			return true;
 		}
+		if ( at > nowMs ) {
+			return true; // a dismissal "in the future" (clock change, tampering) doesn't count
+		}
 		return nowMs - at > a.dismissHours * HOUR;
 	}
 

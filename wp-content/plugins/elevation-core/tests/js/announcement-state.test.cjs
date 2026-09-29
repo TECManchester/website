@@ -36,6 +36,7 @@ test( 'a dismissal hides it for dismissHours, then it shows again', () => {
 	assert.equal( A.shouldShow( a, String( now - 2 * HOUR ), now ), false );
 	assert.equal( A.shouldShow( a, String( now - 2 * HOUR - 1 ), now ), true );
 	assert.equal( A.shouldShow( a, 'garbage', now ), true );
+	assert.equal( A.shouldShow( a, String( now + HOUR ), now ), true ); // stored in the future: not a dismissal
 } );
 
 test( 'the store falls back to memory when storage throws or is missing', () => {

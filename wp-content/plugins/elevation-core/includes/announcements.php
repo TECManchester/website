@@ -81,6 +81,17 @@ add_filter( 'rest_pre_insert_announcement', static function ( $prepared, WP_REST
 	return $errors ? new WP_Error( 'elevation_announcement_invalid', implode( ' ', $errors ), [ 'status' => 400 ] ) : $prepared;
 }, 10, 2 );
 
+/**
+ * The public learns of an announcement only through the no-store endpoint (spec §6.5). The core REST routes stay
+ * for the editor but refuse anonymous reads, which would list switched-off and scheduled announcements.
+ */
+add_filter( 'rest_pre_dispatch', static function ( $result, WP_REST_Server $server, WP_REST_Request $request ) {
+	if ( in_array( $request->get_method(), [ 'GET', 'HEAD' ], true ) && str_starts_with( $request->get_route(), '/wp/v2/announcement' ) && ! current_user_can( 'edit_posts' ) ) {
+		return new WP_Error( 'rest_forbidden', __( 'Sorry, you are not allowed to do that.', 'elevation-core' ), [ 'status' => rest_authorization_required_code() ] );
+	}
+	return $result;
+}, 10, 3 );
+
 /** Switching one on switches the others off (spec §6.5). Only a published announcement counts. */
 function elevation_announcement_deactivate_others( int $keep ): void {
 	$others = get_posts( [
@@ -134,8 +145,8 @@ function elevation_announcement_payload( WP_Post $post ): array {
 	return [
 		'id'           => $post->ID,
 		'version'      => (int) get_post_modified_time( 'U', true, $post ),
-		'title'        => Tokens::replace( $post->post_title, 'elevation_public_setting', false ),
-		'body'         => elevation_replace_tokens( wp_kses_post( do_blocks( $post->post_content ) ) ),
+		'title'        => html_entity_decode( Tokens::replace( $post->post_title, 'elevation_public_setting', false ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+		'body'         => wp_kses_post( elevation_replace_tokens( do_blocks( $post->post_content ) ) ),
 		'image'        => $src ? [ 'src' => $src[0], 'width' => (int) $src[1], 'height' => (int) $src[2] ] : null,
 		'ctaLabel'     => (string) get_post_meta( $post->ID, 'announcement_cta_label', true ),
 		'ctaUrl'       => EventFields::normaliseCtaUrl( get_post_meta( $post->ID, 'announcement_cta_url', true ) ),
