@@ -3,6 +3,7 @@
  * - "Insert church setting" on every rich-text toolbar: inserts {group.key}, which the site replaces
  *   with the current Church Settings value when the page is shown (spec §6.1).
  * - "Large button" toggle for core/button (adds is-size-lg alongside the colour style).
+ * - "Event details" sidebar panel for events (event-panel.js).
  */
 import { registerFormatType, insert } from '@wordpress/rich-text';
 import { RichTextToolbarButton, InspectorControls } from '@wordpress/block-editor';
@@ -10,6 +11,7 @@ import { Popover, MenuGroup, MenuItem, SearchControl, PanelBody, ToggleControl }
 import { useState } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { createHigherOrderComponent } from '@wordpress/compose';
+import './event-panel';
 
 const TOKENS = window.elevationTokens || [];
 

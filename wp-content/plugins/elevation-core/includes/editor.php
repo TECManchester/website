@@ -29,4 +29,5 @@ add_action( 'enqueue_block_editor_assets', function () {
 	$asset = include $asset_file;
 	wp_enqueue_script( 'elevation-editor', ELEVATION_CORE_URL . 'build/editor/index.js', $asset['dependencies'], $asset['version'], true );
 	wp_add_inline_script( 'elevation-editor', 'window.elevationTokens = ' . wp_json_encode( elevation_editor_tokens() ) . ';', 'before' );
+	wp_add_inline_script( 'elevation-editor', 'window.elevationEventDefaults = ' . wp_json_encode( [ 'venue' => (string) elevation_setting( 'location.full' ) ] ) . ';', 'before' );
 } );

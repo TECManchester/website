@@ -4,9 +4,13 @@
 		'wp-block-editor',
 		'wp-components',
 		'wp-compose',
+		'wp-core-data',
+		'wp-data',
+		'wp-editor',
 		'wp-element',
 		'wp-hooks',
+		'wp-plugins',
 		'wp-rich-text'
 	),
-	'version' => 'e7be0ef0d9e10f84e25e'
+	'version' => '6f6d7bebf3f6317c4e21'
 );
