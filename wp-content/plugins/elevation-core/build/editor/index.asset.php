@@ -12,5 +12,5 @@
 		'wp-plugins',
 		'wp-rich-text'
 	),
-	'version' => 'ccb50b0d74e2b76224fd'
+	'version' => 'f6689f9348f833241202'
 );

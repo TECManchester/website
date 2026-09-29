@@ -4,6 +4,7 @@
  *   with the current Church Settings value when the page is shown (spec §6.1).
  * - "Large button" toggle for core/button (adds is-size-lg alongside the colour style).
  * - "Event details" sidebar panel for events (event-panel.js).
+ * - "Group details" sidebar panel for Connect Groups (group-panel.js).
  */
 import { registerFormatType, insert } from '@wordpress/rich-text';
 import { RichTextToolbarButton, InspectorControls } from '@wordpress/block-editor';
@@ -12,6 +13,7 @@ import { useState } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import './event-panel';
+import './group-panel';
 
 const TOKENS = window.elevationTokens || [];
 

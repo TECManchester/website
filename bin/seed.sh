@@ -107,10 +107,13 @@ seed_post page etracts pages/etracts.html "ETracts" --parent=resources \
   --meta-description="E-tracts from {church.name} to read and share."
 seed_post page church-in-the-park-2025 pages/church-in-the-park-2025.html "Church In The Park 2025" \
   --meta-description="Over 500 people joined {church.name} in the park on 17 August 2025. Relive the best moments."
+seed_post page connect-groups pages/connect-groups.html "Connect Groups" \
+  --meta-description="Find a Connect Group at {church.name}: small groups across Manchester and online, by area, season of life and day of the week."
 
 # Local-only sample events (spec §9), dated relative to today. Plan 6 removes them before go-live:
 #   wp elevation fixtures remove
 wp elevation fixtures events /seed/fixtures/events.json
+wp elevation fixtures groups /seed/fixtures/groups.json
 
 # The church's Fluent Forms (spec §6.10), from seed/forms/*.json. A form edited in Fluent Forms is skipped
 # unless SEED_FORCE names it as "form:<key>".

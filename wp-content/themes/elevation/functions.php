@@ -2,7 +2,7 @@
 defined( 'ABSPATH' ) || exit;
 
 add_action( 'after_setup_theme', function () {
-	add_editor_style( [ 'assets/css/site.css', 'assets/css/events.css', 'assets/css/youtube.css', 'assets/css/forms.css' ] );
+	add_editor_style( [ 'assets/css/site.css', 'assets/css/events.css', 'assets/css/youtube.css', 'assets/css/forms.css', 'assets/css/groups.css' ] );
 } );
 
 add_action( 'wp_enqueue_scripts', function () {
@@ -10,6 +10,7 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'elevation-events', get_theme_file_uri( 'assets/css/events.css' ), [ 'elevation-site' ], (string) filemtime( get_theme_file_path( 'assets/css/events.css' ) ) );
 	wp_enqueue_style( 'elevation-youtube', get_theme_file_uri( 'assets/css/youtube.css' ), [ 'elevation-site' ], (string) filemtime( get_theme_file_path( 'assets/css/youtube.css' ) ) );
 	wp_enqueue_style( 'elevation-forms', get_theme_file_uri( 'assets/css/forms.css' ), [ 'elevation-site' ], (string) filemtime( get_theme_file_path( 'assets/css/forms.css' ) ) );
+	wp_enqueue_style( 'elevation-groups', get_theme_file_uri( 'assets/css/groups.css' ), [ 'elevation-site' ], (string) filemtime( get_theme_file_path( 'assets/css/groups.css' ) ) );
 	wp_enqueue_script( 'elevation-header', get_theme_file_uri( 'assets/js/header.js' ), [], (string) filemtime( get_theme_file_path( 'assets/js/header.js' ) ), [ 'strategy' => 'defer', 'in_footer' => true ] );
 	wp_enqueue_script( 'elevation-reveal', get_theme_file_uri( 'assets/js/reveal.js' ), [], (string) filemtime( get_theme_file_path( 'assets/js/reveal.js' ) ), [ 'strategy' => 'defer', 'in_footer' => true ] );
 } );

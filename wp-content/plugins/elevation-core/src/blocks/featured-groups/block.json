@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/featured-groups",
+  "title": "Featured Connect Groups",
+  "category": "widgets",
+  "icon": "groups",
+  "description": "The first three Connect Groups (by order) and \"Browse all groups\". The blocks inside are shown instead when there are no groups.",
+  "supports": { "html": false, "multiple": false },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}
