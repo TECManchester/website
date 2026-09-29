@@ -430,8 +430,8 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 /* Values (About) */
 .value-card { display: flex; align-items: baseline; gap: 16px; }
 .value-card > * { margin: 0 !important; }
-.value-card__letter { font-family: var(--wp--preset--font-family--sora); font-size: 36px; font-weight: 600; line-height: 1; color: var(--wp--preset--color--green-700); }
-.value-card__name { font-size: 18px !important; font-weight: 500; color: var(--wp--preset--color--ink) !important; }
+.is-style-card-flat.value-card > .value-card__letter { font-family: var(--wp--preset--font-family--sora); font-size: 36px; font-weight: 600; line-height: 1; color: var(--wp--preset--color--green-700); }
+.is-style-card-flat.value-card > .value-card__name { font-size: 18px; font-weight: 500; color: var(--wp--preset--color--ink); }
 
 /* Badges */
 .wp-block-list.is-style-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
