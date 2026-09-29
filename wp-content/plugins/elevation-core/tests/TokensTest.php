@@ -34,8 +34,16 @@ final class TokensTest extends TestCase {
 	}
 
 	public function test_non_token_braces_are_untouched(): void {
-		$html = '<style>a{color:red}</style><script>var o={a:1};</script><p>{notatoken}</p>';
-		$this->assertSame( $html, Tokens::replace( $html, $this->lookup( [] ) ) );
+		// A lookup that answers every key: only the pattern itself can keep these intact.
+		$always = static fn ( string $key ) => 'X';
+		$html   = '<style>a{color:red}</style><script>var o={a:1};</script><p>{notatoken}</p>';
+		$this->assertSame( $html, Tokens::replace( $html, $always ) );
+		$this->assertSame( 'X', Tokens::replace( '{a.b}', $always ) );
+	}
+
+	public function test_unescaped_mode_leaves_values_raw(): void {
+		$out = Tokens::replace( '{a.b}', $this->lookup( [ 'a.b' => 'M&S' ] ), false );
+		$this->assertSame( 'M&S', $out );
 	}
 
 	public function test_numeric_values_are_stringified(): void {

@@ -11,7 +11,7 @@ add_filter( 'render_block_data', function ( array $block ): array {
 	if ( 'core/navigation' !== ( $block['blockName'] ?? '' ) || isset( $block['attrs']['ref'] ) ) {
 		return $block;
 	}
-	if ( ! str_contains( (string) ( $block['attrs']['className'] ?? '' ), 'site-nav' ) ) {
+	if ( ! in_array( 'site-nav', preg_split( '/\s+/', trim( (string) ( $block['attrs']['className'] ?? '' ) ) ), true ) ) {
 		return $block;
 	}
 	static $header_id = null;
