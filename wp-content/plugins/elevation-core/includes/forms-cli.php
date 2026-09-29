@@ -16,6 +16,7 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
  *     wp elevation forms id contact
  *     wp elevation forms list
  *     wp elevation forms reset-limits
+ *     wp elevation forms purge-test-entries
  */
 WP_CLI::add_command( 'elevation forms', function ( array $args, array $assoc ) {
 	if ( ! function_exists( 'wpFluentForm' ) ) {
@@ -40,8 +41,21 @@ WP_CLI::add_command( 'elevation forms', function ( array $args, array $assoc ) {
 			$rows = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '\\_transient\\_elevation\\_rl\\_%' OR option_name LIKE '\\_transient\\_timeout\\_elevation\\_rl\\_%'" );
 			WP_CLI::success( sprintf( 'Cleared %d rate-limit row(s).', (int) $rows ) );
 			return;
+		case 'purge-test-entries':
+			if ( 'local' !== wp_get_environment_type() ) {
+				WP_CLI::error( 'Test entries are only purged locally.' );
+			}
+			global $wpdb;
+			$ids = $wpdb->get_col( "SELECT id FROM {$wpdb->prefix}fluentform_submissions WHERE response LIKE '%@example.com%'" );
+			foreach ( [ 'fluentform_entry_details' => [ 'submission_id', '' ], 'fluentform_submission_meta' => [ 'response_id', '' ], 'fluentform_logs' => [ 'source_id', " AND source_type = 'submission_item'" ], 'fluentform_submissions' => [ 'id', '' ] ] as $table => [ $column, $extra ] ) {
+				foreach ( array_chunk( array_map( 'intval', $ids ), 200 ) as $chunk ) {
+					$wpdb->query( "DELETE FROM {$wpdb->prefix}$table WHERE $column IN (" . implode( ',', $chunk ) . ")$extra" ); // phpcs:ignore WordPress.DB.PreparedSQL -- integers only.
+				}
+			}
+			WP_CLI::success( sprintf( 'Removed %d test entr%s (@example.com).', count( $ids ), 1 === count( $ids ) ? 'y' : 'ies' ) );
+			return;
 	}
-	WP_CLI::error( 'Usage: wp elevation forms seed <dir> [--force=<keys>] | id <key> | list | reset-limits' );
+	WP_CLI::error( 'Usage: wp elevation forms seed <dir> [--force=<keys>] | id <key> | list | reset-limits | purge-test-entries' );
 } );
 
 function elevation_forms_seed( string $dir, array $force ): void {
