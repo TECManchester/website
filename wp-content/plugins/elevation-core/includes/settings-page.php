@@ -57,12 +57,33 @@ function elevation_sanitize_settings( $input ): array {
 			$clean[ $key ] = sanitize_text_field( $value );
 		}
 	}
+	// The saved API key is never sent back to the browser, so a blank field means "keep the current key".
+	if ( array_key_exists( 'youtube.apiKey', $clean ) ) {
+		$old_tree = get_option( Settings::OPTION, [] );
+		$old      = Settings::flatten( is_array( $old_tree ) ? $old_tree : [] );
+		$remove   = ! empty( $input['youtube.removeApiKey'] );
+		if ( $remove ) {
+			$clean['youtube.apiKey'] = '';
+		} elseif ( '' === $clean['youtube.apiKey'] ) {
+			$clean['youtube.apiKey'] = (string) ( $old['youtube.apiKey'] ?? '' );
+		}
+	}
 	return Settings::unflatten( $clean );
 }
 
 function elevation_settings_label( string $key ): string {
-	$last = substr( $key, strrpos( $key, '.' ) + 1 );
-	return ucfirst( strtolower( trim( preg_replace( '/([A-Z0-9]+)/', ' $1', $last ) ) ) );
+	$parts = explode( '.', $key );
+	$last  = array_pop( $parts );
+	$words = trim( preg_replace( '/([A-Z0-9]+)/', ' $1', $last ) );
+	$label = ucfirst( strtolower( $words ) );
+	$label = preg_replace( '/\burl\b/i', 'URL', $label );
+	// Nested groups (socials.youtube.url) lead with their brand so the four socials read differently.
+	if ( count( $parts ) > 1 ) {
+		$brand = end( $parts );
+		$brand = [ 'youtube' => 'YouTube', 'x' => 'X' ][ $brand ] ?? ucfirst( $brand );
+		$label = 'URL' === $label ? $brand . ' URL' : $brand . ' ' . strtolower( $label );
+	}
+	return $label;
 }
 
 function elevation_render_settings_page(): void {
@@ -74,6 +95,11 @@ function elevation_render_settings_page(): void {
 	$groups = [];
 	foreach ( Settings::flatten( Settings::defaults() ) as $key => $default ) {
 		$groups[ strtok( $key, '.' ) ][ $key ] = $default;
+	}
+	// options-general.php shows saved/error notices itself; the top-level page Site Managers get does not.
+	global $parent_file;
+	if ( 'options-general.php' !== $parent_file ) {
+		settings_errors();
 	}
 	?>
 	<div class="wrap">
@@ -89,8 +115,11 @@ function elevation_render_settings_page(): void {
 						$id    = 'elevation-' . str_replace( '.', '-', $key );
 						$value = $stored[ $key ] ?? '';
 						$type  = preg_match( '/(email|Inbox)$/', $key ) ? 'email' : ( preg_match( '/(url|Url)$/', $key ) ? 'url' : 'text' );
-						if ( 'youtube.apiKey' === $key ) {
+						$is_secret = in_array( $key, Settings::SECRET_KEYS, true );
+						if ( $is_secret ) {
 							$type = 'password';
+							$has_key = '' !== $value;
+							$value   = ''; // never output the stored secret
 						}
 						?>
 						<tr>
@@ -99,7 +128,16 @@ function elevation_render_settings_page(): void {
 								<?php if ( in_array( $key, ELEVATION_SETTINGS_TEXTAREAS, true ) ) : ?>
 									<textarea class="large-text" rows="3" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" placeholder="<?php echo esc_attr( $default ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
 								<?php else : ?>
-									<input class="regular-text" type="<?php echo esc_attr( $type ); ?>" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $value ); ?>" placeholder="<?php echo esc_attr( 'password' === $type ? '' : $default ); ?>" autocomplete="off">
+									<input class="regular-text" type="<?php echo esc_attr( $type ); ?>" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $value ); ?>" placeholder="<?php echo esc_attr( $is_secret ? '' : $default ); ?>" autocomplete="<?php echo $is_secret ? 'new-password' : 'off'; ?>">
+									<?php if ( $is_secret ) : ?>
+										<p class="description">
+											<strong><?php echo $has_key ? esc_html__( 'A key is saved.', 'elevation-core' ) : esc_html__( 'No key saved.', 'elevation-core' ); ?></strong>
+											<?php esc_html_e( 'Leave blank to keep the current key.', 'elevation-core' ); ?>
+										</p>
+										<?php if ( $has_key ) : ?>
+											<p><label><input type="checkbox" name="<?php echo esc_attr( Settings::OPTION ); ?>[youtube][removeApiKey]" value="1"> <?php esc_html_e( 'Remove the saved key', 'elevation-core' ); ?></label></p>
+										<?php endif; ?>
+									<?php endif; ?>
 								<?php endif; ?>
 							</td>
 						</tr>
