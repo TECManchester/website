@@ -18,6 +18,11 @@ for p in / /im-new/ /about/ /about/what-we-believe/ /watch/ /get-involved/ /give
          /resources/ /resources/alpha/ /resources/etracts/ /church-in-the-park-2025/; do
   check "$p" 200
 done
+# Events (Plan 3): the archive, a fixture, a past fixture (still reachable by URL) and a missing one.
+for p in /events/ /events/men-of-honour/ /events/prayer-and-worship-evening/; do
+  check "$p" 200
+done
+check /events/no-such-event/ 404
 check /home 301 /
 check /sample-page 301 /
 check /who-we-are 301 /about

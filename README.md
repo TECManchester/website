@@ -31,6 +31,7 @@ docker compose run --rm node npm run test:js                 # consent logic (no
 ./bin/check-urls.sh                                          # pages 200, redesign redirects 301
 ./bin/check-tokens.sh / /about/                              # no raw {settings.tokens} on a page
 ./bin/export-page.sh about                                   # write a wp-admin edit back into seed/
+docker compose run --rm -T wpcli wp elevation fixtures events /seed/fixtures/events.json   # re-date the sample events
 ```
 
 ## Seeding
@@ -40,6 +41,7 @@ docker compose run --rm node npm run test:js                 # consent logic (no
 `SEED_FORCE="slug other-slug" ./bin/seed.sh` to overwrite specific ones.
 
 - `bin/fetch-live-media.sh` downloads the kept pages' images from the live site into the gitignored `seed/media/live/`, verified by `seed/media/live.sha256`.
+- `seed/fixtures/events.json` holds **local-only** sample events, dated relative to the day you seed (`+9 19:00` = nine days from today at 7pm). `./bin/seed.sh` loads them with `wp elevation fixtures events`; `wp elevation fixtures remove` deletes them (Plan 6 does this before go-live). Fixtures never overwrite a real event with the same slug.
 - `bin/validate-blocks.js` is pasted into the editor's console to check every page and pattern for block-validation errors. On the local stack you can instead open `http://localhost:8080/?elevation-validate-blocks=1` and read `window.elevationValidation`.
 
 ## Private data
