@@ -32,3 +32,31 @@
 @media (prefers-reduced-motion: reduce) {
 	.event-card:hover .event-card__media img { transform: none; }
 }
+
+/* ---------- Events calendar (elevation/event-calendar) ---------- */
+.event-calendar { padding: 24px; border: 1px solid var(--wp--preset--color--grey-100); border-radius: 18px; background: #fff; box-shadow: var(--wp--preset--shadow--card); }
+.event-calendar[hidden], .event-calendar__caption[hidden], .event-calendar__list[hidden] { display: none; }
+.event-calendar__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.event-calendar__title { margin: 0; font-size: 18px; }
+.event-calendar__nav { display: flex; gap: 6px; }
+.event-calendar__step { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--wp--preset--color--grey-300); border-radius: 50%; background: #fff; color: var(--wp--preset--color--ink); cursor: pointer; transition: border-color 0.2s ease; }
+.event-calendar__step:hover { border-color: var(--wp--preset--color--ink); }
+.event-calendar__step svg { width: 16px; height: 16px; }
+.event-calendar__weekdays, .event-calendar__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; text-align: center; }
+.event-calendar__weekdays span { padding-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--wp--preset--color--grey-500); }
+.event-calendar__cell { aspect-ratio: 1; padding: 2px; }
+.event-calendar__day { position: relative; display: grid; place-items: center; width: 100%; height: 100%; box-sizing: border-box; border-radius: 8px; font-size: 14px; color: var(--wp--preset--color--grey-500); }
+.event-calendar__day.is-today { box-shadow: inset 0 0 0 1.5px var(--wp--preset--color--grey-300); color: var(--wp--preset--color--ink); font-weight: 600; }
+button.event-calendar__day { padding: 0; border: 0; background: var(--wp--preset--color--green-100); color: var(--wp--preset--color--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease; }
+button.event-calendar__day:hover { background: var(--wp--preset--color--green); }
+button.event-calendar__day::after { content: ""; position: absolute; bottom: 4px; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--wp--preset--color--green-600); }
+button.event-calendar__day.is-selected { background: var(--wp--preset--color--ink); color: #fff; }
+button.event-calendar__day.is-selected::after { background: var(--wp--preset--color--green); }
+.event-calendar__step:focus-visible, button.event-calendar__day:focus-visible, .event-calendar__event:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 2px; }
+.event-calendar__list { margin: 20px 0 0; padding: 20px 0 0; border-top: 1px solid var(--wp--preset--color--grey-100); list-style: none; }
+.event-calendar__list li + li { margin-top: 12px; }
+.event-calendar__event { display: block; margin: 0 -8px; padding: 8px; border-radius: 8px; color: inherit; text-decoration: none; transition: background-color 0.2s ease; }
+.event-calendar__event:hover { background: var(--wp--preset--color--grey-50); }
+.event-calendar__event-title { display: block; font-family: var(--wp--preset--font-family--sora); font-weight: 600; color: var(--wp--preset--color--ink); }
+.event-calendar__event-time { display: block; font-size: 14px; color: var(--wp--preset--color--grey-500); }
+.event-calendar__caption { margin: 16px 0 0; padding: 0 4px; font-size: 12px; line-height: 1.6; color: var(--wp--preset--color--grey-500); }
