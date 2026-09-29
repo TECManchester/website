@@ -1,6 +1,6 @@
 # Elevation Church Manchester — WordPress redesign
 
-Date: 2026-09-28 (revision 3: Phase 0 findings from the live backup; revision 4, 2026-09-29: messages come straight from the YouTube channel, §16; revision 5, 2026-09-29: forms, groups and announcements as built, §17)
+Date: 2026-09-28 (revision 3: Phase 0 findings from the live backup; revision 4, 2026-09-29: messages come straight from the YouTube channel, §16; revision 5, 2026-09-29: forms, groups and announcements as built, §17; revision 6, 2026-09-30: the church's real Connect Groups, town search, Connect Groups inbox, §17)
 Status: revised, awaiting spec review
 
 ## 1. Goal
@@ -290,8 +290,19 @@ templates for the post types in §6.
   Fields: name (title), description (excerpt), taxonomies `group_area` (e.g. Salford, City
   Centre, Online) and `group_category` (families, young professionals, couples, fitness, …), meta
   `meeting_day`, `meeting_time`, `leader_name` (its first name shows on cards; the full name is editor-only in REST), `leader_email` (private, for
-  notifications), `accepting_members` (bool), and a featured image. There is no live data to
+  notifications), `accepting_members` (bool), `group_towns` (one town per line, public), `group_frequency` (`weekly` or
+  `fortnightly`, shown as "Every week" / "Every other week") and a featured image. There is no live data to
   migrate. Groups are entered by staff.
+- **The seven real groups** (revision 6) are seeded from `seed/groups.json`: Salem, Canaan, Bethel, Zion and Shiloh
+  (Greatness Communities, by borough and town, Thursday, Tuesday, Friday, Thursday and Thursday at 8:00 pm) and Thrive Tribe
+  and Surge (Interest groups, open to everyone; Surge meets every other Sunday at 8:00 pm, Thrive Tribe's day and time are
+  to be confirmed). A group edited in wp-admin is not overwritten unless `SEED_FORCE="group:<slug>"` names it. Leader emails
+  and images are added by staff.
+- **Town search**: the first filter is "Your town" (text with a suggestion list of every covered town). It matches a town
+  or a borough, ignoring case, punctuation and "&"/"and", by whole word ("Gatley" finds "Cheadle & Gatley"; "Sal" finds
+  nothing). A match shows the groups covering it plus a note that the Interest groups are open to everyone; no match shows
+  every group under a short message. Cards show the type and boroughs, the schedule (or "Day and time to be confirmed"),
+  and a "Towns covered" disclosure.
 - **Public**: `/connect-groups` has a filter bar (GET params `area`, `type` and `meets`: area, category, day) and group cards
   (image, name, area, category, day and time, leader first name, status). "Ask to join" opens the
   Join Group form with the group pre-selected. Groups not accepting members show "Full right now,
@@ -300,9 +311,10 @@ templates for the post types in §6.
   existing "Find a group" → form flow.
 - **Join Group form** (Fluent Forms): name, email, phone, group (hidden, set from the card via URL
   param; blank = "not sure, help me choose"), message. Notification to the group's `leader_email`
-  (looked up server-side from the group ID, never exposed) and to `welcomeInbox`.
-- Seed: the directory starts empty on live unless staff supply groups. Fixtures (3 fake groups) are
-  loaded **locally only**, for visual testing.
+  (looked up server-side from the group ID, never exposed) and to `contact.connectGroupInbox` (a Church setting,
+  default `connectgroup@elevationmanchester.org`).
+- Seed: the seven real groups are seeded everywhere (revision 6). The three sample groups are gone; other fixtures
+  (events, the announcement) stay **local only**.
 
 ### 6.7 Visit plans and connect card
 
@@ -378,7 +390,7 @@ screen. There is no custom redirect code.
 | Newsletter | footer, site-wide | FF 5 (134 entries) | none | Site Manager, Admin |
 | G-Squad sign-up | `/get-involved#serve` | FF 3 Volunteer (21) | `welcomeInbox` | Site Manager, Admin |
 | Plan a Visit | `/im-new#plan-a-visit` | FF 4 "Reserve a seat" (27) | `welcomeInbox` + visitor confirmation | Site Manager, Admin |
-| Join Group | `/connect-groups` | — (new) | group leader + `welcomeInbox` | Site Manager, Admin |
+| Join Group | `/connect-groups` | — (new) | group leader + `connectGroupInbox` | Site Manager, Admin |
 | Connect card | `/im-new#connect-card` | FF 6 Guest (0; nothing to migrate) | `welcomeInbox` | Site Manager, Admin |
 | Alpha registration | `/resources/alpha` | FF 7 (1), same fields, restyled | `welcomeInbox` (replaces the personal Gmail recipient) | Site Manager, Admin |
 
@@ -654,3 +666,4 @@ Gift Aid retention of six years after the last gift.
 | Anonymous reads of the core `/wp/v2/announcement` route are refused; the modal reads only `/elevation/v1/announcement` | §6.5, §3 |
 | Gift Aid auto-delete settings are reset on save, on `admin_init` and before each submission | §6.10 Gift Aid retention |
 | A form sits in a card only where its placement asks for it (`is-card` on the block: Gift Aid, G-Squad, Connect card and Join Group); Contact, Prayer, Plan a Visit and Alpha do not | §6.10 Styling |
+| The real Connect Groups replace the samples: seven seeded groups, a town search, `group_towns` and `group_frequency` fields, "Every other …" and "Day and time to be confirmed" wording; Join Group goes to the group leader and the new `contact.connectGroupInbox` setting instead of `welcomeInbox`. The user's decision on 2026-09-30 | §6.6, §6.10, §9 |

@@ -67,8 +67,12 @@ docker compose run --rm -T wpcli wp elevation fixtures events /seed/fixtures/eve
 - Local mail goes to Mailpit at http://localhost:8025. `./bin/submit-form.sh <key> field=value …` sends a form
   like a browser; `./bin/mail.sh` lists what arrived; `wp elevation forms reset-limits` clears the rate limit;
   `wp elevation forms purge-test-entries` removes every entry with an `@example.com` address (local only).
-- Connect Groups and Announcements are in the wp-admin menu. Local sample groups and a (switched-off)
-  sample announcement come from `seed/fixtures/`; `wp elevation fixtures remove` deletes all fixtures.
+- Connect Groups and Announcements are in the wp-admin menu. The church's seven real groups come from
+  `seed/groups.json` (`wp elevation groups seed`, run by `./bin/seed.sh`). A group edited in wp-admin is skipped with a
+  warning; `SEED_FORCE="group:<slug>"` overwrites that one. Leader emails and images are added in wp-admin and are never
+  seeded. Join Group requests go to Settings → Church → Connect Groups inbox, plus the group's leader when one is set.
+  Local sample events and a (switched-off) sample announcement come from `seed/fixtures/`; `wp elevation fixtures remove`
+  deletes those fixtures (and any old sample groups), never the seeded groups.
 
 ## Private data
 
