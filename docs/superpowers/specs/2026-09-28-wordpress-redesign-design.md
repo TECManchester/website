@@ -1,6 +1,6 @@
 # Elevation Church Manchester — WordPress redesign
 
-Date: 2026-09-28 (revision 3: Phase 0 findings from the live backup; revision 4, 2026-09-29: messages come straight from the YouTube channel, §16)
+Date: 2026-09-28 (revision 3: Phase 0 findings from the live backup; revision 4, 2026-09-29: messages come straight from the YouTube channel, §16; revision 5, 2026-09-29: forms, groups and announcements as built, §17)
 Status: revised, awaiting spec review
 
 ## 1. Goal
@@ -285,13 +285,14 @@ templates for the post types in §6.
 
 ### 6.6 Connect-group directory
 
-- Post type `connect_group` (`/connect-groups/`; no single pages; each group has an anchor in the
-  directory). Fields: name (title), description (excerpt), taxonomies `area` (e.g. Salford, City
+- Post type `connect_group` (no single pages; each group has an anchor in the
+  directory). `/connect-groups` is a seeded page holding the directory block, not a post-type archive.
+  Fields: name (title), description (excerpt), taxonomies `group_area` (e.g. Salford, City
   Centre, Online) and `group_category` (families, young professionals, couples, fitness, …), meta
-  `meeting_day`, `meeting_time`, `leader_name` (public), `leader_email` (private, for
+  `meeting_day`, `meeting_time`, `leader_name` (its first name shows on cards; the full name is editor-only in REST), `leader_email` (private, for
   notifications), `accepting_members` (bool), and a featured image. There is no live data to
   migrate. Groups are entered by staff.
-- **Public**: `/connect-groups` has a filter bar (area, category, day; GET params) and group cards
+- **Public**: `/connect-groups` has a filter bar (GET params `area`, `type` and `meets`: area, category, day) and group cards
   (image, name, area, category, day and time, leader first name, status). "Ask to join" opens the
   Join Group form with the group pre-selected. Groups not accepting members show "Full right now,
   ask about the next one", which uses the same form. Get Involved `#connect-groups` shows three
@@ -415,7 +416,7 @@ screen. There is no custom redirect code.
 - **Spam and abuse**: Fluent Forms honeypot on all forms, plus a rate limit of 5 submissions per
   10 minutes per IP per form (`REMOTE_ADDR`, valid because there is no proxy, §3). If a CDN is added
   later, the IP source must be revisited, and that is listed in `docs/go-live.md`.
-- **Styling**: theme CSS restyles Fluent Forms markup to the redesign (2-col grid, Sora labels,
+- **Styling**: theme CSS restyles Fluent Forms markup to the redesign (2-col grid, Inter labels (the redesign's `Label`), Sora fieldset and success headings,
   green-100 success, destructive errors, pill submit).
 
 ## 7. Roles and access
@@ -625,3 +626,31 @@ Gift Aid retention of six years after the last gift.
 | Live has wp-admin access only, so everything is configurable there | §6.3: key, handle, status and "Check YouTube now" in Settings → Church; §6.4 failures surface there, not only in a log |
 | Thumbnails without a Google request before consent | §6.3: server-side copies in `uploads/elevation-youtube/` |
 | Only live streams are shown (user, 2026-09-29) | §6.3: past videos = finished broadcasts only (`liveStreamingDetails.actualStartTime` set); uploads and Shorts are left out |
+
+## 17. Forms, groups and announcements (revision 5, Plan 5)
+
+| Ruling | Changes |
+|---|---|
+| Labels are Inter 14px weight 500 (the redesign's `Label`); Sora is for fieldset and success headings | §6.10 Styling |
+| Every submit button is the green pill | §6.10 Styling |
+| Inputs are 40px high, not the redesign's 32px | §6.10 Styling |
+| The newsletter sends no email; the entry list is the mailing list | §6.10 table, §13 |
+| IP addresses are not stored in entries; our rate limit reads `REMOTE_ADDR` and replaces Fluent Forms' own throttle | §6.10 Spam, §11 |
+| Forms are placed by the `elevation/form` block (looked up by key, with an "email us" fallback); its wrapper carries `form-box` | §6.10, roadmap Plan 2 hand-off |
+| Required-field messages live in `FormRules`, copied into Fluent Forms' rules, so browser and server agree | §6.10 Validation |
+| A form edited in the Fluent Forms editor wins over the seed; force with `SEED_FORCE="form:<key>"` | §9 |
+| `/connect-groups` is a seeded page holding the directory block | §6.6 |
+| "Featured" groups on Get Involved are the first three published groups by menu order, then title | §6.6 |
+| The Join Group form sits under the directory at `#join-group`; "Ask to join" links to `?group=<id>#join-group`, keeping filters | §6.6 |
+| Visit dates are required; migrated "Reserve a seat" entries keep a blank date | §6.7, §6.10 |
+| Announcement body is paragraphs and lists, returned by REST as `wp_kses_post` HTML with tokens replaced; schedule is London wall-clock `Y-m-d\TH:i` | §6.5 |
+| The announcement fixture is loaded switched off | §6.5, §9 |
+| Alpha is rebuilt from the public live form; field names match the live form 7 so its entry maps 1:1 | §6.10 |
+| Connect card questions are the live Guest form's minus postal address and country, plus a postcode | §6.7 |
+| Site Manager entry access uses Fluent Forms' per-user manager records, synced automatically on role change and form ID change | §7 |
+| Taxonomies are `group_area` and `group_category`, not the bare `area` | §6.6 |
+| The group description is the post excerpt, edited in the "Group details" panel; the core Excerpt panel is removed | §6.6 |
+| The group leader's name is editor-only in REST, like the email | §6.6, §6.10 privacy |
+| Anonymous reads of the core `/wp/v2/announcement` route are refused; the modal reads only `/elevation/v1/announcement` | §6.5, §3 |
+| Gift Aid auto-delete settings are reset on save, on `admin_init` and before each submission | §6.10 Gift Aid retention |
+| A form sits in a card only where its placement asks for it (`is-card` on the block: Gift Aid, G-Squad, Connect card and Join Group); Contact, Prayer, Plan a Visit and Alpha do not | §6.10 Styling |

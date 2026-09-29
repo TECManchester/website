@@ -51,6 +51,22 @@ docker compose run --rm -T wpcli wp elevation fixtures events /seed/fixtures/eve
 - Settings → Church shows whether YouTube is working (or the last error) and has "Check YouTube now".
 - Thumbnails are copied into `wp-content/uploads/elevation-youtube/` so visitors' browsers never contact YouTube before they consent.
 
+## Forms, groups and announcements
+
+- The nine church forms are Fluent Forms, created from `seed/forms/*.json` by `bin/seed.sh`
+  (`wp elevation forms seed /seed/forms`). Each has a fixed key (`contact`, `prayer`, `gift-aid`, `newsletter`,
+  `g-squad`, `plan-a-visit`, `join-group`, `connect-card`, `alpha`); pages place them with the
+  `elevation/form` block. Required fields and validation messages live in `src/FormRules.php`.
+- A form edited in wp-admin → Fluent Forms is left alone by the seed; `SEED_FORCE="form:contact" ./bin/seed.sh`
+  overwrites it.
+- Recipients and email wording use settings smartcodes (`{contact.welcomeInbox}`, `{service.startTime}`, …),
+  so changing Settings → Church changes the next email.
+- Local mail goes to Mailpit at http://localhost:8025. `./bin/submit-form.sh <key> field=value …` sends a form
+  like a browser; `./bin/mail.sh` lists what arrived; `wp elevation forms reset-limits` clears the rate limit;
+  `wp elevation forms purge-test-entries` removes every entry with an `@example.com` address (local only).
+- Connect Groups and Announcements are in the wp-admin menu. Local sample groups and a (switched-off)
+  sample announcement come from `seed/fixtures/`; `wp elevation fixtures remove` deletes all fixtures.
+
 ## Private data
 
 `private/` (gitignored) holds the live backup and its mirror database password. It contains
