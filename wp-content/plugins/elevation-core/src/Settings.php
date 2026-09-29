@@ -56,6 +56,10 @@ final class Settings {
 				'bankSortCode'      => '23-05-80',
 				'chequePayableTo'   => 'The Elevation Church UK',
 			],
+			'hero'      => array_fill_keys(
+				[ 'slide1', 'slide2', 'slide3', 'slide4', 'slide5', 'slide6' ],
+				[ 'image' => '', 'focal' => '', 'alt' => '' ]
+			),
 			'analytics' => [
 				'ga4MeasurementId' => 'G-0Q3764FCYN',
 			],
@@ -74,6 +78,12 @@ final class Settings {
 		$settings['location']['full']     = sprintf( '%s, %s, %s %s', $loc['venue'], $loc['campus'], $loc['city'], $loc['postcode'] );
 		$settings['location']['mapsUrl']  = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode( $loc['mapsQuery'] );
 		$settings['location']['embedUrl'] = 'https://www.google.com/maps?q=' . rawurlencode( $loc['mapsQuery'] ) . '&output=embed';
+
+		$svc = $settings['service'];
+		$settings['service']['arrivalNote']   = '' !== $svc['doorsOpen'] ? 'Doors from ' . $svc['doorsOpen'] : 'Come a little early for a coffee';
+		$settings['service']['startSentence'] = '' !== $svc['doorsOpen']
+			? sprintf( 'Doors open at %s and we start at %s.', $svc['doorsOpen'], $svc['startTime'] )
+			: sprintf( 'We start at %s.', $svc['startTime'] );
 
 		if ( '' === $settings['contact']['prayerInbox'] ) {
 			$settings['contact']['prayerInbox'] = $settings['contact']['email'];
@@ -98,6 +108,24 @@ final class Settings {
 			}
 		}
 		return $out;
+	}
+
+	/** @return list<array{image:int, focal:string, alt:string}> Slides that have an image, in slot order. */
+	public static function heroSlides( array $settings ): array {
+		$slides = [];
+		foreach ( (array) ( $settings['hero'] ?? [] ) as $slot ) {
+			$image = (string) ( $slot['image'] ?? '' );
+			if ( ! ctype_digit( $image ) || 0 === (int) $image ) {
+				continue;
+			}
+			$focal    = (string) ( $slot['focal'] ?? '' );
+			$slides[] = [
+				'image' => (int) $image,
+				'focal' => preg_match( '/^\d{1,3}% \d{1,3}%$/', $focal ) ? $focal : '50% 50%',
+				'alt'   => (string) ( $slot['alt'] ?? '' ),
+			];
+		}
+		return $slides;
 	}
 
 	public static function get( array $settings, string $key ): mixed {

@@ -43,6 +43,17 @@ wp eval '$o = (array) get_option( "wds_onpage_options", [] );
 media_files=$(cd seed/media && { find redesign live -type f \( -name '*.jpg' -o -name '*.jpeg' -o -name '*.png' \) 2>/dev/null || true; } | LC_ALL=C sort | sed 's#^#/seed/media/#')
 # shellcheck disable=SC2086
 [ -n "$media_files" ] && wp elevation media import $media_files --base=/seed/media
+wp elevation setting set --if-empty \
+  "hero.slide1.image=@media:redesign/hero/hero-worship.jpg" "hero.slide1.focal=62% 30%" \
+  "hero.slide1.alt=Members of the congregation worshipping together on a Sunday morning" \
+  "hero.slide2.image=@media:redesign/hero/hero-welcome.jpg" "hero.slide2.focal=64% 28%" \
+  "hero.slide2.alt=Two young members smiling and making a heart shape with their hands" \
+  "hero.slide3.image=@media:redesign/hero/hero-kids.jpg" "hero.slide3.focal=66% 32%" \
+  "hero.slide3.alt=Two children from The Seeds smiling together on a Sunday morning" \
+  "hero.slide4.image=@media:redesign/hero/hero-welcome-desk.jpg" "hero.slide4.focal=68% 28%" \
+  "hero.slide4.alt=Two members smiling outside the welcome entrance to our venue" \
+  "hero.slide5.image=@media:redesign/hero/hero-city.jpg" "hero.slide5.focal=70% 26%" \
+  "hero.slide5.alt=A member standing outside our venue on the University of Salford campus"
 wp option update timezone_string "Europe/London"
 wp option update WPLANG "en_GB" 2>/dev/null || true
 wp rewrite structure '/%postname%/' --hard

@@ -47,6 +47,14 @@ function elevation_sanitize_settings( $input ): array {
 			continue;
 		}
 		$value = (string) $input[ $key ];
+		if ( str_ends_with( $key, '.image' ) ) {
+			$clean[ $key ] = '' === trim( $value ) ? '' : (string) absint( $value );
+			continue;
+		}
+		if ( str_ends_with( $key, '.focal' ) ) {
+			$clean[ $key ] = preg_match( '/^\d{1,3}% \d{1,3}%$/', trim( $value ) ) ? trim( $value ) : '';
+			continue;
+		}
 		if ( preg_match( '/(email|Inbox)$/', $key ) ) {
 			$clean[ $key ] = sanitize_email( $value );
 		} elseif ( preg_match( '/(url|Url)$/', $key ) ) {
@@ -108,6 +116,7 @@ function elevation_render_settings_page(): void {
 		<form method="post" action="options.php">
 			<?php settings_fields( ELEVATION_SETTINGS_PAGE ); ?>
 			<?php foreach ( $groups as $group => $fields ) : ?>
+				<?php if ( 'hero' === $group ) { elevation_render_hero_fields( $stored ); continue; } ?>
 				<h2><?php echo esc_html( ucfirst( $group ) ); ?></h2>
 				<table class="form-table" role="presentation">
 					<?php foreach ( $fields as $key => $default ) :
@@ -149,5 +158,40 @@ function elevation_render_settings_page(): void {
 	</div>
 	<?php
 }
+
+function elevation_render_hero_fields( array $stored ): void {
+	?>
+	<h2><?php esc_html_e( 'Home page slideshow', 'elevation-core' ); ?></h2>
+	<p><?php esc_html_e( 'Up to six photos behind the home page headline. Keep the subject right of centre; the left side sits under the text. Focal point is the part to keep in frame on phones, as "horizontal% vertical%" (e.g. 62% 30%).', 'elevation-core' ); ?></p>
+	<table class="form-table" role="presentation">
+		<?php for ( $n = 1; $n <= 6; $n++ ) :
+			$base  = "hero.slide$n";
+			$name  = Settings::OPTION . "[hero][slide$n]";
+			$id    = (int) ( $stored[ "$base.image" ] ?? 0 );
+			$thumb = $id ? wp_get_attachment_image_url( $id, 'medium' ) : '';
+			?>
+			<tr class="elevation-slide">
+				<th scope="row"><?php echo esc_html( sprintf( __( 'Slide %d', 'elevation-core' ), $n ) ); ?></th>
+				<td>
+					<input type="hidden" class="elevation-slide__id" name="<?php echo esc_attr( $name ); ?>[image]" value="<?php echo esc_attr( $id ?: '' ); ?>">
+					<img class="elevation-slide__preview" src="<?php echo esc_url( (string) $thumb ); ?>" alt="" style="max-width:240px;display:block;margin-bottom:8px" <?php echo $thumb ? '' : 'hidden'; ?>>
+					<button type="button" class="button elevation-slide__choose"><?php esc_html_e( 'Choose image', 'elevation-core' ); ?></button>
+					<button type="button" class="button-link elevation-slide__remove" <?php echo $thumb ? '' : 'hidden'; ?>><?php esc_html_e( 'Remove', 'elevation-core' ); ?></button>
+					<p><label><?php esc_html_e( 'Focal point', 'elevation-core' ); ?> <input type="text" class="small-text" name="<?php echo esc_attr( $name ); ?>[focal]" value="<?php echo esc_attr( (string) ( $stored[ "$base.focal" ] ?? '' ) ); ?>" placeholder="50% 50%" pattern="\d{1,3}% \d{1,3}%"></label></p>
+					<p><label><?php esc_html_e( 'Description for screen readers', 'elevation-core' ); ?><br><input type="text" class="large-text" name="<?php echo esc_attr( $name ); ?>[alt]" value="<?php echo esc_attr( (string) ( $stored[ "$base.alt" ] ?? '' ) ); ?>"></label></p>
+				</td>
+			</tr>
+		<?php endfor; ?>
+	</table>
+	<?php
+}
+
+add_action( 'admin_enqueue_scripts', function ( string $hook ) {
+	if ( ! in_array( $hook, [ 'settings_page_' . ELEVATION_SETTINGS_PAGE, 'toplevel_page_' . ELEVATION_SETTINGS_PAGE ], true ) ) {
+		return;
+	}
+	wp_enqueue_media();
+	wp_enqueue_script( 'elevation-hero-slides', ELEVATION_CORE_URL . 'assets/admin/hero-slides.js', [ 'media-editor' ], (string) filemtime( ELEVATION_CORE_DIR . 'assets/admin/hero-slides.js' ), true );
+} );
 
 // Resolved settings are cached per request; nothing to clear across requests.

@@ -84,4 +84,48 @@ final class SettingsTest extends TestCase {
 		$this->assertSame( 'TheElevationChurchManchester', $pub['youtube.channelHandle'] );
 		$this->assertSame( '10:30am', $pub['service.startTime'] );
 	}
+
+	public function test_arrival_copy_without_doors_open(): void {
+		$s = Settings::resolve( [] );
+		$this->assertSame( 'Come a little early for a coffee', Settings::get( $s, 'service.arrivalNote' ) );
+		$this->assertSame( 'We start at 10:30am.', Settings::get( $s, 'service.startSentence' ) );
+	}
+
+	public function test_arrival_copy_with_doors_open(): void {
+		$s = Settings::resolve( [ 'service' => [ 'doorsOpen' => '10:15am', 'startTime' => '11:00am' ] ] );
+		$this->assertSame( 'Doors from 10:15am', Settings::get( $s, 'service.arrivalNote' ) );
+		$this->assertSame( 'Doors open at 10:15am and we start at 11:00am.', Settings::get( $s, 'service.startSentence' ) );
+	}
+
+	public function test_derived_copy_is_not_a_stored_setting(): void {
+		$this->assertArrayNotHasKey( 'service.arrivalNote', Settings::flatten( Settings::defaults() ) );
+		$this->assertArrayHasKey( 'service.arrivalNote', Settings::publicValues( Settings::resolve( [] ) ) );
+	}
+
+	public function test_hero_slides_default_to_none(): void {
+		$this->assertSame( [], Settings::heroSlides( Settings::resolve( [] ) ) );
+		$this->assertArrayHasKey( 'hero.slide6.alt', Settings::flatten( Settings::defaults() ) );
+	}
+
+	public function test_hero_slides_keep_slot_order_and_skip_empty_slots(): void {
+		$s = Settings::resolve( [ 'hero' => [
+			'slide5' => [ 'image' => '31', 'focal' => '70% 26%', 'alt' => 'City' ],
+			'slide2' => [ 'image' => '12', 'focal' => '62% 30%', 'alt' => 'Worship' ],
+			'slide3' => [ 'image' => '', 'focal' => '10% 10%', 'alt' => 'Nothing' ],
+		] ] );
+		$this->assertSame( [
+			[ 'image' => 12, 'focal' => '62% 30%', 'alt' => 'Worship' ],
+			[ 'image' => 31, 'focal' => '70% 26%', 'alt' => 'City' ],
+		], Settings::heroSlides( $s ) );
+	}
+
+	public function test_hero_slide_focal_falls_back_to_centre(): void {
+		$s = Settings::resolve( [ 'hero' => [ 'slide1' => [ 'image' => '9', 'focal' => 'left; background:red', 'alt' => '' ] ] ] );
+		$this->assertSame( '50% 50%', Settings::heroSlides( $s )[0]['focal'] );
+	}
+
+	public function test_hero_slide_with_non_numeric_image_is_skipped(): void {
+		$s = Settings::resolve( [ 'hero' => [ 'slide1' => [ 'image' => 'abc' ] ] ] );
+		$this->assertSame( [], Settings::heroSlides( $s ) );
+	}
 }
