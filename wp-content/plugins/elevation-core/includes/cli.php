@@ -1,5 +1,6 @@
 <?php
 use Elevation\Core\MediaRefs;
+use Elevation\Core\Redirects;
 use Elevation\Core\SeedGuard;
 use Elevation\Core\Settings;
 
@@ -211,4 +212,67 @@ WP_CLI::add_command( 'elevation setting', function ( array $args, array $assoc )
 		WP_CLI::log( "Set $key" );
 	}
 	update_option( Settings::OPTION, elevation_sanitize_settings( Settings::unflatten( $flat ) ) );
+} );
+
+/**
+ * Seed redirects into Redirection's "Redesign 2026" group (301s). Existing sources are left alone.
+ *
+ * ## OPTIONS
+ * <file>
+ * : Path to a redirects file: "<from> <to>" per line.
+ */
+WP_CLI::add_command( 'elevation redirects', function ( array $args ) {
+	if ( ! class_exists( 'Red_Group' ) || ! class_exists( 'Red_Item' ) ) {
+		WP_CLI::error( 'Redirection is not active.' );
+	}
+	try {
+		$pairs = Redirects::parse( (string) file_get_contents( $args[0] ) );
+	} catch ( \InvalidArgumentException $e ) {
+		WP_CLI::error( $e->getMessage() );
+	}
+	global $wpdb;
+	$group_id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}redirection_groups WHERE name = %s", 'Redesign 2026' ) );
+	if ( ! $group_id ) {
+		$group = Red_Group::create( 'Redesign 2026', 1 );
+		$group || WP_CLI::error( 'Could not create the "Redesign 2026" redirect group.' );
+		$group_id = (int) $group->get_id();
+	}
+	foreach ( $pairs as [ $from, $to ] ) {
+		if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}redirection_items WHERE url = %s", $from ) ) ) {
+			WP_CLI::log( "Unchanged redirect $from" );
+			continue;
+		}
+		$item = Red_Item::create( [
+			'url'         => $from,
+			'match_type'  => 'url',
+			'action_type' => 'url',
+			'action_code' => 301,
+			'action_data' => [ 'url' => $to ],
+			'group_id'    => $group_id,
+		] );
+		if ( is_wp_error( $item ) ) {
+			WP_CLI::error( "$from: " . $item->get_error_message() );
+		}
+		WP_CLI::log( "Created redirect $from → $to" );
+	}
+} );
+
+/**
+ * Print a post's content with seeded media turned back into {{media:…}} refs (for bin/export-page.sh).
+ *
+ * ## OPTIONS
+ * <post_type>
+ * : e.g. page
+ * <slug>
+ * : Post slug
+ */
+WP_CLI::add_command( 'elevation export', function ( array $args ) {
+	[ $type, $slug ] = $args;
+	$posts = get_posts( [ 'post_type' => $type, 'name' => $slug, 'post_status' => 'any', 'posts_per_page' => 1 ] );
+	$posts || WP_CLI::error( "No $type '$slug'." );
+	$by_id = [];
+	foreach ( get_posts( [ 'post_type' => 'attachment', 'post_status' => 'inherit', 'meta_key' => '_elevation_seed_media', 'posts_per_page' => -1 ] ) as $att ) {
+		$by_id[ $att->ID ] = [ 'path' => (string) get_post_meta( $att->ID, '_elevation_seed_media', true ), 'url' => (string) wp_get_attachment_url( $att->ID ) ];
+	}
+	echo rtrim( MediaRefs::unresolve( $posts[0]->post_content, $by_id ) ), "\n"; // Raw content for a file (one trailing newline, like the seed files), not HTML output.
 } );

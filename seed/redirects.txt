@@ -1,0 +1,9 @@
+# Live URLs replaced by the redesign (spec §6.9). The 10 live short links are copied from the
+# live database by bin/migrate-live-data.php (Plan 6), keeping their hit counts.
+/home /
+/sample-page /
+/who-we-are /about
+/volunteer /get-involved#serve
+/join-our-community /im-new#plan-a-visit
+/guest /im-new#connect-card
+/privacy-policy /privacy

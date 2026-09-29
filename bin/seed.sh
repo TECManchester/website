@@ -106,6 +106,8 @@ seed_post page church-in-the-park-2025 pages/church-in-the-park-2025.html "Churc
 
 wp option update show_on_front page
 wp option update page_on_front "$(wp post list --post_type=page --name=home --field=ID)"
+wp redirection database install >/dev/null
+wp elevation redirects /seed/redirects.txt
 wp rewrite flush --hard
 wp cache flush
 echo "Seed complete."
