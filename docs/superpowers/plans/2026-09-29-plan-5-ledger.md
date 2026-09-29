@@ -123,3 +123,6 @@ Final: minor (deferred): elevation_group_leader_email docblock split from old co
 - Announcement fixture (local only, off): title "Harvest Sunday is coming"; body "Join us on {service.day} at {service.startTime} for a special harvest service, with food to share afterwards. Bring a friend!"; button "Plan your visit" -> /im-new#plan-a-visit; ends +14 days 23:59; hide for 24 h; image the summer hangout event image. Modal buttons: "Plan your visit", "Not now".
 - Local group fixtures (sample data): Salford Families, City Centre Young Professionals, Couples Online (full), with leaders "... Example" and @example.com emails.
 
+
+## After merge
+- Fixed the parked finding: a name part hidden in Fluent Forms (e.g. "Last name") no longer blocks submissions. Fluent Forms lists visible parts as `names[last_name]`; `elevation_form_has_field()` now checks that key. Verified on G-Squad: hidden → accepted without it, first name still required, restored → required again.

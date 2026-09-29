@@ -70,8 +70,8 @@ function elevation_form_has_field( array $fields, string $path ): bool {
 	if ( ! isset( $fields[ $parts[0] ] ) ) {
 		return false;
 	}
-	$sub = $fields[ $parts[0] ]['fields'] ?? null;
-	return count( $parts ) < 2 || ! is_array( $sub ) || isset( $sub[ $parts[1] ] );
+	// Fluent Forms lists each visible part of a name field as its own input: "names[last_name]".
+	return count( $parts ) < 2 || isset( $fields[ $parts[0] . '[' . $parts[1] . ']' ] );
 }
 
 add_filter( 'fluentform/validation_errors', static function ( $errors, $formData, $form, $fields = null ) {
