@@ -23,12 +23,14 @@ require_once ELEVATION_CORE_DIR . 'src/Icons.php';
 require_once ELEVATION_CORE_DIR . 'src/EmbedGate.php';
 require_once ELEVATION_CORE_DIR . 'src/EventTime.php';
 require_once ELEVATION_CORE_DIR . 'src/EventFields.php';
+require_once ELEVATION_CORE_DIR . 'src/Fixtures.php';
 
 require_once ELEVATION_CORE_DIR . 'includes/settings.php';
 require_once ELEVATION_CORE_DIR . 'includes/bindings.php';
 require_once ELEVATION_CORE_DIR . 'includes/roles.php';
 require_once ELEVATION_CORE_DIR . 'includes/settings-page.php';
 require_once ELEVATION_CORE_DIR . 'includes/cli.php';
+require_once ELEVATION_CORE_DIR . 'includes/fixtures-cli.php';
 require_once ELEVATION_CORE_DIR . 'includes/navigation.php';
 require_once ELEVATION_CORE_DIR . 'includes/consent.php';
 require_once ELEVATION_CORE_DIR . 'includes/editor.php';

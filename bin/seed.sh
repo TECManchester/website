@@ -37,6 +37,10 @@ wp eval '$o = (array) get_option( "wds_onpage_options", [] );
   $o["title-page"] = "%%sitename%% %%sep%% %%title%%";
   $o["title-home"] = "%%sitename%% %%sep%% %%sitedesc%%";
   $o["preset-separator"] = "pipe";
+  $o["title-event"] = "%%sitename%% %%sep%% %%title%%";
+  $o["metadesc-event"] = "%%excerpt%%";
+  $o["title-pt-archive-event"] = "%%sitename%% %%sep%% Events";
+  $o["metadesc-pt-archive-event"] = "What'"'"'s coming up at {church.name} — {service.day} gatherings, conferences and everything else in the diary.";
   update_option( "wds_onpage_options", $o );'
 
 ./bin/fetch-live-media.sh || { echo "Couldn't fetch or verify the kept pages' images (bin/fetch-live-media.sh)." >&2; exit 1; }
@@ -103,6 +107,10 @@ seed_post page etracts pages/etracts.html "ETracts" --parent=resources \
   --meta-description="E-tracts from {church.name} to read and share."
 seed_post page church-in-the-park-2025 pages/church-in-the-park-2025.html "Church In The Park 2025" \
   --meta-description="Over 500 people joined {church.name} in the park on 17 August 2025. Relive the best moments."
+
+# Local-only sample events (spec §9), dated relative to today. Plan 6 removes them before go-live:
+#   wp elevation fixtures remove
+wp elevation fixtures events /seed/fixtures/events.json
 
 wp option update show_on_front page
 wp option update page_on_front "$(wp post list --post_type=page --name=home --field=ID)"
