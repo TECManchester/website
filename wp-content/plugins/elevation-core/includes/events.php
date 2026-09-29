@@ -125,6 +125,7 @@ function elevation_upcoming_events( int $limit, int $exclude = 0 ): array {
 	return get_posts( [
 		'post_type'        => 'event',
 		'post_status'      => 'publish',
+		'has_password'     => false,
 		'posts_per_page'   => max( 1, $limit ),
 		'post__not_in'     => $exclude ? [ $exclude ] : [],
 		'meta_query'       => [
@@ -142,6 +143,7 @@ function elevation_calendar_events(): array {
 	return get_posts( [
 		'post_type'      => 'event',
 		'post_status'    => 'publish',
+		'has_password'   => false,
 		'posts_per_page' => 500,
 		'meta_query'     => [ 'has_until' => [ 'key' => '_event_until', 'compare' => 'EXISTS' ], 'start' => [ 'key' => 'event_start', 'compare' => 'EXISTS' ] ],
 		'orderby'        => [ 'start' => 'ASC', 'title' => 'ASC' ],

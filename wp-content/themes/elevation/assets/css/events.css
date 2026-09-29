@@ -87,10 +87,12 @@ button.event-calendar__day.is-selected::after { background: var(--wp--preset--co
 .event-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 28px; font-size: 14px; color: rgb(255 255 255 / 0.7); text-decoration: none; transition: color 0.2s ease; }
 .event-back:hover { color: var(--wp--preset--color--green); }
 .event-back svg { width: 16px; height: 16px; }
-.event-hero__title { max-width: 48rem; margin-inline: max(0px, calc((100% - 1240px) / 2)) auto !important; font-size: clamp(32px, 5vw, 52px); font-weight: 800; text-wrap: balance; }
+.event-back:focus-visible { outline: 2px solid var(--wp--preset--color--green); outline-offset: 2px; border-radius: 4px; }
+.event-hero__title { max-width: 48rem; margin: 0; color: #fff; font-size: clamp(32px, 5vw, 52px); font-weight: 800; text-wrap: balance; }
 .event-summary { max-width: 42rem; margin: 16px 0 0; font-size: 18px; color: rgb(255 255 255 / 0.75); text-wrap: pretty; }
 .event-details { display: flex; flex-wrap: wrap; gap: 16px 32px; margin: 32px 0 0; padding: 0; list-style: none; }
 .event-details li { display: flex; align-items: center; gap: 10px; font-family: var(--wp--preset--font-family--sora); font-weight: 600; color: #fff; }
+.event-past-note { margin: 20px 0 0; font-size: 15px; color: rgb(255 255 255 / 0.75); }
 .event-details svg { flex-shrink: 0; width: 20px; height: 20px; color: var(--wp--preset--color--green); }
 .event-meta--cta { margin-top: 36px !important; }
 

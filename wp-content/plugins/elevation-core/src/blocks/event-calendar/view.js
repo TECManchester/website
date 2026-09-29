@@ -47,6 +47,11 @@ document.querySelectorAll( '.wp-block-elevation-event-calendar' ).forEach( ( roo
 				return li;
 			} )
 		);
+		if ( selected && events.length ) {
+			list.setAttribute( 'aria-label', `Events on ${ dayName.format( new Date( `${ selected }T12:00:00Z` ) ) }` );
+		} else {
+			list.removeAttribute( 'aria-label' );
+		}
 		list.hidden = events.length === 0;
 	}
 

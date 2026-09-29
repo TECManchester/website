@@ -5,6 +5,7 @@ import metadata from './block.json';
 
 const PARTS = {
 	back: '← All events link',
+	title: 'Title (as plain text)',
 	summary: 'Summary (the excerpt)',
 	details: 'Date, time and place',
 	cta: 'Button (when the event has a link)',

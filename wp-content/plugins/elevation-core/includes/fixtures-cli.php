@@ -22,7 +22,7 @@ WP_CLI::add_command( 'elevation fixtures', function ( array $args ) {
 	}
 	$action = $args[0] ?? '';
 	if ( 'remove' === $action ) {
-		$ids = get_posts( [ 'post_type' => 'any', 'post_status' => 'any', 'meta_key' => '_elevation_fixture', 'fields' => 'ids', 'posts_per_page' => -1 ] );
+		$ids = get_posts( [ 'post_type' => 'event', 'post_status' => [ 'any', 'trash' ], 'meta_key' => '_elevation_fixture', 'fields' => 'ids', 'posts_per_page' => -1 ] );
 		foreach ( $ids as $id ) {
 			wp_delete_post( (int) $id, true );
 		}
@@ -78,7 +78,7 @@ function elevation_fixture_event( array $row, DateTimeImmutable $today, int $ind
 		'post_status'  => 'publish',
 	];
 
-	$existing = get_posts( [ 'post_type' => 'event', 'name' => $slug, 'post_status' => 'any', 'posts_per_page' => 1 ] )[0] ?? null;
+	$existing = get_posts( [ 'post_type' => 'event', 'name' => $slug, 'post_status' => [ 'any', 'trash' ], 'posts_per_page' => 1 ] )[0] ?? null;
 	if ( $existing && ! get_post_meta( $existing->ID, '_elevation_fixture', true ) ) {
 		WP_CLI::warning( "Skipped event $slug: a real (non-fixture) event already uses this slug." );
 		return;
