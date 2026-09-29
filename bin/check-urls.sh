@@ -25,5 +25,8 @@ check /volunteer 301 '/get-involved#serve'
 check /join-our-community 301 '/im-new#plan-a-visit'
 check /guest 301 '/im-new#connect-card'
 check /privacy-policy 301 /privacy
+# flag_query=pass appends the visitor's query string to the target (before any #fragment).
+check '/who-we-are/?utm_source=x' 301 '/about?utm_source=x'
+check '/volunteer?fbclid=abc' 301 '/get-involved?fbclid=abc#serve'
 [ "$fail" -eq 0 ] && echo "All URLs as expected."
 exit "$fail"

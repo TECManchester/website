@@ -215,7 +215,7 @@ WP_CLI::add_command( 'elevation setting', function ( array $args, array $assoc )
 } );
 
 /**
- * Seed redirects into Redirection's "Redesign 2026" group (301s). Existing sources are left alone.
+ * Seed redirects into Redirection's "Redesign 2026" group (301s). Existing sources keep their target but are brought up to the query-string flags.
  *
  * ## OPTIONS
  * <file>
@@ -237,19 +237,34 @@ WP_CLI::add_command( 'elevation redirects', function ( array $args ) {
 		$group || WP_CLI::error( 'Could not create the "Redesign 2026" redirect group.' );
 		$group_id = (int) $group->get_id();
 	}
+	// Ignore case and trailing slashes, and pass any query string (utm_*, fbclid…) through to the target.
+	$flags = [ 'flag_query' => 'pass', 'flag_case' => true, 'flag_trailing' => true, 'flag_regex' => false ];
 	foreach ( $pairs as [ $from, $to ] ) {
-		if ( $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}redirection_items WHERE url = %s", $from ) ) ) {
-			WP_CLI::log( "Unchanged redirect $from" );
-			continue;
-		}
-		$item = Red_Item::create( [
+		$details = [
 			'url'         => $from,
 			'match_type'  => 'url',
 			'action_type' => 'url',
 			'action_code' => 301,
 			'action_data' => [ 'url' => $to ],
 			'group_id'    => $group_id,
-		] );
+			'match_data'  => [ 'source' => $flags ],
+		];
+		$id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}redirection_items WHERE url = %s", $from ) );
+		if ( $id ) {
+			$item    = Red_Item::get_by_id( $id );
+			$current = $item ? ( $item->get_match_data()['source'] ?? [] ) : [];
+			if ( $item && array_diff_assoc( $flags, $current ) ) {
+				$result = $item->update( $details );
+				if ( is_wp_error( $result ) ) {
+					WP_CLI::error( "$from: " . $result->get_error_message() );
+				}
+				WP_CLI::log( "Updated redirect $from" );
+			} else {
+				WP_CLI::log( "Unchanged redirect $from" );
+			}
+			continue;
+		}
+		$item = Red_Item::create( $details );
 		if ( is_wp_error( $item ) ) {
 			WP_CLI::error( "$from: " . $item->get_error_message() );
 		}

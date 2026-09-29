@@ -19,6 +19,13 @@ if [ "$actual" != "$WP_CORE" ]; then
 fi
 
 if ! wp --url="$WP_URL" core is-installed 2>/dev/null; then
+  # Only a database with no WordPress tables is a fresh install. If the tables exist (or we cannot tell), is-installed failed for another reason: stop rather than wipe uploads.
+  # (`wp db query` needs SSL off against this image, so ask WordPress itself.)
+  tables=$(wp eval 'global $wpdb; echo $wpdb->get_var( "SHOW TABLES LIKE \"{$wpdb->prefix}options\"" ) ? "yes" : "no";' 2>/dev/null | tail -n1 || true)
+  if [ "$tables" != "no" ]; then
+    echo "WordPress reports not installed, but its database tables exist (or could not be checked: '${tables:-no answer}'). Refusing to wipe uploads; investigate first." >&2
+    exit 1
+  fi
   # uploads is a host bind mount that outlives `down -v`; the seed recreates all media, so a fresh install starts empty (no -1/-2 file names).
   [ -d wp-content/uploads ] && find wp-content/uploads -mindepth 1 -delete
   wp core install --url="$WP_URL" --title="$WP_TITLE" \

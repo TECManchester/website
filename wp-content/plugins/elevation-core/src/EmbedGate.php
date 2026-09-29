@@ -19,6 +19,10 @@ final class EmbedGate {
 		if ( null === $rule || ! is_array( $parts ) || 'https' !== ( $parts['scheme'] ?? '' ) ) {
 			return null;
 		}
+		// A backslash or userinfo can make browsers and parse_url disagree about the host.
+		if ( str_contains( $src, '\\' ) || isset( $parts['user'] ) || isset( $parts['pass'] ) ) {
+			return null;
+		}
 		$host_ok = in_array( strtolower( $parts['host'] ?? '' ), $rule['hosts'], true );
 		$path_ok = str_starts_with( $parts['path'] ?? '', $rule['path'] );
 		return $host_ok && $path_ok ? $src : null;

@@ -28,6 +28,8 @@ final class EmbedGateTest extends TestCase {
 			'javascript url'       => [ 'video', 'javascript:alert(1)' ],
 			'unknown kind'         => [ 'iframe', 'https://www.google.com/maps' ],
 			'empty'                => [ 'map', '' ],
+			'backslash host trick' => [ 'map', 'https://evil.com\\@www.google.com/maps' ],
+			'userinfo'             => [ 'video', 'https://user:pass@www.youtube-nocookie.com/embed/abc' ],
 		];
 	}
 

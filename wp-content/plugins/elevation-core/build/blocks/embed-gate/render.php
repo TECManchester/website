@@ -33,5 +33,5 @@ $elevation_style       = $elevation_height > 0 ? 'height:' . $elevation_height .
 		<button type="button" class="embed-gate__button" data-ecm-embed-load disabled><?php echo Icons::svg( $elevation_copy['icon'] ); ?><?php echo esc_html( $elevation_copy['button'] ); ?></button>
 		<p class="embed-gate__note"><?php echo esc_html( $elevation_copy['note'] ); ?><?php if ( '' !== $elevation_link ) : ?> · <a href="<?php echo esc_url( $elevation_link ); ?>" target="_blank" rel="noreferrer">Open in a new tab</a><?php endif; ?></p>
 	</div>
-	<template><iframe src="<?php echo esc_url( $elevation_src ); ?>" title="<?php echo esc_attr( $elevation_frame_title ); ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></template>
+	<template><iframe src="<?php echo esc_url( $elevation_src ); ?>" title="<?php echo esc_attr( $elevation_frame_title ); ?>" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></template>
 </div>
