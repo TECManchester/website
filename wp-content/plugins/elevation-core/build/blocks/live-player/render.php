@@ -7,6 +7,9 @@ use Elevation\Core\YouTube;
 
 defined( 'ABSPATH' ) || exit;
 
+// The gate only renders once live: enqueue its stylesheet now so a later swap to live is styled.
+wp_enqueue_style( generate_block_asset_handle( 'elevation/embed-gate', 'style' ) );
+
 $elevation_live  = elevation_youtube_live();
 $elevation_state = $elevation_live['state'];
 $elevation_video = $elevation_live['video'];

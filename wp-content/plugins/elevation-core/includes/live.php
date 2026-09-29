@@ -43,10 +43,13 @@ add_action( 'rest_api_init', function () {
 			if ( $post && 'publish' === $post->post_status && '' === $post->post_password && is_post_publicly_viewable( $post ) ) {
 				$GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride -- blocks read get_the_ID().
 				setup_postdata( $post );
-				foreach ( elevation_live_find_blocks( parse_blocks( $post->post_content ) ) as $block ) {
-					$blocks[ $block['blockName'] ] = render_block( $block );
+				try {
+					foreach ( elevation_live_find_blocks( parse_blocks( $post->post_content ) ) as $block ) {
+						$blocks[ $block['blockName'] ] = render_block( $block );
+					}
+				} finally {
+					wp_reset_postdata();
 				}
-				wp_reset_postdata();
 			}
 			$response = new WP_REST_Response( [ 'state' => $live['state'], 'blocks' => (object) $blocks ] );
 			$response->header( 'Cache-Control', 'no-store, max-age=0' );

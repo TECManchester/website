@@ -57,7 +57,7 @@
 
 /* ---------- Home watch tile (block version of the Plan 2 group; .watch-tile/.watch-intro are in site.css) ---------- */
 a.watch-tile { color: inherit; text-decoration: none; }
-a.watch-tile:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 4px; }
+a.watch-tile:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 2px; }
 .watch-tile > .watch-tile__image { position: absolute !important; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
 .watch-tile > .watch-tile__badge { position: absolute !important; top: 16px; left: 16px; z-index: 2; }
 .watch-tile__badge .watch-tile__chip { display: inline-block; padding: 6px 12px; border-radius: 8px; background: rgb(14 14 44 / 0.7); backdrop-filter: blur(12px); color: #fff; font-family: var(--wp--preset--font-family--sora); font-size: 12px; font-weight: 600; }
