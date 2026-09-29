@@ -107,3 +107,11 @@ button.event-calendar__day.is-selected::after { background: var(--wp--preset--co
 .event-getting-there address p { margin: 0 0 4px; }
 .event-getting-there .wp-block-buttons { flex-direction: column; align-items: stretch; gap: 10px; margin-top: 20px; }
 .event-getting-there .wp-block-button, .event-getting-there .wp-block-button__link { width: 100%; box-sizing: border-box; text-align: center; }
+
+/* ---------- Home "What's on" with events (elevation/home-events) ---------- */
+.home-events__strip { display: flex; flex-direction: column; gap: 20px; margin-top: 2rem; padding: 24px; border: 1px solid rgb(132 194 36 / 0.4); border-radius: 18px; background: var(--wp--preset--color--green-100); }
+@media (min-width: 640px) { .home-events__strip { flex-direction: row; align-items: center; justify-content: space-between; } }
+.home-events__strip-text > * { margin: 0; }
+.home-events__strip-text > h3 { margin-top: 6px; font-size: 20px; }
+.home-events__place { margin-top: 6px !important; font-size: 14px; color: var(--wp--preset--color--grey-500); }
+.home-events__strip .wp-block-buttons { flex-shrink: 0; }
