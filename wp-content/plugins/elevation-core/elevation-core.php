@@ -19,6 +19,7 @@ require_once ELEVATION_CORE_DIR . 'src/Tokens.php';
 require_once ELEVATION_CORE_DIR . 'src/SeedGuard.php';
 require_once ELEVATION_CORE_DIR . 'src/MediaRefs.php';
 require_once ELEVATION_CORE_DIR . 'src/Icons.php';
+require_once ELEVATION_CORE_DIR . 'src/EmbedGate.php';
 
 require_once ELEVATION_CORE_DIR . 'includes/settings.php';
 require_once ELEVATION_CORE_DIR . 'includes/bindings.php';
@@ -26,6 +27,7 @@ require_once ELEVATION_CORE_DIR . 'includes/roles.php';
 require_once ELEVATION_CORE_DIR . 'includes/settings-page.php';
 require_once ELEVATION_CORE_DIR . 'includes/cli.php';
 require_once ELEVATION_CORE_DIR . 'includes/navigation.php';
+require_once ELEVATION_CORE_DIR . 'includes/consent.php';
 
 register_activation_hook( __FILE__, 'elevation_install_roles' );
 

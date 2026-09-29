@@ -35,3 +35,9 @@ add_action( 'phpmailer_init', function ( $mailer ) {
 add_filter( 'wp_mail_from', function ( $from ) {
 	return 'wordpress@localhost' === $from ? 'wordpress@elevationmanchester.local' : $from;
 } );
+
+// Local pages must never count in the church's real GA4 property.
+add_filter( 'elevation_consent_config', function ( array $config ) {
+	$config['ga4'] = 'G-LOCAL0000';
+	return $config;
+} );
