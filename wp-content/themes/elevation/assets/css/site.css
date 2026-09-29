@@ -544,8 +544,6 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 
 /* Form slots (Plan 5 fills these) and the Gift Aid box */
 .form-slot:empty { min-height: 1px; }
-.form-box { box-sizing: border-box; padding: 24px; border-radius: 18px; border: 1px solid var(--wp--preset--color--grey-100); background: #fff; box-shadow: var(--wp--preset--shadow--card); }
-@media (min-width: 640px) { .form-box { padding: 40px; } }
 
 /* Long-form text (Privacy, kept pages) */
 .rich-text > h2 { margin-top: 48px; font-size: var(--wp--preset--font-size--x-large); scroll-margin-top: 7rem; }
