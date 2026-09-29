@@ -244,9 +244,9 @@ templates for the post types in §6.
   video on YouTube in a new tab, as the redesign does.
 - **Public**:
   - `/watch`: live player / upcoming strip (§6.4), "Recent messages" = the 12 latest finished
-    videos (not live, not upcoming) as the redesign's video cards, "See everything on YouTube".
+    live streams (broadcasts that went out; not ordinary uploads or Shorts) as the redesign's video cards, "See everything on YouTube".
     Fallback panel (redesign copy) when there is no API key or the fetch failed.
-  - Home watch section: the live stream while streaming, otherwise the latest finished video; the
+  - Home watch section: the live stream while streaming, otherwise the latest finished live stream; the
     redesign's static "Missed a Sunday?" section when there is neither.
 - **Thumbnails** would be a request to Google (`i.ytimg.com`) before consent, so the server copies
   each shown thumbnail into `uploads/elevation-youtube/` and serves it from the site. A thumbnail that
@@ -624,4 +624,4 @@ Gift Aid retention of six years after the last gift.
 | The local site shows the real channel; no mock data | §6.3: local API key from `.env` via `local-dev.php`; tests keep canned API responses only as unit-test inputs |
 | Live has wp-admin access only, so everything is configurable there | §6.3: key, handle, status and "Check YouTube now" in Settings → Church; §6.4 failures surface there, not only in a log |
 | Thumbnails without a Google request before consent | §6.3: server-side copies in `uploads/elevation-youtube/` |
-
+| Only live streams are shown (user, 2026-09-29) | §6.3: past videos = finished broadcasts only (`liveStreamingDetails.actualStartTime` set); uploads and Shorts are left out |
