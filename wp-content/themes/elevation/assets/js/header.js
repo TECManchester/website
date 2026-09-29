@@ -1,6 +1,6 @@
 /**
  * Header behaviour core Navigation doesn't provide:
- * - solid/scrolled state after 80px, transparent "over hero" state on the front page;
+ * - solid/scrolled state after 80px, transparent "over hero" state on pages whose content starts with a .site-hero;
  * - the service line, CTA buttons and white logo shown inside the mobile overlay;
  * - "active" link when the current path starts with the link's path (e.g. /about/what-we-believe).
  */
@@ -10,12 +10,12 @@
 		return;
 	}
 	const part = header.closest( '.wp-block-template-part' ) || header;
-	const isHome = document.body.classList.contains( 'home' );
+	const hasHero = !! document.querySelector( '.site-hero' );
 
 	const update = () => {
 		const scrolled = window.scrollY > 80;
 		part.classList.toggle( 'is-scrolled', scrolled );
-		part.classList.toggle( 'is-over-hero', isHome && ! scrolled );
+		part.classList.toggle( 'is-over-hero', hasHero && ! scrolled );
 	};
 	update();
 	window.addEventListener( 'scroll', update, { passive: true } );
