@@ -25,6 +25,10 @@ require_once ELEVATION_CORE_DIR . 'src/EventTime.php';
 require_once ELEVATION_CORE_DIR . 'src/EventFields.php';
 require_once ELEVATION_CORE_DIR . 'src/Fixtures.php';
 require_once ELEVATION_CORE_DIR . 'src/YouTube.php';
+require_once ELEVATION_CORE_DIR . 'src/Forms.php';
+require_once ELEVATION_CORE_DIR . 'src/FormRules.php';
+require_once ELEVATION_CORE_DIR . 'src/ServiceDates.php';
+require_once ELEVATION_CORE_DIR . 'src/RateLimit.php';
 
 require_once ELEVATION_CORE_DIR . 'includes/settings.php';
 require_once ELEVATION_CORE_DIR . 'includes/bindings.php';
