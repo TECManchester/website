@@ -1,0 +1,16 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/recent-videos",
+  "title": "Recent messages (YouTube)",
+  "category": "widgets",
+  "icon": "video-alt3",
+  "description": "The 12 latest finished videos from the church's YouTube channel; each opens YouTube. Without a working API key, a link to the channel.",
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}
