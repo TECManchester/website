@@ -124,9 +124,13 @@ final class YouTube {
 		return null;
 	}
 
-	/** The soonest scheduled stream or premiere; one without a schedule doesn't count. */
-	public static function nextUpcoming( array $videos ): ?array {
+	/** The soonest scheduled stream or premiere; one without a schedule doesn't count. If $now is given, drop any scheduled more than 3 hours in the past. */
+	public static function nextUpcoming( array $videos, ?\DateTimeImmutable $now = null ): ?array {
 		$upcoming = array_values( array_filter( $videos, static fn ( $v ) => 'upcoming' === ( $v['live'] ?? '' ) && '' !== ( $v['scheduledStart'] ?? '' ) ) );
+		if ( null !== $now ) {
+			$cutoff = $now->modify( '-3 hours' );
+			$upcoming = array_values( array_filter( $upcoming, static fn ( $v ) => $v['scheduledStart'] >= $cutoff->format( 'Y-m-d\TH:i:s\Z' ) ) );
+		}
 		usort( $upcoming, static fn ( $a, $b ) => strcmp( $a['scheduledStart'], $b['scheduledStart'] ) );
 		return $upcoming[0] ?? null;
 	}
@@ -160,7 +164,19 @@ final class YouTube {
 		if ( ! is_string( $value ) || ! preg_match( '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/', $value ) ) {
 			return '';
 		}
-		return ( new DateTimeImmutable( $value ) )->setTimezone( new DateTimeZone( 'UTC' ) )->format( 'Y-m-d\TH:i:s\Z' );
+		try {
+			$dt = new DateTimeImmutable( $value );
+			// Verify the date part survives: Y-m-d must equal input's first 10 characters after parsing in UTC.
+			$utc = $dt->setTimezone( new DateTimeZone( 'UTC' ) );
+			$parsed_date = $utc->format( 'Y-m-d' );
+			$input_date  = substr( $value, 0, 10 );
+			if ( $parsed_date !== $input_date ) {
+				return '';
+			}
+			return $utc->format( 'Y-m-d\TH:i:s\Z' );
+		} catch ( \Exception ) {
+			return '';
+		}
 	}
 
 	/** The widest https://i.ytimg.com thumbnail, or "" (anything else could point the server's copy anywhere). */

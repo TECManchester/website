@@ -143,4 +143,39 @@ final class YouTubeTest extends TestCase {
 		$this->assertSame( '7 Sept 2026', YouTube::displayDate( '2026-09-07T09:00:00Z' ) );
 		$this->assertSame( '', YouTube::displayDate( 'nope' ) );
 	}
+
+	public function test_invalid_dates_do_not_throw(): void {
+		// Invalid dates that pass the regex but fail on parsing or round-trip
+		$v = YouTube::videos( [ 'items' => [ self::video( 'aaaaaaaaaaa', [ 'publishedAt' => '2026-13-45T25:61:61Z' ] ) ] ], [ 'aaaaaaaaaaa' ] )[0];
+		$this->assertSame( '', $v['publishedAt'], 'does not throw; invalid month/day/time rejected' );
+
+		// Date that becomes a different date after parsing (Feb 31 → Mar 3)
+		$this->assertSame( '', YouTube::displayDate( '2026-02-31T10:00:00Z' ), 'Feb 31 round-trip fails' );
+
+		// Timezone offset too large
+		$this->assertSame( '', YouTube::formatScheduled( '2026-10-04T09:30:00+99:99' ), 'invalid timezone offset rejected' );
+	}
+
+	public function test_next_upcoming_drops_old_scheduled(): void {
+		$v = fn ( string $id, string $start ) => [ 'id' => $id, 'live' => 'upcoming', 'scheduledStart' => $start ];
+		$list = [
+			$v( 'too_old', '2026-10-11T09:30:00Z' ),   // 3.5 hours before $now
+			$v( 'keep_this', '2026-10-11T10:30:00Z' ), // 2.5 hours before $now
+			$v( 'future', '2026-10-11T14:00:00Z' ),     // in the future
+		];
+		$now = new \DateTimeImmutable( '2026-10-11T13:00:00Z', new \DateTimeZone( 'UTC' ) );
+		$result = YouTube::nextUpcoming( $list, $now );
+		$this->assertSame( 'keep_this', $result['id'], 'keeps scheduled within 3 hours, drops older' );
+
+		// Without $now, all scheduled videos are considered
+		$all_upcoming = YouTube::nextUpcoming( $list );
+		$this->assertSame( 'too_old', $all_upcoming['id'], 'without $now, soonest is returned' );
+	}
+
+	public function test_thumbnail_look_alike_host_rejected(): void {
+		$v = YouTube::videos( [ 'items' => [ self::video( 'aaaaaaaaaaa', [
+			'thumbnails' => [ 'high' => [ 'url' => 'https://i.ytimg.com.evil.example/x.jpg', 'width' => 480 ] ],
+		] ) ] ], [ 'aaaaaaaaaaa' ] )[0];
+		$this->assertSame( '', $v['thumbnail'], 'look-alike host rejected' );
+	}
 }
