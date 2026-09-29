@@ -7,6 +7,7 @@ import { SelectControl, TextControl, TextareaControl, ToggleControl } from '@wor
 import { useEffect } from '@wordpress/element';
 
 const DAYS = [ [ '', 'Choose a day' ], [ 'monday', 'Monday' ], [ 'tuesday', 'Tuesday' ], [ 'wednesday', 'Wednesday' ], [ 'thursday', 'Thursday' ], [ 'friday', 'Friday' ], [ 'saturday', 'Saturday' ], [ 'sunday', 'Sunday' ] ];
+const FREQUENCIES = [ { value: 'weekly', label: 'Every week' }, { value: 'fortnightly', label: 'Every other week' } ];
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function Fields() {
@@ -30,12 +31,14 @@ function Fields() {
 		<PluginDocumentSettingPanel name="elevation-group" title="Group details" initialOpen>
 			<TextareaControl label="Description" help="One or two sentences for the group's card." value={ excerpt || '' } onChange={ setExcerpt } />
 			<SelectControl label="Meets on" value={ m.group_meeting_day || '' } options={ DAYS.map( ( [ value, label ] ) => ( { value, label } ) ) } onChange={ set( 'group_meeting_day' ) } />
+			<SelectControl label="How often" value={ m.group_frequency === 'fortnightly' ? 'fortnightly' : 'weekly' } options={ FREQUENCIES } onChange={ set( 'group_frequency' ) } />
 			<TextControl label="Time" type="time" value={ m.group_meeting_time || '' } onChange={ set( 'group_meeting_time' ) } />
+			<TextareaControl label="Towns covered" help="One town per line. Used by the town search on the Connect Groups page." value={ m.group_towns || '' } onChange={ set( 'group_towns' ) } />
 			<TextControl label="Leader's name" help="Only the first name is shown on the site." value={ m.group_leader_name || '' } onChange={ set( 'group_leader_name' ) } />
 			<TextControl
 				label="Leader's email"
 				type="email"
-				help="Never shown on the site. Requests to join this group are emailed here and to the welcome team."
+				help="Never shown on the site. Requests to join this group are emailed here and to the Connect Groups team."
 				value={ m.group_leader_email || '' }
 				onChange={ set( 'group_leader_email' ) }
 			/>

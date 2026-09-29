@@ -14,6 +14,8 @@ const ELEVATION_GROUP_META = [
 	'group_leader_name'  => 'string',
 	'group_leader_email' => 'string',
 	'group_accepting'    => 'boolean',
+	'group_towns'        => 'string',
+	'group_frequency'    => 'string',
 ];
 
 add_action( 'init', function () {
@@ -57,12 +59,14 @@ add_action( 'init', function () {
 		'group_leader_name'  => 'sanitize_text_field',
 		'group_leader_email' => 'sanitize_email',
 		'group_accepting'    => 'rest_sanitize_boolean',
+		'group_towns'        => static fn ( $value ) => implode( "\n", GroupFields::towns( $value ) ),
+		'group_frequency'    => [ GroupFields::class, 'frequency' ],
 	];
 	foreach ( ELEVATION_GROUP_META as $key => $type ) {
 		register_post_meta( 'connect_group', $key, [
 			'type'              => $type,
 			'single'            => true,
-			'default'           => 'group_accepting' === $key ? true : '',
+			'default'           => 'group_accepting' === $key ? true : ( 'group_frequency' === $key ? 'weekly' : '' ),
 			'show_in_rest'      => in_array( $key, [ 'group_leader_name', 'group_leader_email' ], true ) ? [ 'schema' => [ 'type' => 'string', 'context' => [ 'edit' ] ] ] : true,
 			'sanitize_callback' => $sanitisers[ $key ],
 			'auth_callback'     => static fn ( $allowed, $meta_key, $post_id ) => current_user_can( 'edit_post', (int) $post_id ),
@@ -111,6 +115,7 @@ function elevation_group( WP_Post $post ): array {
 		$list = get_the_terms( $post, $taxonomy );
 		return is_array( $list ) ? implode( ', ', wp_list_pluck( $list, 'name' ) ) : '';
 	};
+	$areas = get_the_terms( $post, 'group_area' );
 	return [
 		'id'          => $post->ID,
 		'slug'        => $post->post_name,
@@ -118,7 +123,13 @@ function elevation_group( WP_Post $post ): array {
 		'description' => $post->post_excerpt,
 		'area'        => $terms( 'group_area' ),
 		'category'    => $terms( 'group_category' ),
-		'when'        => GroupFields::when( GroupFields::day( get_post_meta( $post->ID, 'group_meeting_day', true ) ), GroupFields::time( get_post_meta( $post->ID, 'group_meeting_time', true ) ) ),
+		'areas'       => is_array( $areas ) ? array_values( wp_list_pluck( $areas, 'name' ) ) : [],
+		'towns'       => GroupFields::towns( get_post_meta( $post->ID, 'group_towns', true ) ),
+		'when'        => GroupFields::when(
+			GroupFields::day( get_post_meta( $post->ID, 'group_meeting_day', true ) ),
+			GroupFields::time( get_post_meta( $post->ID, 'group_meeting_time', true ) ),
+			GroupFields::frequency( get_post_meta( $post->ID, 'group_frequency', true ) )
+		),
 		'leader'      => GroupFields::firstName( (string) get_post_meta( $post->ID, 'group_leader_name', true ) ),
 		'accepting'   => (bool) get_post_meta( $post->ID, 'group_accepting', true ),
 		'image'       => (int) get_post_thumbnail_id( $post ),
