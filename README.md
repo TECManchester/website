@@ -44,6 +44,13 @@ docker compose run --rm -T wpcli wp elevation fixtures events /seed/fixtures/eve
 - `seed/fixtures/events.json` holds **local-only** sample events, dated relative to the day you seed (`+9 19:00` = nine days from today at 7pm). `./bin/seed.sh` loads them with `wp elevation fixtures events`; `wp elevation fixtures remove` deletes them (Plan 6 does this before go-live). Fixtures never overwrite a real event with the same slug.
 - `bin/validate-blocks.js` is pasted into the editor's console to check every page and pattern for block-validation errors. On the local stack you can instead open `http://localhost:8080/?elevation-validate-blocks=1` and read `window.elevationValidation`.
 
+## YouTube
+
+- Watch and Home show the church's YouTube channel (Settings → Church → YouTube): the latest videos, which open on YouTube, and the live stream while streaming. Nothing from YouTube is stored in WordPress.
+- Locally, put a YouTube Data API v3 key in `.env` as `YOUTUBE_API_KEY=` and run `docker compose up -d`; the local site then shows the real channel. Without a key you see the "Watch on YouTube" panel. On live, the key goes in Settings → Church.
+- Settings → Church shows whether YouTube is working (or the last error) and has "Check YouTube now".
+- Thumbnails are copied into `wp-content/uploads/elevation-youtube/` so visitors' browsers never contact YouTube before they consent.
+
 ## Private data
 
 `private/` (gitignored) holds the live backup and its mirror database password. It contains
