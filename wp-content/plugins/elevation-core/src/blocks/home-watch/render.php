@@ -21,7 +21,7 @@ $elevation_thumb = elevation_youtube_thumb_url( $elevation_video['id'] );
 $elevation_cta   = $elevation_is_on ? __( 'Watch live', 'elevation-core' ) : __( 'Watch now', 'elevation-core' );
 ?>
 <div <?php echo get_block_wrapper_attributes( elevation_live_attrs( 'elevation/home-watch', $elevation_live['state'], [ 'class' => 'split split--watch' ] ) ); ?>>
-	<a class="watch-tile reveal" href="<?php echo esc_url( $elevation_video['url'] ); ?>" target="_blank" rel="noreferrer noopener" aria-label="<?php echo esc_attr( $elevation_cta . ': ' . $elevation_video['title'] . ' ' . __( '(opens YouTube in a new tab)', 'elevation-core' ) ); ?>">
+	<a class="watch-tile reveal" href="<?php echo esc_url( $elevation_video['url'] ); ?>" target="_blank" rel="noreferrer noopener" aria-label="<?php echo str_replace( '{', '&#123;', esc_attr( $elevation_cta . ': ' . $elevation_video['title'] . ' ' . __( '(opens YouTube in a new tab)', 'elevation-core' ) ) ); ?>">
 		<?php if ( '' !== $elevation_thumb ) : ?>
 			<img class="watch-tile__image" src="<?php echo esc_url( $elevation_thumb ); ?>" alt="" loading="lazy" decoding="async">
 		<?php endif; ?>
@@ -30,7 +30,7 @@ $elevation_cta   = $elevation_is_on ? __( 'Watch live', 'elevation-core' ) : __(
 	</a>
 	<div class="watch-intro reveal">
 		<p class="is-style-eyebrow"><?php echo $elevation_is_on ? esc_html__( 'On air now', 'elevation-core' ) : esc_html__( 'Messages', 'elevation-core' ); ?></p>
-		<h2 class="wp-block-heading"><?php echo esc_html( $elevation_video['title'] ); ?></h2>
+		<h2 class="wp-block-heading"><?php echo elevation_youtube_text( $elevation_video['title'] ); ?></h2>
 		<p><?php echo $elevation_is_on
 			? esc_html__( "We're streaming right now — join us from wherever you are.", 'elevation-core' )
 			: esc_html__( "Full services and recent messages go up on our YouTube channel. Subscribe and you'll know the moment a new one lands.", 'elevation-core' ); ?></p>

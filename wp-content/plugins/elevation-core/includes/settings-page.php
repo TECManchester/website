@@ -158,6 +158,7 @@ function elevation_render_settings_page(): void {
 				</table>
 			<?php endforeach; ?>
 			<?php submit_button(); ?>
+			<p><button type="submit" class="button" name="elevation_youtube_check" value="1"><?php esc_html_e( 'Save and check YouTube', 'elevation-core' ); ?></button></p>
 		</form>
 	</div>
 	<?php

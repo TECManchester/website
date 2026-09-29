@@ -28,7 +28,7 @@ if ( 'none' === $elevation_state || ! $elevation_video ) {
 				</div>
 				<div class="live-player__text">
 					<?php echo elevation_live_badge(); // Escaped inside. ?>
-					<h2 class="wp-block-heading"><?php echo esc_html( $elevation_video['title'] ); ?></h2>
+					<h2 class="wp-block-heading"><?php echo elevation_youtube_text( $elevation_video['title'] ); ?></h2>
 					<p><?php esc_html_e( "We're streaming right now — come and join us.", 'elevation-core' ); ?></p>
 					<div class="wp-block-buttons">
 						<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( $elevation_video['url'] ); ?>" target="_blank" rel="noreferrer noopener"><?php esc_html_e( 'Watch on YouTube', 'elevation-core' ); ?></a></div>
@@ -40,7 +40,7 @@ if ( 'none' === $elevation_state || ! $elevation_video ) {
 			<div class="upcoming-stream">
 				<div>
 					<p class="is-style-eyebrow"><?php esc_html_e( 'Next stream', 'elevation-core' ); ?></p>
-					<h2 class="wp-block-heading"><?php echo esc_html( $elevation_video['title'] ); ?></h2>
+					<h2 class="wp-block-heading"><?php echo elevation_youtube_text( $elevation_video['title'] ); ?></h2>
 					<p class="upcoming-stream__when"><?php echo esc_html( YouTube::formatScheduled( $elevation_video['scheduledStart'] ) ); ?></p>
 				</div>
 				<div class="wp-block-buttons"><div class="wp-block-button is-style-navy"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( $elevation_video['url'] ); ?>" target="_blank" rel="noreferrer noopener"><?php esc_html_e( 'Set a reminder', 'elevation-core' ); ?></a></div></div>

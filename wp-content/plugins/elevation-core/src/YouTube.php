@@ -64,7 +64,6 @@ final class YouTube {
 			$byId[ $id ] = [
 				'id'             => $id,
 				'title'          => '' !== $title ? $title : 'Untitled',
-				'description'    => is_string( $s['description'] ?? null ) ? $s['description'] : '',
 				'publishedAt'    => self::iso( $s['publishedAt'] ?? '' ),
 				'thumbnail'      => self::thumbnail( $s['thumbnails'] ?? null ),
 				'durationSecs'   => self::parseDuration( $item['contentDetails']['duration'] ?? null ),
@@ -82,11 +81,32 @@ final class YouTube {
 		return $out;
 	}
 
-	/** The API's error reason ("quotaExceeded", "keyInvalid"…) from a response body, letters only; "" if none. */
+	/** The API's error reason ("API_KEY_INVALID", "quotaExceeded"…) from a response body: error.details[*].reason first, else error.errors[0].reason. Letters and underscores only; "" if none. */
 	public static function errorReason( mixed $body ): string {
 		$data   = is_string( $body ) ? json_decode( $body, true ) : null;
-		$reason = is_array( $data ) ? ( $data['error']['errors'][0]['reason'] ?? '' ) : '';
-		return is_string( $reason ) ? (string) preg_replace( '/[^A-Za-z]/', '', strip_tags( $reason ) ) : '';
+		$error  = is_array( $data ) && is_array( $data['error'] ?? null ) ? $data['error'] : [];
+		$reason = '';
+		foreach ( is_array( $error['details'] ?? null ) ? $error['details'] : [] as $detail ) {
+			if ( is_array( $detail ) && is_string( $detail['reason'] ?? null ) && '' !== $detail['reason'] ) {
+				$reason = $detail['reason'];
+				break;
+			}
+		}
+		if ( '' === $reason ) {
+			$reason = is_array( $error['errors'][0] ?? null ) ? ( $error['errors'][0]['reason'] ?? '' ) : '';
+		}
+		return is_string( $reason ) ? (string) preg_replace( '/[^A-Za-z_]/', '', strip_tags( $reason ) ) : '';
+	}
+
+	/** Plain-English next step for an error reason; "" when there is nothing useful to add. */
+	public static function errorAdvice( string $reason ): string {
+		return match ( $reason ) {
+			'API_KEY_INVALID', 'keyInvalid'                                      => "The API key isn't valid. Check it was copied in full.",
+			'API_KEY_HTTP_REFERRER_BLOCKED', 'API_KEY_IP_ADDRESS_BLOCKED', 'forbidden' => "The key's restrictions block this website's server. In Google Cloud, set the key's Application restrictions to None, or to this server's IP address.",
+			'SERVICE_DISABLED', 'accessNotConfigured'                            => "YouTube Data API v3 isn't turned on for this key's Google Cloud project.",
+			'quotaExceeded', 'dailyLimitExceeded', 'rateLimitExceeded'           => "Today's YouTube allowance is used up. It resets at about 8am UK time.",
+			default                                                              => '',
+		};
 	}
 
 	public static function parseDuration( mixed $iso ): int {

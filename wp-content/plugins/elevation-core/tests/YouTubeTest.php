@@ -13,7 +13,6 @@ final class YouTubeTest extends TestCase {
 			'id'             => $id,
 			'snippet'        => array_merge( [
 				'title'                => "Title $id",
-				'description'          => "About $id",
 				'publishedAt'          => '2026-10-04T09:30:00Z',
 				'liveBroadcastContent' => 'none',
 				'thumbnails'           => [
@@ -68,7 +67,6 @@ final class YouTubeTest extends TestCase {
 		$this->assertSame( [
 			'id'             => 'bbbbbbbbbbb',
 			'title'          => 'Title bbbbbbbbbbb',
-			'description'    => 'About bbbbbbbbbbb',
 			'publishedAt'    => '2026-10-04T09:30:00Z',
 			'thumbnail'      => 'https://i.ytimg.com/vi/bbbbbbbbbbb/hqdefault.jpg',
 			'durationSecs'   => 3723,
@@ -84,13 +82,12 @@ final class YouTubeTest extends TestCase {
 	public function test_untrusted_fields_are_normalised(): void {
 		$v = YouTube::videos( [ 'items' => [ self::video( 'aaaaaaaaaaa', [
 			'title'                => "  <b>Hi</b> \"x\" 🙏\u{0007} ",
-			'description'          => [ 'not a string' ],
 			'publishedAt'          => 'yesterday',
 			'liveBroadcastContent' => 'LIVE!',
 			'thumbnails'           => [ 'high' => [ 'url' => 'http://evil.example/x.jpg', 'width' => 999 ] ],
 		] ) ] ], [ 'aaaaaaaaaaa' ] )[0];
 		$this->assertSame( '<b>Hi</b> "x" 🙏', $v['title'], 'kept as text (control characters removed); escaping happens on output' );
-		$this->assertSame( '', $v['description'] );
+		$this->assertArrayNotHasKey( 'description', $v );
 		$this->assertSame( '', $v['publishedAt'] );
 		$this->assertSame( 'none', $v['live'] );
 		$this->assertSame( '', $v['thumbnail'], 'only https://i.ytimg.com thumbnails, so the server never fetches anything else' );
@@ -102,8 +99,31 @@ final class YouTubeTest extends TestCase {
 		$this->assertSame( 'quotaExceeded', YouTube::errorReason( '{"error":{"code":403,"errors":[{"reason":"quotaExceeded"}],"message":"The request cannot be completed"}}' ) );
 		$this->assertSame( 'keyInvalid', YouTube::errorReason( '{"error":{"errors":[{"reason":"keyInvalid"}]}}' ) );
 		$this->assertSame( 'badRequest', YouTube::errorReason( '{"error":{"errors":[{"reason":"bad<script>Request"}]}}' ), 'letters only' );
+		$this->assertSame( 'API_KEY_INVALID', YouTube::errorReason( '{"error":{"code":400,"errors":[{"reason":"badRequest"}],"details":[{"@type":"x","reason":"API_KEY_INVALID"}]}}' ), 'details reason preferred' );
+		$this->assertSame( 'API_KEY_HTTP_REFERRER_BLOCKED', YouTube::errorReason( '{"error":{"details":[{"@type":"x"},{"reason":"API_KEY_HTTP_REFERRER_BLOCKED"}],"errors":[{"reason":"forbidden"}]}}' ), 'first details entry with a reason' );
+		$this->assertSame( 'ABC_D', YouTube::errorReason( '{"error":{"details":[{"reason":"AB1C_D<>"}]}}' ), 'letters and underscores only' );
 		$this->assertSame( '', YouTube::errorReason( 'not json' ) );
 		$this->assertSame( '', YouTube::errorReason( null ) );
+	}
+
+	/** @return array<string, array{string, string}> */
+	public static function advice(): array {
+		$keys = "The API key isn't valid. Check it was copied in full.";
+		$block = "The key's restrictions block this website's server. In Google Cloud, set the key's Application restrictions to None, or to this server's IP address.";
+		$off = "YouTube Data API v3 isn't turned on for this key's Google Cloud project.";
+		$quota = "Today's YouTube allowance is used up. It resets at about 8am UK time.";
+		return [
+			'API_KEY_INVALID' => [ 'API_KEY_INVALID', $keys ], 'keyInvalid' => [ 'keyInvalid', $keys ],
+			'referrer' => [ 'API_KEY_HTTP_REFERRER_BLOCKED', $block ], 'ip' => [ 'API_KEY_IP_ADDRESS_BLOCKED', $block ], 'forbidden' => [ 'forbidden', $block ],
+			'SERVICE_DISABLED' => [ 'SERVICE_DISABLED', $off ], 'accessNotConfigured' => [ 'accessNotConfigured', $off ],
+			'quotaExceeded' => [ 'quotaExceeded', $quota ], 'dailyLimitExceeded' => [ 'dailyLimitExceeded', $quota ], 'rateLimitExceeded' => [ 'rateLimitExceeded', $quota ],
+			'unknown' => [ 'backendError', '' ], 'empty' => [ '', '' ],
+		];
+	}
+
+	#[DataProvider( 'advice' )]
+	public function test_error_advice( string $reason, string $expected ): void {
+		$this->assertSame( $expected, YouTube::errorAdvice( $reason ) );
 	}
 
 	/** @return array<string, array{mixed, int, string}> */

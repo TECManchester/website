@@ -27,7 +27,7 @@ function elevation_video_card( array $video ): string {
 					<span class="video-card__duration"><span class="screen-reader-text"><?php esc_html_e( 'Length', 'elevation-core' ); ?> </span><?php echo esc_html( $duration ); ?></span>
 				<?php endif; ?>
 			</div>
-			<h3 class="video-card__title"><?php echo esc_html( (string) $video['title'] ); ?><span class="screen-reader-text"> <?php esc_html_e( '(opens YouTube in a new tab)', 'elevation-core' ); ?></span></h3>
+			<h3 class="video-card__title"><?php echo elevation_youtube_text( (string) $video['title'] ); ?><span class="screen-reader-text"> <?php esc_html_e( '(opens YouTube in a new tab)', 'elevation-core' ); ?></span></h3>
 			<?php if ( '' !== $date ) : ?>
 				<p class="video-card__date"><?php echo esc_html( $date ); ?></p>
 			<?php endif; ?>
