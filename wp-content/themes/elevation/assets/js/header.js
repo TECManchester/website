@@ -69,6 +69,9 @@
 		const path = new URL( link.href, window.location.origin ).pathname.replace( /\/+$/, '' ) || '/';
 		if ( path !== '/' && ( here === path || here.startsWith( path + '/' ) ) && ! link.hash ) {
 			link.classList.add( 'is-active' );
+			if ( here === path ) {
+				link.setAttribute( 'aria-current', 'page' );
+			}
 		}
 	} );
 } )();

@@ -1,15 +1,13 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-const ELEVATION_THEME_VERSION = '0.1.0';
-
 add_action( 'after_setup_theme', function () {
 	add_editor_style( 'assets/css/site.css' );
 } );
 
 add_action( 'wp_enqueue_scripts', function () {
-	wp_enqueue_style( 'elevation-site', get_theme_file_uri( 'assets/css/site.css' ), [], ELEVATION_THEME_VERSION );
-	wp_enqueue_script( 'elevation-header', get_theme_file_uri( 'assets/js/header.js' ), [], ELEVATION_THEME_VERSION, [ 'strategy' => 'defer', 'in_footer' => true ] );
+	wp_enqueue_style( 'elevation-site', get_theme_file_uri( 'assets/css/site.css' ), [], (string) filemtime( get_theme_file_path( 'assets/css/site.css' ) ) );
+	wp_enqueue_script( 'elevation-header', get_theme_file_uri( 'assets/js/header.js' ), [], (string) filemtime( get_theme_file_path( 'assets/js/header.js' ) ), [ 'strategy' => 'defer', 'in_footer' => true ] );
 } );
 
 add_action( 'init', function () {
