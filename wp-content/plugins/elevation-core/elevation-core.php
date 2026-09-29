@@ -21,6 +21,7 @@ require_once ELEVATION_CORE_DIR . 'src/MediaRefs.php';
 require_once ELEVATION_CORE_DIR . 'src/Redirects.php';
 require_once ELEVATION_CORE_DIR . 'src/Icons.php';
 require_once ELEVATION_CORE_DIR . 'src/EmbedGate.php';
+require_once ELEVATION_CORE_DIR . 'src/EventTime.php';
 
 require_once ELEVATION_CORE_DIR . 'includes/settings.php';
 require_once ELEVATION_CORE_DIR . 'includes/bindings.php';
