@@ -63,7 +63,7 @@ add_action( 'init', function () {
 			'type'              => $type,
 			'single'            => true,
 			'default'           => 'group_accepting' === $key ? true : '',
-			'show_in_rest'      => 'group_leader_email' === $key ? [ 'schema' => [ 'type' => 'string', 'context' => [ 'edit' ] ] ] : true,
+			'show_in_rest'      => in_array( $key, [ 'group_leader_name', 'group_leader_email' ], true ) ? [ 'schema' => [ 'type' => 'string', 'context' => [ 'edit' ] ] ] : true,
 			'sanitize_callback' => $sanitisers[ $key ],
 			'auth_callback'     => static fn ( $allowed, $meta_key, $post_id ) => current_user_can( 'edit_post', (int) $post_id ),
 		] );

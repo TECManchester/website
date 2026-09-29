@@ -23,6 +23,7 @@ function Fields() {
 	}, [ removeEditorPanel ] );
 	useEffect( () => {
 		( badEmail ? lockPostSaving : unlockPostSaving )( 'elevation-group' );
+		return () => unlockPostSaving( 'elevation-group' );
 	}, [ badEmail, lockPostSaving, unlockPostSaving ] );
 
 	return (
