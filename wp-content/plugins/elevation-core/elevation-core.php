@@ -18,6 +18,7 @@ require_once ELEVATION_CORE_DIR . 'src/Settings.php';
 require_once ELEVATION_CORE_DIR . 'src/Tokens.php';
 require_once ELEVATION_CORE_DIR . 'src/SeedGuard.php';
 require_once ELEVATION_CORE_DIR . 'src/MediaRefs.php';
+require_once ELEVATION_CORE_DIR . 'src/Icons.php';
 
 require_once ELEVATION_CORE_DIR . 'includes/settings.php';
 require_once ELEVATION_CORE_DIR . 'includes/bindings.php';

@@ -1,0 +1,24 @@
+/* Fills the .site-hero section behind its content (redesign hero-slideshow.tsx). */
+.wp-block-elevation-hero-slideshow { position: absolute; inset: 0; z-index: 0; overflow: hidden; max-width: none !important; margin: 0 !important; }
+.wp-block-elevation-hero-slideshow.is-empty {
+	background: radial-gradient(ellipse at 20% -10%, #26265c 0%, transparent 55%), radial-gradient(ellipse at 90% 110%, #1a1a3f 0%, transparent 50%);
+}
+.hero-slideshow__slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease-in-out; }
+.hero-slideshow__slide.is-active { opacity: 1; }
+.hero-slideshow__image { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (prefers-reduced-motion: no-preference) {
+	.hero-slideshow__slide.is-active .hero-slideshow__image { animation: elevation-kenburns 9s ease-out forwards; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.hero-slideshow__slide { transition: none; }
+}
+@keyframes elevation-kenburns {
+	from { transform: scale(1); }
+	to { transform: scale(1.03) translateY(-0.5%); }
+}
+/* Every seeded slide is "pre-treated" (gradient baked in), so the left wash is the light one. */
+.hero-slideshow__scrim { position: absolute; inset: 0; pointer-events: none; }
+.hero-slideshow__scrim--left { background: linear-gradient(to right, rgb(14 14 44 / 0.45), rgb(14 14 44 / 0.1), transparent); }
+.hero-slideshow__scrim--bottom { background: linear-gradient(to top, #0e0e2c, transparent, transparent); opacity: 0.9; }
+@media (min-width: 640px) { .hero-slideshow__scrim--bottom { opacity: 0.55; } }
+.hero-slideshow__scrim--top { inset: 0 0 auto 0; height: 160px; background: linear-gradient(to bottom, rgb(14 14 44 / 0.8), transparent); }

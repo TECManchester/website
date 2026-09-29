@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/hero-slideshow",
+  "title": "Hero slideshow",
+  "category": "media",
+  "icon": "images-alt2",
+  "description": "The home page photos from Church Settings → Home page slideshow, cross-fading behind the headline.",
+  "supports": { "html": false, "align": [ "full" ], "multiple": false },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}
