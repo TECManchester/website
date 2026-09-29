@@ -49,6 +49,7 @@ require_once ELEVATION_CORE_DIR . 'includes/youtube.php';
 require_once ELEVATION_CORE_DIR . 'includes/youtube-render.php';
 require_once ELEVATION_CORE_DIR . 'includes/live.php';
 require_once ELEVATION_CORE_DIR . 'includes/forms.php';
+require_once ELEVATION_CORE_DIR . 'includes/forms-access.php';
 require_once ELEVATION_CORE_DIR . 'includes/groups.php';
 require_once ELEVATION_CORE_DIR . 'includes/group-render.php';
 require_once ELEVATION_CORE_DIR . 'includes/announcements.php';
