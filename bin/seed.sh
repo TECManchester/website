@@ -29,8 +29,20 @@ seed_post() { # type slug file title [extra args...]
 wp theme activate elevation
 wp plugin activate elevation-core
 wp theme delete twentytwentyfive twentytwentyfour twentytwentythree 2>/dev/null || true
-wp option update blogname "$WP_TITLE"
-wp option update blogdescription "Making Greatness Common"
+wp option update uploads_use_yearmonth_folders 0
+wp option update blogname "$(wp elevation setting get church.name)"
+wp option update blogdescription "$(wp elevation setting get church.tagline)"
+# SmartCrawl: "Elevation Church Manchester | About", as the redesign's title template.
+wp eval '$o = (array) get_option( "wds_onpage_options", [] );
+  $o["title-page"] = "%%sitename%% %%sep%% %%title%%";
+  $o["title-home"] = "%%sitename%% %%sep%% %%sitedesc%%";
+  $o["preset-separator"] = "pipe";
+  update_option( "wds_onpage_options", $o );'
+
+# Media first: pages refer to it by path. Sorted, so attachment IDs are the same on every rebuild.
+media_files=$(cd seed/media && { find redesign live -type f \( -name '*.jpg' -o -name '*.jpeg' -o -name '*.png' \) 2>/dev/null || true; } | LC_ALL=C sort | sed 's#^#/seed/media/#')
+# shellcheck disable=SC2086
+[ -n "$media_files" ] && wp elevation media import $media_files --base=/seed/media
 wp option update timezone_string "Europe/London"
 wp option update WPLANG "en_GB" 2>/dev/null || true
 wp rewrite structure '/%postname%/' --hard
@@ -42,7 +54,9 @@ for id in $(wp post list --post_type=wp_navigation --post_status=any --name=head
 done
 seed_post wp_navigation header navigation/header.html "Header"
 
-seed_post page home pages/home.html "Home"
+seed_post page home pages/home.html "Home" \
+  --seo-title="%%sitename%% %%sep%% %%sitedesc%%" \
+  --meta-description="A Spirit-filled church family in Manchester on one mission: making greatness common. Join us {service.day}s at {service.startTime}, {location.venue}, {location.campus}."
 
 wp option update show_on_front page
 wp option update page_on_front "$(wp post list --post_type=page --name=home --field=ID)"
