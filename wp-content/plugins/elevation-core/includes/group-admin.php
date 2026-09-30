@@ -98,7 +98,7 @@ function elevation_group_details_render( WP_Post $post ): void {
 		<?php
 		elevation_group_details_row( 'elevation-group-day', __( 'Meets on', 'elevation-core' ), elevation_group_details_select( 'elevation-group-day', 'elevation_group_day', $day_opts, GroupFields::day( $meta( 'group_meeting_day' ) ) ), __( "Leave as 'Not set yet' to show 'Day and time to be confirmed'.", 'elevation-core' ) );
 		elevation_group_details_row( 'elevation-group-time', __( 'Time', 'elevation-core' ), '<input type="time" id="elevation-group-time" name="elevation_group_time" value="' . esc_attr( GroupFields::time( $meta( 'group_meeting_time' ) ) ) . '">', __( 'Shown on the site as, for example, 8:00 pm.', 'elevation-core' ) );
-		elevation_group_details_row( 'elevation-group-frequency', __( 'How often', 'elevation-core' ), elevation_group_details_select( 'elevation-group-frequency', 'elevation_group_frequency', [ 'weekly' => __( 'Every week', 'elevation-core' ), 'fortnightly' => __( 'Every other week', 'elevation-core' ) ], $freq_now ), __( "Every other week shows, for example, 'Every other Sunday'.", 'elevation-core' ) );
+		elevation_group_details_row( 'elevation-group-frequency', __( 'How often', 'elevation-core' ), elevation_group_details_select( 'elevation-group-frequency', 'elevation_group_frequency', [ 'weekly' => __( 'Every week', 'elevation-core' ), 'fortnightly' => __( 'Every two weeks', 'elevation-core' ) ], $freq_now ), __( "Every two weeks shows, for example, 'Sundays, every two weeks'.", 'elevation-core' ) );
 		?>
 		</tbody></table>
 

@@ -291,11 +291,11 @@ templates for the post types in §6.
   Centre, Online) and `group_category` (two types: Geography-based and Interest-based, slugs `geography-based` and `interest-based`), meta
   `meeting_day`, `meeting_time`, `leader_name` (its first name shows on cards; the full name is editor-only in REST), `leader_email` (the "Ask to join email": private, used only as the recipient of Join Group requests; empty means the
   Connect Groups inbox), `accepting_members` (bool), `group_towns` (one town per line, public), `group_frequency` (`weekly` or
-  `fortnightly`, shown as "Every week" / "Every other week") and a featured image. There is no live data to
+  `fortnightly`, shown as "Every week" / "Every two weeks") and a featured image. There is no live data to
   migrate. Groups are entered by staff.
 - **The seven real groups** (revision 6) are seeded from `seed/groups.json`: Salem, Canaan, Bethel, Zion and Shiloh
   (Geography-based, by borough and town, Thursday, Tuesday, Friday, Thursday and Thursday at 8:00 pm) and Thrive Tribe
-  and Surge (Interest-based, open to everyone; Surge meets every other Sunday at 8:00 pm, Thrive Tribe's day and time are
+  and Surge (Interest-based, open to everyone; Surge meets on Sundays every two weeks at 8:00 pm, shown as "Sundays, every two weeks · 8:00 pm", Thrive Tribe's day and time are
   to be confirmed). A group edited in wp-admin is not overwritten unless `SEED_FORCE="group:<slug>"` names it. Leader emails
   and images are added by staff.
 - **Town search**: the first filter is "Your town" (text with a suggestion list of every covered town). It matches a town
@@ -677,6 +677,6 @@ Gift Aid retention of six years after the last gift.
 | Anonymous reads of the core `/wp/v2/announcement` route are refused; the modal reads only `/elevation/v1/announcement` | §6.5, §3 |
 | Gift Aid auto-delete settings are reset on save, on `admin_init` and before each submission | §6.10 Gift Aid retention |
 | A form sits in a card only where its placement asks for it (`is-card` on the block: Gift Aid, G-Squad, Connect card and Join Group); Contact, Prayer, Plan a Visit and Alpha do not | §6.10 Styling |
-| The real Connect Groups replace the samples: seven seeded groups, a town search, `group_towns` and `group_frequency` fields, "Every other …" and "Day and time to be confirmed" wording; Join Group goes to the new `contact.connectGroupInbox` setting instead of `welcomeInbox` (superseded by the per-group Ask to join email in the row below). The user's decision on 2026-09-30 | §6.6, §6.10, §9 |
+| The real Connect Groups replace the samples: seven seeded groups, a town search, `group_towns` and `group_frequency` fields, "…, every two weeks" and "Day and time to be confirmed" wording; Join Group goes to the new `contact.connectGroupInbox` setting instead of `welcomeInbox` (superseded by the per-group Ask to join email in the row below). The user's decision on 2026-09-30 | §6.6, §6.10, §9 |
 | Connect Groups have two types, Geography-based and Interest-based, and each group has an "Ask to join email" (default: the Connect Groups inbox) that is the only recipient of its requests; the Group details box is reorganised with help on every field and the raw meta is hidden from Custom Fields. The user's decision on 2026-09-30 | §6.6, §6.10 |
 | The Group details box is a classic-screen meta box, not a block-editor panel, because the Connect Group post type has no editor support; it replaces the Excerpt, Custom Fields, Areas, Group types and Post Attributes boxes, and the unused block-editor panel is deleted. A bad Ask to join email is left unsaved with an admin notice. Classic-editor fix, 2026-09-30 | §6.6 |

@@ -25,9 +25,9 @@ final class GroupFieldsTest extends TestCase {
 
 	public function test_when_says_every_other_week_for_fortnightly_groups(): void {
 		$this->assertSame( "Thursdays \u{00B7} 8:00 pm", GroupFields::when( 'thursday', '20:00', 'weekly' ) );
-		$this->assertSame( "Every other Sunday \u{00B7} 8:00 pm", GroupFields::when( 'sunday', '20:00', 'fortnightly' ) );
+		$this->assertSame( "Sundays, every two weeks \u{00B7} 8:00 pm", GroupFields::when( 'sunday', '20:00', 'fortnightly' ) );
 		$this->assertSame( 'Thursdays', GroupFields::when( 'thursday', '', 'weekly' ) );
-		$this->assertSame( 'Every other Sunday', GroupFields::when( 'sunday', '', 'fortnightly' ) );
+		$this->assertSame( 'Sundays, every two weeks', GroupFields::when( 'sunday', '', 'fortnightly' ) );
 		$this->assertSame( '8:00 pm', GroupFields::when( '', '20:00', 'fortnightly' ) );
 		$this->assertSame( '', GroupFields::when( '', '', 'fortnightly' ) );
 	}

@@ -38,11 +38,11 @@ final class GroupFields {
 		return in_array( $frequency, self::FREQUENCIES, true ) ? $frequency : 'weekly';
 	}
 
-	/** "Tuesdays · 7:30 pm", "Every other Sunday · 8:00 pm", a day alone, a time alone, or "". */
+	/** "Tuesdays · 7:30 pm", "Sundays, every two weeks · 8:00 pm", a day alone, a time alone, or "". */
 	public static function when( string $day, string $time, string $frequency = 'weekly' ): string {
 		$parts = [];
 		if ( isset( self::DAYS[ $day ] ) ) {
-			$parts[] = 'fortnightly' === self::frequency( $frequency ) ? 'Every other ' . self::DAYS[ $day ] : self::DAYS[ $day ] . 's';
+			$parts[] = self::DAYS[ $day ] . 's' . ( 'fortnightly' === self::frequency( $frequency ) ? ', every two weeks' : '' );
 		}
 		if ( '' !== self::time( $time ) ) {
 			$parts[] = EventTime::formatTime( '2026-01-05T' . $time, '', false );
