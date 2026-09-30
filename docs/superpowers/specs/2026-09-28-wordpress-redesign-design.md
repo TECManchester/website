@@ -314,11 +314,16 @@ templates for the post types in §6.
   (`leader_email`, looked up server-side from the group ID, never exposed) when it has one, otherwise
   `contact.connectGroupInbox` (a Church setting, default `connectgroup@elevationmanchester.org`), which also receives
   requests where no group was chosen.
-- **Group details panel** (the only place staff edit a group's fields; the core Excerpt, Areas and Group types panels and
-  the raw Custom Fields entries are hidden). Sections: About (description, group type, taking new members), When it meets
-  (day, time, how often), Where (areas, towns covered) and Leader and requests (leader's name, Ask to join email). Every
-  field has a help line. The email box shows the current Connect Groups inbox when none is stored, and saving that value
-  unchanged stores nothing, so later changes to the setting still apply.
+- **Group details meta box** (a classic-screen meta box, id `elevation-group-details`, directly under the title: Connect
+  Groups have no `editor` support, so WordPress shows the classic edit screen and no block-editor panel can appear). It is
+  the only place staff edit a group's fields, and it replaces the core Excerpt, Custom Fields, Areas, Group types and Post
+  Attributes boxes (removed for this post type; the raw meta stays out of Custom Fields). Sections: About (description,
+  group type, taking new members), When it meets (day, time, how often), Where (areas, towns covered), Leader and requests
+  (leader's name, Ask to join email) and Order. Every field has a help line. The description is saved by core as the
+  excerpt and the order as `menu_order`; the rest is saved on `save_post_connect_group` behind a nonce and an `edit_post`
+  check, through the same sanitisers as the REST meta. The email box shows the current Connect Groups inbox when none is
+  stored, and saving that value unchanged stores nothing, so later changes to the setting still apply. An email that is not
+  valid is not saved and an admin notice says so after the redirect.
 - Seed: the seven real groups are seeded everywhere (revision 6). The three sample groups are gone; other fixtures
   (events, the announcement) stay **local only**.
 
@@ -667,10 +672,11 @@ Gift Aid retention of six years after the last gift.
 | Connect card questions are the live Guest form's minus postal address and country, plus a postcode | §6.7 |
 | Site Manager entry access uses Fluent Forms' per-user manager records, synced automatically on role change and form ID change | §7 |
 | Taxonomies are `group_area` and `group_category`, not the bare `area` | §6.6 |
-| The group description is the post excerpt, edited in the "Group details" panel; the core Excerpt panel is removed | §6.6 |
+| The group description is the post excerpt, edited in the "Group details" meta box; the core Excerpt box is removed | §6.6 |
 | The group leader's name is editor-only in REST, like the email | §6.6, §6.10 privacy |
 | Anonymous reads of the core `/wp/v2/announcement` route are refused; the modal reads only `/elevation/v1/announcement` | §6.5, §3 |
 | Gift Aid auto-delete settings are reset on save, on `admin_init` and before each submission | §6.10 Gift Aid retention |
 | A form sits in a card only where its placement asks for it (`is-card` on the block: Gift Aid, G-Squad, Connect card and Join Group); Contact, Prayer, Plan a Visit and Alpha do not | §6.10 Styling |
 | The real Connect Groups replace the samples: seven seeded groups, a town search, `group_towns` and `group_frequency` fields, "Every other …" and "Day and time to be confirmed" wording; Join Group goes to the new `contact.connectGroupInbox` setting instead of `welcomeInbox` (superseded by the per-group Ask to join email in the row below). The user's decision on 2026-09-30 | §6.6, §6.10, §9 |
-| Connect Groups have two types, Geography-based and Interest-based, and each group has an "Ask to join email" (default: the Connect Groups inbox) that is the only recipient of its requests; the Group details panel is reorganised with help on every field and the raw meta is hidden from Custom Fields. The user's decision on 2026-09-30 | §6.6, §6.10 |
+| Connect Groups have two types, Geography-based and Interest-based, and each group has an "Ask to join email" (default: the Connect Groups inbox) that is the only recipient of its requests; the Group details box is reorganised with help on every field and the raw meta is hidden from Custom Fields. The user's decision on 2026-09-30 | §6.6, §6.10 |
+| The Group details box is a classic-screen meta box, not a block-editor panel, because the Connect Group post type has no editor support; it replaces the Excerpt, Custom Fields, Areas, Group types and Post Attributes boxes, and the unused block-editor panel is deleted. A bad Ask to join email is left unsaved with an admin notice. Classic-editor fix, 2026-09-30 | §6.6 |

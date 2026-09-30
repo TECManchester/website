@@ -153,7 +153,7 @@ add_filter( 'fluentform/email_to', static function ( $to, $notification, $data, 
 	return '' !== $own ? $own : $to;
 }, 10, 4 );
 
-// Keep the raw group_* meta out of WordPress's Custom Fields box: the Group details panel is the one place to edit it.
+// Keep the raw group_* meta out of WordPress's Custom Fields box: the Group details meta box is the one place to edit it.
 // Protected meta is still saved through REST (register_post_meta's auth_callback applies, not the protected check).
 add_filter( 'is_protected_meta', static function ( $protected, $meta_key, $meta_type ) {
 	return ( 'post' === $meta_type && array_key_exists( (string) $meta_key, ELEVATION_GROUP_META ) ) ? true : $protected;
