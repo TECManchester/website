@@ -1,0 +1,18 @@
+{
+  "key": "join-group",
+  "title": "Join a Connect Group",
+  "submit": "Ask to join",
+  "success": { "heading": "Request sent", "text": "Thank you — the group leader or our Connect Groups team will be in touch soon." },
+  "rows": [
+    { "type": "hidden", "name": "group_id", "label": "Group", "value": "{get.group}" },
+    { "type": "name", "name": "names" },
+    [ { "type": "email", "name": "email", "label": "Email", "autocomplete": "email" },
+      { "type": "tel", "name": "phone", "label": "Phone", "autocomplete": "tel" } ],
+    { "type": "textarea", "name": "message", "label": "Anything you'd like the leader to know?", "rows": 4 }
+  ],
+  "notifications": [
+    { "name": "Ask to join", "role": "group-leader", "to": "{contact.connectGroupInbox}", "replyTo": "{inputs.email}",
+      "subject": "Connect Group request: {elevation.groupName}",
+      "body": [ "<p>Someone would like to join {elevation.groupName}. Please get in touch with them.</p>", "{all_data_without_hidden_fields}" ] }
+  ]
+}

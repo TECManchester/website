@@ -1,0 +1,232 @@
+{
+  "categories": [
+    {
+      "slug": "geography-based",
+      "name": "Geography-based"
+    },
+    {
+      "slug": "interest-based",
+      "name": "Interest-based"
+    }
+  ],
+  "retired_categories": [
+    "greatness-communities",
+    "interest-groups"
+  ],
+  "areas": [
+    "Bolton",
+    "Bury",
+    "Manchester",
+    "Oldham",
+    "Rochdale",
+    "Salford",
+    "Stockport",
+    "Tameside",
+    "Trafford",
+    "Wigan"
+  ],
+  "groups": [
+    {
+      "slug": "salem",
+      "title": "Salem Greatness Community",
+      "type": "geography-based",
+      "areas": [
+        "Manchester",
+        "Stockport"
+      ],
+      "day": "thursday",
+      "time": "20:00",
+      "frequency": "weekly",
+      "leader": "Fidara",
+      "towns": [
+        "Manchester",
+        "Ringway",
+        "Cheadle & Gatley",
+        "Hazel Grove & Bramhall",
+        "Marple",
+        "Stockport",
+        "Bredbury & Romiley"
+      ],
+      "summary": "Our Greatness Community for Manchester and Stockport. We meet on Thursday evenings to share our week, go deeper into Sunday's message and pray for one another.",
+      "order": 1
+    },
+    {
+      "slug": "canaan",
+      "title": "Canaan Greatness Community",
+      "type": "geography-based",
+      "areas": [
+        "Oldham",
+        "Tameside",
+        "Rochdale"
+      ],
+      "day": "tuesday",
+      "time": "20:00",
+      "frequency": "weekly",
+      "leader": "Isoken",
+      "towns": [
+        "Oldham",
+        "Failsworth",
+        "Chadderton",
+        "Royton",
+        "Crompton",
+        "Saddleworth",
+        "Lees",
+        "Denton",
+        "Hyde",
+        "Longdendale",
+        "Dukinfield",
+        "Audenshaw",
+        "Stalybridge",
+        "Mossley",
+        "Ashton-under-Lyne",
+        "Droylsden",
+        "Rochdale",
+        "Heywood",
+        "Middleton",
+        "Wardle",
+        "Littleborough",
+        "Milnrow"
+      ],
+      "summary": "Our Greatness Community for Oldham, Tameside and Rochdale. We meet on Tuesday evenings to share our week, go deeper into Sunday's message and pray for one another.",
+      "order": 2
+    },
+    {
+      "slug": "bethel",
+      "title": "Bethel Greatness Community",
+      "type": "geography-based",
+      "areas": [
+        "Bolton",
+        "Wigan"
+      ],
+      "day": "friday",
+      "time": "20:00",
+      "frequency": "weekly",
+      "leader": "Femi",
+      "towns": [
+        "Bolton",
+        "Westhoughton",
+        "Farnworth",
+        "Little Lever",
+        "Kearsley",
+        "Horwich",
+        "Blackrod",
+        "Turton",
+        "Wigan",
+        "Golborne",
+        "Leigh",
+        "Tyldesley",
+        "Atherton",
+        "Abram",
+        "Hindley",
+        "Ashton-in-Makerfield",
+        "Ince-in-Makerfield",
+        "Aspull",
+        "Standish with Langtree",
+        "Orrell",
+        "Billinge & Winstanley"
+      ],
+      "summary": "Our Greatness Community for Bolton and Wigan. We meet on Friday evenings to share our week, go deeper into Sunday's message and pray for one another.",
+      "order": 3
+    },
+    {
+      "slug": "zion",
+      "title": "Zion Greatness Community",
+      "type": "geography-based",
+      "areas": [
+        "Salford",
+        "Trafford",
+        "Bury"
+      ],
+      "day": "thursday",
+      "time": "20:00",
+      "frequency": "weekly",
+      "leader": "Wisdom",
+      "towns": [
+        "Salford",
+        "Eccles",
+        "Irlam",
+        "Worsley",
+        "Swinton & Pendlebury",
+        "Bucklow",
+        "Bowdon",
+        "Hale",
+        "Ringway",
+        "Altrincham",
+        "Sale",
+        "Stretford",
+        "Urmston",
+        "Bury",
+        "Whitefield",
+        "Prestwich",
+        "Radcliffe",
+        "Tottington",
+        "Ramsbottom"
+      ],
+      "summary": "One of our Greatness Communities for Salford, Trafford and Bury. We meet on Thursday evenings to share our week, go deeper into Sunday's message and pray for one another.",
+      "order": 4
+    },
+    {
+      "slug": "shiloh",
+      "title": "Shiloh Greatness Community",
+      "type": "geography-based",
+      "areas": [
+        "Salford",
+        "Trafford",
+        "Bury"
+      ],
+      "day": "thursday",
+      "time": "20:00",
+      "frequency": "weekly",
+      "leader": "Thilda",
+      "towns": [
+        "Salford",
+        "Eccles",
+        "Irlam",
+        "Worsley",
+        "Swinton & Pendlebury",
+        "Bucklow",
+        "Bowdon",
+        "Hale",
+        "Ringway",
+        "Altrincham",
+        "Sale",
+        "Stretford",
+        "Urmston",
+        "Bury",
+        "Whitefield",
+        "Prestwich",
+        "Radcliffe",
+        "Tottington",
+        "Ramsbottom"
+      ],
+      "summary": "One of our Greatness Communities for Salford, Trafford and Bury. We meet on Thursday evenings to share our week, go deeper into Sunday's message and pray for one another.",
+      "order": 5
+    },
+    {
+      "slug": "thrive-tribe",
+      "title": "Thrive Tribe",
+      "type": "interest-based",
+      "areas": [],
+      "day": "",
+      "time": "",
+      "frequency": "weekly",
+      "leader": "",
+      "towns": [],
+      "summary": "For entrepreneurs and business owners: faith, wisdom and friendship for building something of your own. Open to everyone, wherever you live.",
+      "order": 6
+    },
+    {
+      "slug": "surge",
+      "title": "Surge",
+      "type": "interest-based",
+      "areas": [],
+      "day": "sunday",
+      "time": "20:00",
+      "frequency": "fortnightly",
+      "leader": "",
+      "towns": [],
+      "summary": "For young adults aged 18 to 28: friendship, honest conversation and faith for this season of life. Open to everyone, wherever you live.",
+      "order": 7
+    }
+  ]
+}

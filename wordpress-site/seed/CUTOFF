@@ -1,0 +1,2 @@
+# Date after which bin/seed.sh refuses to run (YYYY-MM-DD), or "none". Set at build sign-off (spec §9).
+none

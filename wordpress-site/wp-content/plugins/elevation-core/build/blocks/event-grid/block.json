@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/event-grid",
+  "title": "Upcoming events",
+  "category": "widgets",
+  "icon": "calendar-alt",
+  "description": "Cards for the next published events, soonest first. The blocks inside are shown instead when nothing is coming up.",
+  "attributes": {
+    "limit": {
+      "type": "number",
+      "default": 24
+    },
+    "columns": {
+      "type": "number",
+      "enum": [
+        2,
+        3
+      ],
+      "default": 2
+    },
+    "excludeCurrent": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "usesContext": [
+    "postId"
+  ],
+  "supports": {
+    "html": false
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

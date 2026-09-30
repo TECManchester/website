@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/event-meta",
+  "title": "Event detail",
+  "category": "widgets",
+  "icon": "calendar-alt",
+  "description": "One part of the event being viewed: back link, summary, date/time/place, button, Getting there box, or the note shown when there is no description.",
+  "attributes": {
+    "part": { "type": "string", "enum": [ "back", "title", "summary", "details", "cta", "getting-there", "no-description" ], "default": "details" }
+  },
+  "usesContext": [ "postId", "postType" ],
+  "supports": { "html": false },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

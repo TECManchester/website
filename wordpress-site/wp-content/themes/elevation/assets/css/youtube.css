@@ -1,0 +1,66 @@
+/* YouTube (Plan 4): block sections, video cards, the live badge and player, the Home watch tile. */
+
+/* ---------- Full-width sections rendered by blocks ---------- */
+.ecm-section { box-sizing: border-box; padding-block: var(--wp--preset--spacing--60); margin-block: 0 !important; }
+.ecm-section__inner { max-width: 1240px; margin-inline: auto; }
+.ecm-section__inner > * { margin-block: 0; }
+.ecm-section__inner > .section-heading { margin-bottom: 3.25rem; }
+/* "Recent messages" turns grey under an active live or upcoming player (inventory §1 Watch). */
+.wp-block-elevation-live-player.is-active + .watch-messages { background: var(--wp--preset--color--grey-50); }
+.watch-messages__more { justify-content: center; margin-top: 2.75rem !important; }
+
+/* ---------- Video cards (redesign video-card.tsx) ---------- */
+.video-grid { display: grid; gap: 26px; }
+.video-grid > * { margin: 0; }
+@media (min-width: 640px) { .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .video-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.video-card__link { display: block; color: inherit; text-decoration: none; }
+.video-card__link:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 2px; border-radius: 14px; }
+.video-card__media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 14px; background: var(--wp--preset--color--ink); box-shadow: var(--wp--preset--shadow--card); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.video-card__link:hover .video-card__media { box-shadow: var(--wp--preset--shadow--card-lg); }
+@media (prefers-reduced-motion: no-preference) { .video-card__link:hover .video-card__media { transform: translateY(-4px); } }
+.video-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.video-card__placeholder { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 20%, #2a2a5e 0%, transparent 60%); }
+.video-card__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgb(14 14 44 / 0.6)); pointer-events: none; }
+.video-card__play { position: absolute; top: 50%; left: 50%; z-index: 1; display: grid; place-items: center; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; background: rgb(255 255 255 / 0.9); color: var(--wp--preset--color--ink); transition: background-color 0.2s ease; }
+.video-card__play svg { width: 22px; height: 22px; margin-left: 2px; fill: currentColor; }
+.video-card__link:hover .video-card__play { background: var(--wp--preset--color--green); }
+.video-card__duration { position: absolute; right: 10px; bottom: 10px; z-index: 1; padding: 2px 8px; border-radius: 6px; background: rgb(14 14 44 / 0.8); color: #fff; font-size: 12px; font-weight: 600; }
+.video-card__title { margin: 14px 0 0; font-size: 18px; transition: color 0.2s ease; }
+.video-card__link:hover .video-card__title { color: var(--wp--preset--color--green-700); }
+.video-card__date { margin: 4px 0 0; font-size: 13.5px; color: var(--wp--preset--color--grey-500); }
+
+/* ---------- Live badge (redesign LiveBadge; #CC3B3B is the nearest AA-passing shade (4.93:1 with white) of the redesign's #D64545, no preset) ---------- */
+.live-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 9999px; background: #CC3B3B; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.live-badge__dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+@media (prefers-reduced-motion: no-preference) {
+	.live-badge__dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; opacity: 0.75; animation: live-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
+}
+@keyframes live-ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+
+/* ---------- Watch hero, live player and next stream (redesign live-player.tsx) ---------- */
+.watch-hero { padding-top: 70px; padding-bottom: 60px; margin-block: 0 !important; }
+.watch-hero .ecm-section__inner > * + * { margin-top: 12px; }
+.watch-hero .is-style-lead-on-ink { max-width: 560px; }
+.live-player { display: grid; gap: 48px; align-items: center; }
+@media (min-width: 1024px) { .live-player { grid-template-columns: 1.3fr 1fr; } }
+.live-player__video .wp-block-elevation-embed-gate { border-radius: 18px; overflow: hidden; box-shadow: var(--wp--preset--shadow--card-lg); }
+.live-player__text > * { margin: 0; }
+.live-player__text h2 { margin-top: 16px; font-size: 34px; text-wrap: balance; }
+.live-player__text p { margin-top: 12px; color: var(--wp--preset--color--grey-500); }
+.live-player__text .wp-block-buttons { gap: 12px; margin-top: 24px; }
+.upcoming-stream { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; padding: 28px; border: 1px solid rgb(132 194 36 / 0.4); border-radius: 18px; background: var(--wp--preset--color--green-100); }
+@media (min-width: 640px) { .upcoming-stream { flex-direction: row; align-items: center; justify-content: space-between; } }
+.upcoming-stream h2 { margin: 8px 0 0; font-size: 24px; }
+.upcoming-stream > div > p { margin: 0; }
+.upcoming-stream__when { margin-top: 8px !important; font-size: 14px; color: var(--wp--preset--color--grey-500); }
+
+/* ---------- Home watch tile (block version of the Plan 2 group; .watch-tile/.watch-intro are in site.css) ---------- */
+a.watch-tile { color: inherit; text-decoration: none; }
+a.watch-tile:focus-visible { outline: 2px solid var(--wp--preset--color--green-700); outline-offset: 2px; }
+.watch-tile > .watch-tile__image { position: absolute !important; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
+.watch-tile > .watch-tile__badge { position: absolute !important; top: 16px; left: 16px; z-index: 2; }
+.watch-tile__badge .watch-tile__chip { display: inline-block; padding: 6px 12px; border-radius: 8px; background: rgb(14 14 44 / 0.7); backdrop-filter: blur(12px); color: #fff; font-family: var(--wp--preset--font-family--sora); font-size: 12px; font-weight: 600; }
+a.watch-tile .watch-tile__play { display: grid; place-items: center; }
+a.watch-tile:hover .watch-tile__play { background: var(--wp--preset--color--green); }
+@media (prefers-reduced-motion: no-preference) { a.watch-tile:hover .watch-tile__play { transform: scale(1.08); } }

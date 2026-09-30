@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/form",
+  "title": "Church form",
+  "category": "widgets",
+  "icon": "feedback",
+  "description": "One of the church's forms. Its questions, messages and emails are edited in Fluent Forms.",
+  "attributes": {
+    "form": {
+      "type": "string",
+      "default": "contact"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

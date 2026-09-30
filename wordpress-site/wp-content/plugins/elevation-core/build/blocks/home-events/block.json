@@ -1,0 +1,16 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/home-events",
+  "title": "Home: what's on",
+  "category": "widgets",
+  "icon": "calendar-alt",
+  "description": "The next three events and the weekly gathering strip. The blocks inside are shown instead when nothing is coming up.",
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

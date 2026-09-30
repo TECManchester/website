@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/event-calendar",
+  "title": "Events calendar",
+  "category": "widgets",
+  "icon": "calendar",
+  "description": "A month calendar of every published event. Dates with something on can be tapped to list it.",
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

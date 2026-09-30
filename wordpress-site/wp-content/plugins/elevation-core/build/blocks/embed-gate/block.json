@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/embed-gate",
+  "title": "Map, video or podcast (click to load)",
+  "category": "embed",
+  "icon": "location-alt",
+  "description": "A Google map, YouTube video or Podbean player that loads only when the visitor asks, or has allowed maps and videos.",
+  "attributes": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "map",
+        "video",
+        "audio"
+      ],
+      "default": "map"
+    },
+    "title": {
+      "type": "string",
+      "default": ""
+    },
+    "src": {
+      "type": "string",
+      "default": ""
+    },
+    "link": {
+      "type": "string",
+      "default": ""
+    },
+    "aspectRatio": {
+      "type": "string",
+      "enum": [
+        "16/9",
+        "4/3"
+      ],
+      "default": "16/9"
+    },
+    "height": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "spacing": {
+      "margin": true
+    }
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

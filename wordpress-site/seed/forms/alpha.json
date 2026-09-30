@@ -1,0 +1,24 @@
+{
+  "key": "alpha",
+  "title": "Alpha registration",
+  "submit": "Sign me up",
+  "success": { "heading": "You're signed up", "text": "Thank you — the Alpha team will be in touch with the details." },
+  "rows": [
+    { "type": "name", "name": "names" },
+    [ { "type": "tel", "name": "input_text_2", "label": "Phone", "autocomplete": "tel", "adminLabel": "Phone" },
+      { "type": "email", "name": "email", "label": "Email", "autocomplete": "email" } ],
+    { "type": "radio", "name": "input_radio", "label": "Gender", "options": [ "Female", "Male", "Prefer not to say" ], "class": "form-choices--inline" },
+    { "type": "select", "name": "dropdown", "label": "Age range", "placeholder": "Choose one",
+      "options": [ "20 or below", "21 - 30", "31 - 40", "41 - 50", "51 - 60", "61 or above", "Prefer not to say" ] },
+    { "type": "radio", "name": "input_radio_1", "label": "Have you been to {church.name} before?", "options": [ [ "yes", "Yes" ], [ "no", "No" ] ], "class": "form-choices--inline" },
+    { "type": "radio", "name": "input_radio_2", "label": "How did you hear about this Alpha course?",
+      "options": [ "Word of mouth", "Social Media", "Posters/Invitation Card", "In Church", "The Church's Website", "Alpha Course's Website", "Church in the Park Event", "Other" ] },
+    { "type": "text", "name": "input_text", "label": "If other, please tell us more", "showIf": { "field": "input_radio_2", "value": "Other" } },
+    { "type": "radio", "name": "input_radio_3", "label": "Consent", "options": [ [ "I agree", "I give consent to {church.name} to contact me by email or telephone about this course." ] ] }
+  ],
+  "notifications": [
+    { "name": "Welcome team", "to": "{contact.welcomeInbox}", "replyTo": "{inputs.email}",
+      "subject": "Alpha registration: {inputs.names.first_name} {inputs.names.last_name}",
+      "body": [ "<p>A new Alpha registration from the website.</p>", "{all_data}" ] }
+  ]
+}

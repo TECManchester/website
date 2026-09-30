@@ -1,0 +1,17 @@
+.env
+.DS_Store
+private/
+import/
+
+# WordPress content: only our own code is tracked.
+wp-content/*
+!wp-content/mu-plugins/
+!wp-content/themes/
+wp-content/themes/*
+!wp-content/themes/elevation/
+!wp-content/plugins/
+wp-content/plugins/*
+!wp-content/plugins/elevation-core/
+wp-content/plugins/elevation-core/node_modules/
+wp-content/plugins/elevation-core/vendor/
+seed/media/live/

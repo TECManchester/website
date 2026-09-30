@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/home-watch",
+  "title": "Home: watch",
+  "category": "widgets",
+  "icon": "video-alt3",
+  "description": "While streaming, the live stream; otherwise the latest YouTube video. The blocks inside show when there is neither.",
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "viewScript": "elevation-live-status",
+  "render": "file:./render.php"
+}

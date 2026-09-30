@@ -1,0 +1,93 @@
+[
+  {
+    "slug": "leadership-weekend",
+    "title": "Leadership Weekend",
+    "summary": "Two days of teaching and workshops for everyone who serves on the G-Squad.",
+    "description": "Whether you lead a team or joined one last month, this weekend is for you. We'll open the Word together, share what we're learning, and plan the season ahead.\n\nLunch is provided on both days. Kids are welcome in The Seeds on Saturday morning.",
+    "start": "-1 10:00",
+    "end": "+1 16:00",
+    "time_tbc": false,
+    "venue": "",
+    "image": "",
+    "cta_label": "",
+    "cta_url": ""
+  },
+  {
+    "slug": "men-of-honour",
+    "title": "Men of Honour",
+    "summary": "An evening for the men of Elevation: food, honest conversation and prayer.",
+    "description": "Come as you are. We'll eat together, hear from one of our pastors and pray for one another.\n\nBring a friend — it's a great first step into church.",
+    "start": "+9 19:00",
+    "end": "+9 21:30",
+    "time_tbc": false,
+    "venue": "",
+    "image": "redesign/events/men-of-honour-august.jpg",
+    "cta_label": "",
+    "cta_url": ""
+  },
+  {
+    "slug": "jewels-chill-and-cheer",
+    "title": "Jewels: Chill & Cheer",
+    "summary": "A relaxed evening for the women of Elevation, with food, games and good company.",
+    "description": "Jewels is our women's ministry. This is an easy evening to meet people, laugh a lot and be encouraged.",
+    "start": "+16 18:00",
+    "end": "+16 21:00",
+    "time_tbc": false,
+    "venue": "",
+    "image": "redesign/events/jewels-chill-and-cheer.jpg",
+    "cta_label": "Save your seat",
+    "cta_url": "/contact"
+  },
+  {
+    "slug": "greatness-community-hangout",
+    "title": "Greatness Community Hangout",
+    "summary": "Food, games and music in the park — bring the whole family.",
+    "description": "Our church family and our neighbours, together in the park for an afternoon. Everything is free.",
+    "start": "+23 13:00",
+    "end": "+23 17:00",
+    "time_tbc": false,
+    "venue": "Peel Park, The Crescent, Salford M5 4WU",
+    "image": "redesign/events/greatness-community-summer-hangout.jpg",
+    "cta_label": "Get the details",
+    "cta_url": "https://www.instagram.com/elevationmanchester/"
+  },
+  {
+    "slug": "baptism-sunday",
+    "title": "Baptism Sunday",
+    "summary": "Ready to take the step? Speak to the welcome team to be baptised.",
+    "description": "",
+    "start": "+40 12:00",
+    "end": "",
+    "time_tbc": true,
+    "venue": "",
+    "image": "",
+    "cta_label": "",
+    "cta_url": ""
+  },
+  {
+    "slug": "youth-weekend-away",
+    "title": "412 Nation Weekend Away",
+    "summary": "A weekend away for teenagers, with worship, activities and time to grow.",
+    "description": "Parents: a full kit list and consent form will be shared with everyone who signs up.",
+    "start": "+45 17:00",
+    "end": "+47 14:00",
+    "time_tbc": false,
+    "venue": "Lakeside YMCA, Ulverston, Cumbria LA12 8BD",
+    "image": "",
+    "cta_label": "Ask about places",
+    "cta_url": "/contact"
+  },
+  {
+    "slug": "prayer-and-worship-evening",
+    "title": "Prayer and Worship Evening",
+    "summary": "An evening of worship and prayer for our city.",
+    "description": "Thank you to everyone who came.",
+    "start": "-20 19:00",
+    "end": "-20 20:30",
+    "time_tbc": false,
+    "venue": "",
+    "image": "",
+    "cta_label": "",
+    "cta_url": ""
+  }
+]

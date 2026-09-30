@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/live-player",
+  "title": "Watch: live player",
+  "category": "widgets",
+  "icon": "controls-play",
+  "description": "While streaming: the live player (loads after consent). With a stream scheduled: the “Next stream” strip. Otherwise nothing.",
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "viewScript": "elevation-live-status",
+  "render": "file:./render.php"
+}

@@ -1,0 +1,26 @@
+/* Consent banner: ink panel and pill buttons, in the redesign's style. */
+.ecm-consent { position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 250; display: flex; justify-content: center; }
+.ecm-consent[hidden] { display: none; }
+.ecm-consent__panel {
+	box-sizing: border-box; width: 100%; max-width: 720px; padding: 20px 24px; border-radius: 22px;
+	background: var(--wp--preset--color--ink, #0e0e2c); color: rgb(255 255 255 / 0.8);
+	box-shadow: 0 24px 60px rgb(14 14 44 / 0.16); font-size: 14px; line-height: 1.6;
+}
+.ecm-consent__title { margin: 0 0 6px; font-family: var(--wp--preset--font-family--sora, sans-serif); font-size: 16px; font-weight: 700; letter-spacing: -0.01em; color: #fff; }
+.ecm-consent__text { margin: 0 0 14px; }
+.ecm-consent__text a { color: var(--wp--preset--color--green, #84c224); }
+.ecm-consent__actions, .ecm-consent__choose { display: flex; flex-wrap: wrap; gap: 10px; }
+.ecm-consent__choose { flex-direction: column; align-items: flex-start; margin-bottom: 14px; }
+.ecm-consent__choose[hidden] { display: none; }
+.ecm-consent__option { display: flex; gap: 10px; align-items: flex-start; }
+.ecm-consent__option input { flex-shrink: 0; width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--wp--preset--color--green, #84c224); }
+.ecm-consent__option strong { display: block; color: #fff; }
+.ecm-consent__btn {
+	padding: 10px 20px; border: 1.5px solid transparent; border-radius: 9999px; cursor: pointer;
+	background: var(--wp--preset--color--green, #84c224); color: var(--wp--preset--color--ink, #0e0e2c);
+	font-family: var(--wp--preset--font-family--sora, sans-serif); font-size: 14px; font-weight: 600;
+}
+.ecm-consent__btn:hover { background: var(--wp--preset--color--green-600, #6fa61c); }
+.ecm-consent__btn--ghost { background: transparent; color: #fff; border-color: rgb(255 255 255 / 0.35); }
+.ecm-consent__btn--ghost:hover { background: transparent; border-color: #fff; }
+.ecm-consent__btn:focus-visible, .ecm-consent__text a:focus-visible, .ecm-consent__option input:focus-visible { outline: 2px solid var(--wp--preset--color--green, #84c224); outline-offset: 2px; }

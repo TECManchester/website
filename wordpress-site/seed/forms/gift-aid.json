@@ -1,0 +1,33 @@
+{
+  "key": "gift-aid",
+  "title": "Gift Aid",
+  "submit": "Submit my declaration",
+  "success": {
+    "heading": "Declaration received",
+    "text": "Thank you — your Gift Aid declaration is recorded. Every £10 you give is now worth £12.50 to the church, at no extra cost to you.",
+    "more": "Please let us know if you change your name or address, stop paying enough tax, or want to cancel."
+  },
+  "rows": [
+    { "type": "html", "html": "<div class=\"gift-aid-declaration\"><p>{elevation.declaration}</p></div>" },
+    { "type": "section", "label": "Your details" },
+    [ { "type": "select", "name": "title", "label": "Title", "placeholder": "—", "options": [ "Mr", "Mrs", "Miss", "Ms", "Dr", "Rev", "Pastor" ], "width": 20 },
+      { "type": "text", "name": "first_name", "label": "First name", "help": "Please give your full first name, not an initial.", "autocomplete": "given-name", "width": 40 },
+      { "type": "text", "name": "last_name", "label": "Surname", "autocomplete": "family-name", "width": 40 } ],
+    { "type": "section", "label": "Your home address", "html": "HMRC requires your home address to identify you as a UK taxpayer. A work or c/o address can't be accepted." },
+    { "type": "text", "name": "address_line1", "label": "House name or number, and street", "autocomplete": "address-line1" },
+    { "type": "text", "name": "address_line2", "label": "Address line 2", "autocomplete": "address-line2" },
+    [ { "type": "text", "name": "city", "label": "Town or city", "value": "Manchester", "autocomplete": "address-level2" },
+      { "type": "text", "name": "postcode", "label": "Postcode", "autocomplete": "postal-code", "class": "is-uppercase" } ],
+    { "type": "section", "label": "How we reach you", "html": "Optional, but it helps us confirm your declaration and let you know if anything changes." },
+    [ { "type": "email", "name": "email", "label": "Email", "autocomplete": "email" },
+      { "type": "tel", "name": "phone", "label": "Phone", "autocomplete": "tel" } ],
+    { "type": "consent", "name": "declaration_accepted", "label": "Declaration", "html": "<b>Yes, I want to Gift Aid my giving.</b> I confirm the declaration above and that I am a UK taxpayer.", "class": "gift-aid-confirm" },
+    { "type": "hidden", "name": "declaration_text", "label": "Declaration wording" },
+    { "type": "hidden", "name": "declaration_version", "label": "Declaration version" }
+  ],
+  "notifications": [
+    { "name": "Church office", "to": "{contact.email}",
+      "subject": "New Gift Aid declaration",
+      "body": [ "<p>{inputs.first_name} {inputs.last_name} ({inputs.postcode}) has made a Gift Aid declaration.</p>", "<p>The full declaration is in wp-admin under Fluent Forms → Gift Aid → Entries.</p>" ] }
+  ]
+}

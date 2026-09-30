@@ -1,0 +1,12 @@
+{
+  "name": "elevation-core",
+  "private": true,
+  "scripts": {
+    "test:js": "node --test tests/js/*.test.cjs",
+    "build": "wp-scripts build --webpack-src-dir=src/blocks --output-path=build/blocks --webpack-copy-php && wp-scripts build --webpack-src-dir=src/editor --output-path=build/editor",
+    "start": "wp-scripts start --webpack-src-dir=src/blocks --output-path=build/blocks --webpack-copy-php"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "36.0.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "key": "g-squad",
+  "title": "G-Squad sign-up",
+  "submit": "Join the G-Squad",
+  "success": { "heading": "Welcome to the G-Squad", "text": "Thank you — a team leader will be in touch soon to help you get started." },
+  "rows": [
+    { "type": "name", "name": "names" },
+    [ { "type": "email", "name": "email", "label": "Email", "autocomplete": "email" },
+      { "type": "tel", "name": "phone", "label": "Phone", "autocomplete": "tel" } ],
+    { "type": "checkboxes", "name": "teams", "label": "Where would you like to serve?", "help": "Pick as many as you like.", "class": "form-choices--columns",
+      "options": [ "Care", "Family Life", "Men of Honour", "Missions", "Worship", "Ushering", "Hospitality & Guest Management", "Protocol & Traffic Management", "The Jewels (women)", "Maturity", "Surge (youth)", "4One", "Production", "Multimedia", "Setup & Sound", "Media & Broadcasting", "Membership", "Communications", "Prayer", "The Seeds", "Not sure yet — help me choose" ] },
+    { "type": "textarea", "name": "message", "label": "Anything you'd like us to know?", "rows": 4 }
+  ],
+  "notifications": [
+    { "name": "Welcome team", "to": "{contact.welcomeInbox}", "replyTo": "{inputs.email}",
+      "subject": "G-Squad sign-up: {inputs.names.first_name} {inputs.names.last_name}",
+      "body": [ "<p>A new G-Squad sign-up from the website.</p>", "{all_data}" ] }
+  ]
+}

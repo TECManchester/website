@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/consent-controls",
+  "title": "Privacy choices",
+  "category": "widgets",
+  "icon": "privacy",
+  "description": "Lets visitors see and change their analytics and maps/videos choices. For the Privacy page.",
+  "supports": {
+    "html": false,
+    "multiple": false
+  },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

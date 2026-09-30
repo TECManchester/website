@@ -1,0 +1,18 @@
+{
+  "key": "contact",
+  "title": "Contact",
+  "submit": "Send message",
+  "success": { "heading": "Message received", "text": "Thank you — your message is with us and we'll be in touch soon." },
+  "rows": [
+    [ { "type": "text", "name": "name", "label": "Your name", "autocomplete": "name" },
+      { "type": "email", "name": "email", "label": "Email", "autocomplete": "email" } ],
+    [ { "type": "tel", "name": "phone", "label": "Phone", "autocomplete": "tel" },
+      { "type": "text", "name": "subject", "label": "What's it about?", "placeholder": "Visiting, Connect Groups, serving…" } ],
+    { "type": "textarea", "name": "message", "label": "Your message", "rows": 6 }
+  ],
+  "notifications": [
+    { "name": "Church office", "to": "{contact.email}", "replyTo": "{inputs.email}",
+      "subject": "Website enquiry from {inputs.name}",
+      "body": [ "<p>From: {inputs.name}<br>Email: {inputs.email}<br>Phone: {inputs.phone}</p>", "<p><strong>{inputs.subject}</strong></p>", "<p>{inputs.message}</p>" ] }
+  ]
+}

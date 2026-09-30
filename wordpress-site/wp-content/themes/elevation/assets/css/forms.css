@@ -1,0 +1,143 @@
+/* The church's Fluent Forms, styled like the redesign's forms (ui/input, ui/label, form-message, btn). Plan 5 Task 4. */
+.form-box {
+	--form-border: #e4e4ea;
+	--form-error: #cc3b3b;
+	--form-focus: var(--wp--preset--color--green-700);
+	font-family: var(--wp--preset--font-family--inter);
+	color: var(--wp--preset--color--grey-700);
+}
+.form-box.is-card { background: var(--wp--preset--color--white); border-radius: 18px; box-shadow: var(--wp--preset--shadow--card); padding: 24px; }
+@media (min-width: 640px) { .form-box.is-card { padding: 40px; } }
+
+.form-box .frm-fluent-form fieldset { display: grid; gap: 24px; min-width: 0; }
+.form-box .ff-el-group { margin: 0; }
+.form-box .ff-t-container { display: grid; gap: 24px; margin: 0; }
+.form-box .ff-t-container .ff-t-cell { width: auto; flex: none; padding: 0; min-width: 0; }
+@media (min-width: 640px) {
+	.form-box .form-row--2 { grid-template-columns: 1fr 1fr; }
+	.form-box .form-row--3 { grid-template-columns: 120px 1fr 1fr; }
+}
+
+/* Labels: Inter 14px/500, as the redesign's Label; the asterisk in the same colour, not red. */
+.form-box .ff-el-input--label { margin: 0 0 8px; padding: 0; }
+.form-box .ff-el-input--label label { font-size: 14px; font-weight: 500; line-height: 1.2; color: inherit; margin: 0; }
+.form-box .ff-el-is-required.asterisk-right label::after { content: " *"; color: inherit; margin: 0; }
+.form-box .is-label-hidden .ff-el-input--label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Inputs: 40px high, 10px radius, #E4E4EA border; 16px text on phones (no iOS zoom), 14px from 768px. */
+.form-box .ff-el-form-control {
+	width: 100%;
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid var(--form-border);
+	border-radius: 10px;
+	background: var(--wp--preset--color--white);
+	box-shadow: none;
+	font: inherit;
+	font-size: 16px;
+	line-height: 1.4;
+	color: var(--wp--preset--color--ink);
+	transition: border-color 0.15s;
+}
+@media (min-width: 768px) { .form-box .ff-el-form-control { font-size: 14px; } }
+.form-box textarea.ff-el-form-control { min-height: 8rem; resize: vertical; }
+.form-box select.ff-el-form-control {
+	appearance: none;
+	padding-right: 36px;
+	background: var(--wp--preset--color--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%234B4F58' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+}
+.form-box .ff-el-form-control::placeholder { color: var(--wp--preset--color--grey-500); opacity: 1; }
+.form-box .is-uppercase .ff-el-form-control { text-transform: uppercase; }
+.form-box .ff-el-form-control:focus { border-color: var(--form-focus); box-shadow: none; outline: none; }
+.form-box .ff-el-form-control:focus-visible { outline: 2px solid var(--form-focus); outline-offset: 2px; }
+.form-box .ff-el-help-message { margin-top: 6px; font-size: 12px; font-style: normal; line-height: 1.5; color: var(--wp--preset--color--grey-500); }
+
+/* Tick boxes and radios. */
+.form-box .ff-el-form-check { margin: 0 0 10px; }
+.form-box .ff-el-form-check:last-child { margin-bottom: 0; }
+.form-box .ff-el-form-check-label { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 1.45; cursor: pointer; }
+.form-box .ff-el-form-check-input { flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--wp--preset--color--green-600); }
+.form-box .ff-el-form-check-input:focus-visible { outline: 2px solid var(--form-focus); outline-offset: 2px; }
+.form-box .form-tick .ff-el-input--label { display: none; }
+.form-box .form-choices--inline .ff-el-input--content { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.form-box .form-choices--inline .ff-el-form-check { margin: 0; }
+@media (min-width: 640px) { .form-box .form-choices--columns .ff-el-input--content { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; } }
+
+/* Gift Aid: the declaration box, fieldset headings and the green confirm box (redesign gift-aid-form.tsx). */
+.form-box .gift-aid-declaration { border: 1px solid var(--wp--preset--color--grey-100); background: var(--wp--preset--color--grey-50); border-radius: 18px; padding: 24px; line-height: 1.65; }
+.form-box .gift-aid-declaration p { margin: 0; }
+.form-box .ff-el-section-break { margin: 8px 0 -8px; }
+.form-box .ff-el-section-break hr { display: none; }
+.form-box .ff-el-section-title { margin: 0 0 4px; font-family: var(--wp--preset--font-family--sora); font-size: 18px; font-weight: 700; color: var(--wp--preset--color--ink); }
+.form-box .ff-section_break_desk, .form-box .ff-el-section-break p { margin: 0; font-size: 14px; color: var(--wp--preset--color--grey-500); }
+.form-box .gift-aid-confirm { border: 1px solid rgb(132 194 36 / 0.4); background: var(--wp--preset--color--green-100); border-radius: 18px; padding: 24px; }
+.form-box .gift-aid-confirm b { color: var(--wp--preset--color--ink); }
+
+/* Errors: #CC3B3B (4.9:1 on white), under the field and in the stack above the button. */
+.form-box .ff-el-is-error .ff-el-form-control { border-color: var(--form-error); }
+.form-box .error.text-danger { margin-top: 6px; font-size: 14px; line-height: 1.45; color: var(--form-error); }
+.form-box .ff-errors-in-stack { margin: 0; }
+.form-box .ff-errors-in-stack .error { display: flex; gap: 8px; }
+.form-box .ff-errors-in-stack .error-clear { display: none; }
+
+/* The submit button: the green pill (redesign Btn, lg). */
+.form-box .ff-btn-submit {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 16px 30px;
+	border: 0;
+	border-radius: 9999px;
+	background: var(--wp--preset--color--green);
+	color: var(--wp--preset--color--ink);
+	font-family: var(--wp--preset--font-family--sora);
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1;
+	cursor: pointer;
+	transition: background-color 0.2s, transform 0.2s;
+}
+.form-box .ff-btn-submit:hover { background: var(--wp--preset--color--green-600); }
+.form-box .ff-btn-submit:focus-visible { outline: 2px solid var(--form-focus); outline-offset: 2px; }
+.form-box .ff-btn-submit:disabled, .form-box .ff-working .ff-btn-submit { opacity: 0.5; pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) { .form-box .ff-btn-submit:hover { transform: translateY(-2px); } }
+
+/* Success: the green-100 panel with a tick (redesign contact-form.tsx success state). */
+.form-box .ff-message-success { margin: 0; padding: 32px; border: 1px solid rgb(132 194 36 / 0.5); border-radius: 18px; background: var(--wp--preset--color--green-100); box-shadow: none; text-align: center; }
+.form-box .form-success__title { margin: 0; font-family: var(--wp--preset--font-family--sora); font-size: 24px; font-weight: 600; line-height: 1.25; color: var(--wp--preset--color--ink); }
+.form-box .form-success__title::before {
+	content: "";
+	display: block;
+	width: 40px;
+	height: 40px;
+	margin: 0 auto 16px;
+	background: var(--wp--preset--color--green-600);
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.form-box .form-success p { margin: 12px auto 0; max-width: 28rem; line-height: 1.6; color: var(--wp--preset--color--grey-500); }
+.form-box .form-success .form-success__more { font-size: 14px; }
+
+.form-box--missing p { margin: 0; padding: 24px; border-radius: 14px; background: var(--wp--preset--color--grey-50); }
+.form-context { margin: 0 0 24px; font-size: 15px; }
+.gift-aid-notes { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--wp--preset--color--grey-100); font-size: 14px; color: var(--wp--preset--color--grey-500); }
+.gift-aid-notes strong { color: var(--wp--preset--color--ink); font-weight: 500; }
+
+/* The footer newsletter row: on ink-800, a white pill field and the green Subscribe pill. */
+.footer-newsletter { display: grid; gap: 20px 48px; align-items: center; margin: 0 0 32px; padding: 32px 0; border-top: 1px solid rgb(255 255 255 / 0.08); border-bottom: 1px solid rgb(255 255 255 / 0.08); }
+@media (min-width: 1024px) { .footer-newsletter { grid-template-columns: 1fr 480px; } }
+.footer-newsletter .footer-newsletter__title { margin: 0 0 6px; font-family: var(--wp--preset--font-family--sora); font-size: 18px; font-weight: 600; color: var(--wp--preset--color--white); }
+.footer-newsletter p { margin: 0; font-size: 14px; line-height: 1.55; color: rgb(255 255 255 / 0.6); }
+.footer-newsletter a { color: var(--wp--preset--color--green); }
+.form-box--newsletter { color: var(--wp--preset--color--white); --form-error: #ff9b9b; --form-focus: var(--wp--preset--color--green); }
+.form-box--newsletter .frm-fluent-form fieldset { display: flex; flex-wrap: wrap; gap: 10px; }
+.form-box--newsletter .ff-el-group:not(.ff_submit_btn_wrapper) { flex: 1 1 220px; }
+.form-box--newsletter .ff-el-form-control { min-height: 48px; padding: 14px 22px; border: 0; border-radius: 9999px; font-size: 16px; }
+@media (min-width: 768px) { .form-box--newsletter .ff-el-form-control { font-size: 15px; } }
+.form-box--newsletter .ff-btn-submit { padding: 16px 26px; }
+.form-box--newsletter .ff-message-success { padding: 0; border: 0; background: none; text-align: left; }
+.form-box--newsletter .form-success__title { display: flex; align-items: center; gap: 8px; font-family: var(--wp--preset--font-family--inter); font-size: 15px; font-weight: 500; color: var(--wp--preset--color--green); }
+.form-box--newsletter .form-success__title::before { width: 20px; height: 20px; margin: 0; background: currentColor; }
+
+.g-squad-join { margin-top: 40px; }
+.g-squad-join .wp-block-heading { margin-bottom: 8px; }

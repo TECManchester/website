@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "elevation/group-directory",
+  "title": "Connect Group directory",
+  "category": "widgets",
+  "icon": "groups",
+  "description": "Every published Connect Group, with filters for area, type and day. The blocks inside are shown instead when there are no groups.",
+  "supports": { "html": false, "multiple": false },
+  "textdomain": "elevation-core",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}
