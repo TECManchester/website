@@ -4,7 +4,7 @@ import { PluginDocumentSettingPanel } from '@wordpress/editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEntityProp } from '@wordpress/core-data';
 import { CheckboxControl, SelectControl, TextControl, TextareaControl, ToggleControl, BaseControl } from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 
 const DAYS = [ [ '', 'Not set yet' ], [ 'monday', 'Monday' ], [ 'tuesday', 'Tuesday' ], [ 'wednesday', 'Wednesday' ], [ 'thursday', 'Thursday' ], [ 'friday', 'Friday' ], [ 'saturday', 'Saturday' ], [ 'sunday', 'Sunday' ] ];
 const FREQUENCIES = [ { value: 'weekly', label: 'Every week' }, { value: 'fortnightly', label: 'Every other week' } ];
@@ -27,11 +27,17 @@ function Fields() {
 	const m = meta || {};
 	const set = ( key ) => ( value ) => setMeta( { ...m, [ key ]: value } );
 
-	// An empty stored email means "use the Connect Groups inbox", so show the inbox and store '' unless it differs.
+	// An empty stored email means "use the Connect Groups inbox". The input keeps its own draft so it can be cleared
+	// and retyped; the inbox (or an empty draft) stores '', so later changes to the setting still apply.
 	const stored = ( m.group_leader_email || '' ).trim();
-	const shownEmail = stored !== '' ? stored : INBOX;
-	const badEmail = stored !== '' && ! EMAIL.test( stored );
-	const setEmail = ( value ) => setMeta( { ...m, group_leader_email: value.trim().toLowerCase() === INBOX.toLowerCase() ? '' : value } );
+	const [ draft, setDraft ] = useState( null );
+	const shownEmail = draft !== null ? draft : ( stored !== '' ? stored : INBOX );
+	const badEmail = draft !== null ? ( draft.trim() !== '' && ! EMAIL.test( draft.trim() ) ) : ( stored !== '' && ! EMAIL.test( stored ) );
+	const setEmail = ( value ) => {
+		const v = value.trim();
+		setDraft( value );
+		setMeta( { ...m, group_leader_email: v === '' || v.toLowerCase() === INBOX.toLowerCase() ? '' : value } );
+	};
 
 	useEffect( () => {
 		removeEditorPanel( 'post-excerpt' );
