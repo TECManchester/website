@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The WordPress site has its own tooling (wp-scripts, PHPUnit).
+    "wordpress-site/**",
   ]),
 ]);
 
