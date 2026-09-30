@@ -1,8 +1,8 @@
 <?php
 /**
  * Connect Groups (spec §6.6): the post type, its taxonomies and fields, the queries the directory uses, and
- * the Join Group leader routing. Leaders' email addresses stay on the server: they are readable only in the
- * editor (REST "edit" context) and are used only as an email recipient.
+ * the Join Group routing. A group's "Ask to join" email stays on the server: it is readable only in the
+ * editor (REST "edit" context) and is used only as an email recipient.
  */
 use Elevation\Core\GroupFields;
 
@@ -136,9 +136,10 @@ function elevation_group( WP_Post $post ): array {
 	];
 }
 
-// The "Group leader" notification of the Join Group form goes to the chosen group's leader, looked up here.
-// No group, an unknown group or no leader email: the recipient is empty and Fluent Forms sends nothing.
-/** The chosen group's valid leader email, or '' when the group is unknown or has none. */
+// The Join Group form has ONE notification, "Ask to join", addressed to the Connect Groups inbox. When the chosen
+// group has its own valid "Ask to join email", that address replaces the recipient, so each request is emailed to
+// exactly one place: the group's own address, else the Connect Groups inbox (also when no group was chosen).
+/** The chosen group's own valid "Ask to join" email, or '' when the group is unknown or has none (the inbox applies). */
 function elevation_group_leader_email( int $id ): string {
 	$email = '' !== elevation_group_name( $id ) ? sanitize_email( (string) get_post_meta( $id, 'group_leader_email', true ) ) : '';
 	return is_email( $email ) ? $email : '';
@@ -148,8 +149,15 @@ add_filter( 'fluentform/email_to', static function ( $to, $notification, $data, 
 	if ( 'join-group' !== elevation_form_key_of( $form ) || 'group-leader' !== ( $notification['elevation'] ?? '' ) ) {
 		return $to;
 	}
-	return elevation_group_leader_email( (int) ( $data['group_id'] ?? 0 ) );
+	$own = elevation_group_leader_email( (int) ( ( (array) $data )['group_id'] ?? 0 ) );
+	return '' !== $own ? $own : $to;
 }, 10, 4 );
+
+// Keep the raw group_* meta out of WordPress's Custom Fields box: the Group details panel is the one place to edit it.
+// Protected meta is still saved through REST (register_post_meta's auth_callback applies, not the protected check).
+add_filter( 'is_protected_meta', static function ( $protected, $meta_key, $meta_type ) {
+	return ( 'post' === $meta_type && array_key_exists( (string) $meta_key, ELEVATION_GROUP_META ) ) ? true : $protected;
+}, 10, 3 );
 
 // The line above the Join Group form: which group this request is for.
 add_action( 'elevation_form_before', static function ( string $key ) {

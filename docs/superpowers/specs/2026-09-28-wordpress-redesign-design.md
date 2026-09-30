@@ -288,19 +288,19 @@ templates for the post types in §6.
 - Post type `connect_group` (no single pages; each group has an anchor in the
   directory). `/connect-groups` is a seeded page holding the directory block, not a post-type archive.
   Fields: name (title), description (excerpt), taxonomies `group_area` (e.g. Salford, City
-  Centre, Online) and `group_category` (families, young professionals, couples, fitness, …), meta
-  `meeting_day`, `meeting_time`, `leader_name` (its first name shows on cards; the full name is editor-only in REST), `leader_email` (private, for
-  notifications), `accepting_members` (bool), `group_towns` (one town per line, public), `group_frequency` (`weekly` or
+  Centre, Online) and `group_category` (two types: Geography-based and Interest-based, slugs `geography-based` and `interest-based`), meta
+  `meeting_day`, `meeting_time`, `leader_name` (its first name shows on cards; the full name is editor-only in REST), `leader_email` (the "Ask to join email": private, used only as the recipient of Join Group requests; empty means the
+  Connect Groups inbox), `accepting_members` (bool), `group_towns` (one town per line, public), `group_frequency` (`weekly` or
   `fortnightly`, shown as "Every week" / "Every other week") and a featured image. There is no live data to
   migrate. Groups are entered by staff.
 - **The seven real groups** (revision 6) are seeded from `seed/groups.json`: Salem, Canaan, Bethel, Zion and Shiloh
-  (Greatness Communities, by borough and town, Thursday, Tuesday, Friday, Thursday and Thursday at 8:00 pm) and Thrive Tribe
-  and Surge (Interest groups, open to everyone; Surge meets every other Sunday at 8:00 pm, Thrive Tribe's day and time are
+  (Geography-based, by borough and town, Thursday, Tuesday, Friday, Thursday and Thursday at 8:00 pm) and Thrive Tribe
+  and Surge (Interest-based, open to everyone; Surge meets every other Sunday at 8:00 pm, Thrive Tribe's day and time are
   to be confirmed). A group edited in wp-admin is not overwritten unless `SEED_FORCE="group:<slug>"` names it. Leader emails
   and images are added by staff.
 - **Town search**: the first filter is "Your town" (text with a suggestion list of every covered town). It matches a town
   or a borough, ignoring case, punctuation and "&"/"and", by whole word ("Gatley" finds "Cheadle & Gatley"; "Sal" finds
-  nothing). A match shows the groups covering it plus a note that the Interest groups are open to everyone; no match shows
+  nothing). A match shows the groups covering it plus a note that the interest-based groups are open to everyone; no match shows
   every group under a short message. Cards show the type and boroughs, the schedule (or "Day and time to be confirmed"),
   and a "Towns covered" disclosure.
 - **Public**: `/connect-groups` has a filter bar (GET params `area`, `type` and `meets`: area, category, day) and group cards
@@ -310,9 +310,15 @@ templates for the post types in §6.
   featured groups plus "Browse all groups". With no published groups it shows the redesign's
   existing "Find a group" → form flow.
 - **Join Group form** (Fluent Forms): name, email, phone, group (hidden, set from the card via URL
-  param; blank = "not sure, help me choose"), message. Notification to the group's `leader_email`
-  (looked up server-side from the group ID, never exposed) and to `contact.connectGroupInbox` (a Church setting,
-  default `connectgroup@elevationmanchester.org`).
+  param; blank = "not sure, help me choose"), message. One notification, "Ask to join", goes to exactly one address: the group's "Ask to join email"
+  (`leader_email`, looked up server-side from the group ID, never exposed) when it has one, otherwise
+  `contact.connectGroupInbox` (a Church setting, default `connectgroup@elevationmanchester.org`), which also receives
+  requests where no group was chosen.
+- **Group details panel** (the only place staff edit a group's fields; the core Excerpt, Areas and Group types panels and
+  the raw Custom Fields entries are hidden). Sections: About (description, group type, taking new members), When it meets
+  (day, time, how often), Where (areas, towns covered) and Leader and requests (leader's name, Ask to join email). Every
+  field has a help line. The email box shows the current Connect Groups inbox when none is stored, and saving that value
+  unchanged stores nothing, so later changes to the setting still apply.
 - Seed: the seven real groups are seeded everywhere (revision 6). The three sample groups are gone; other fixtures
   (events, the announcement) stay **local only**.
 
@@ -390,7 +396,7 @@ screen. There is no custom redirect code.
 | Newsletter | footer, site-wide | FF 5 (134 entries) | none | Site Manager, Admin |
 | G-Squad sign-up | `/get-involved#serve` | FF 3 Volunteer (21) | `welcomeInbox` | Site Manager, Admin |
 | Plan a Visit | `/im-new#plan-a-visit` | FF 4 "Reserve a seat" (27) | `welcomeInbox` + visitor confirmation | Site Manager, Admin |
-| Join Group | `/connect-groups` | — (new) | group leader + `connectGroupInbox` | Site Manager, Admin |
+| Join Group | `/connect-groups` | — (new) | the group's Ask to join email (default: `connectGroupInbox`) | Site Manager, Admin |
 | Connect card | `/im-new#connect-card` | FF 6 Guest (0; nothing to migrate) | `welcomeInbox` | Site Manager, Admin |
 | Alpha registration | `/resources/alpha` | FF 7 (1), same fields, restyled | `welcomeInbox` (replaces the personal Gmail recipient) | Site Manager, Admin |
 
@@ -667,3 +673,4 @@ Gift Aid retention of six years after the last gift.
 | Gift Aid auto-delete settings are reset on save, on `admin_init` and before each submission | §6.10 Gift Aid retention |
 | A form sits in a card only where its placement asks for it (`is-card` on the block: Gift Aid, G-Squad, Connect card and Join Group); Contact, Prayer, Plan a Visit and Alpha do not | §6.10 Styling |
 | The real Connect Groups replace the samples: seven seeded groups, a town search, `group_towns` and `group_frequency` fields, "Every other …" and "Day and time to be confirmed" wording; Join Group goes to the group leader and the new `contact.connectGroupInbox` setting instead of `welcomeInbox`. The user's decision on 2026-09-30 | §6.6, §6.10, §9 |
+| Connect Groups have two types, Geography-based and Interest-based, and each group has an "Ask to join email" (default: the Connect Groups inbox) that is the only recipient of its requests; the Group details panel is reorganised with help on every field and the raw meta is hidden from Custom Fields. The user's decision on 2026-09-30 | §6.6, §6.10 |

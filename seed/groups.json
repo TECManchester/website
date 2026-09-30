@@ -1,13 +1,17 @@
 {
   "categories": [
     {
-      "slug": "greatness-communities",
-      "name": "Greatness Communities"
+      "slug": "geography-based",
+      "name": "Geography-based"
     },
     {
-      "slug": "interest-groups",
-      "name": "Interest groups"
+      "slug": "interest-based",
+      "name": "Interest-based"
     }
+  ],
+  "retired_categories": [
+    "greatness-communities",
+    "interest-groups"
   ],
   "areas": [
     "Bolton",
@@ -25,7 +29,7 @@
     {
       "slug": "salem",
       "title": "Salem Greatness Community",
-      "type": "greatness-communities",
+      "type": "geography-based",
       "areas": [
         "Manchester",
         "Stockport"
@@ -49,7 +53,7 @@
     {
       "slug": "canaan",
       "title": "Canaan Greatness Community",
-      "type": "greatness-communities",
+      "type": "geography-based",
       "areas": [
         "Oldham",
         "Tameside",
@@ -89,7 +93,7 @@
     {
       "slug": "bethel",
       "title": "Bethel Greatness Community",
-      "type": "greatness-communities",
+      "type": "geography-based",
       "areas": [
         "Bolton",
         "Wigan"
@@ -127,7 +131,7 @@
     {
       "slug": "zion",
       "title": "Zion Greatness Community",
-      "type": "greatness-communities",
+      "type": "geography-based",
       "areas": [
         "Salford",
         "Trafford",
@@ -164,7 +168,7 @@
     {
       "slug": "shiloh",
       "title": "Shiloh Greatness Community",
-      "type": "greatness-communities",
+      "type": "geography-based",
       "areas": [
         "Salford",
         "Trafford",
@@ -201,7 +205,7 @@
     {
       "slug": "thrive-tribe",
       "title": "Thrive Tribe",
-      "type": "interest-groups",
+      "type": "interest-based",
       "areas": [],
       "day": "",
       "time": "",
@@ -214,7 +218,7 @@
     {
       "slug": "surge",
       "title": "Surge",
-      "type": "interest-groups",
+      "type": "interest-based",
       "areas": [],
       "day": "sunday",
       "time": "20:00",

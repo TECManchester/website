@@ -49,7 +49,7 @@ if ( '' !== $elevation_town ) {
 	} else {
 		$elevation_groups = array_values( array_filter( $elevation_groups, $elevation_covers ) );
 		$elevation_links  = [];
-		foreach ( elevation_groups( [ 'type' => 'interest-groups' ] ) as $elevation_interest ) {
+		foreach ( elevation_groups( [ 'type' => 'interest-based' ] ) as $elevation_interest ) {
 			$elevation_links[] = sprintf( '<a href="%s">%s</a>', esc_url( $elevation_base . '#group-' . $elevation_interest->post_name ), esc_html( $elevation_interest->post_title ) );
 		}
 		if ( $elevation_links ) {

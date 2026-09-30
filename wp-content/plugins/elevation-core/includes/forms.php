@@ -201,16 +201,6 @@ add_filter( 'fluentform/email_subject', static function ( $subject, $notificatio
 	return $key ? elevation_form_placeholders( (string) $subject, (array) $data, false ) : $subject;
 }, 10, 4 );
 
-// A Join Group request for a group with no leader email: an empty subject makes Fluent Forms skip the
-// "Group leader" notification (it would otherwise call wp_mail with no recipient and log a failed send).
-add_filter( 'fluentform/email_subject', static function ( $subject, $notification, $data, $form ) {
-	if ( 'join-group' === elevation_form_key_of( $form ) && 'group-leader' === ( $notification['elevation'] ?? '' )
-		&& function_exists( 'elevation_group_leader_email' ) && '' === elevation_group_leader_email( (int) ( ( (array) $data )['group_id'] ?? 0 ) ) ) {
-		return '';
-	}
-	return $subject;
-}, 20, 4 );
-
 // Church emails carry no "Powered by FluentForm" credit, and Fluent Forms' form analytics never store visitor IPs.
 add_filter( 'fluentform/email_template_footer_credit', '__return_empty_string' );
 add_filter( 'fluentform/disabled_analytics', '__return_true', 20 );

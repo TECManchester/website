@@ -45,6 +45,13 @@ WP_CLI::add_command( 'elevation groups', function ( array $args, array $assoc ) 
 		$slugs[ $slug ] = true;
 		elevation_groups_seed_one( $slug, $row, in_array( $slug, $force, true ) );
 	}
+	// Group types the file retires (renamed): deleted once no group uses them, so none is left behind.
+	foreach ( (array) ( $def['retired_categories'] ?? [] ) as $retired ) {
+		$term = get_term_by( 'slug', sanitize_title( (string) $retired ), 'group_category' );
+		if ( $term && 0 === (int) $term->count && ! is_wp_error( wp_delete_term( $term->term_id, 'group_category' ) ) ) {
+			WP_CLI::log( "Deleted retired group_category {$term->slug}" );
+		}
+	}
 } );
 
 /** The term's ID, creating it when it is missing. The slug defaults to the name's. */
