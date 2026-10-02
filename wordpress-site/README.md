@@ -34,6 +34,21 @@ docker compose run --rm node npm run test:js                 # consent logic (no
 docker compose run --rm -T wpcli wp elevation fixtures events /seed/fixtures/events.json   # re-date the sample events
 ```
 
+## Updating the live site
+
+The live site runs this theme and plugin; its database (pages, events, groups, forms, settings) is edited in
+live wp-admin and is the source of truth there. Deploy **code only**, never the database:
+
+```bash
+git commit …                 # the package is built from the last commit
+./bin/package.sh             # dist/elevation.zip and dist/elevation-core.zip
+```
+
+Then in live wp-admin: Appearance → Themes → Add New Theme → Upload Theme → choose `dist/elevation.zip` →
+"Replace current with uploaded"; and Plugins → Add New Plugin → Upload Plugin → `dist/elevation-core.zip` →
+"Replace current with uploaded". A change to page content in `seed/pages/` has to be repeated by hand in the
+live page editor. Never run `bin/seed.sh` against live or restore a local backup over it.
+
 ## Seeding
 
 `seed/` is the source of truth for pages and menus until the date in `seed/CUTOFF`.

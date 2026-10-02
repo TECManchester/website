@@ -123,21 +123,5 @@
 .gift-aid-notes { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--wp--preset--color--grey-100); font-size: 14px; color: var(--wp--preset--color--grey-500); }
 .gift-aid-notes strong { color: var(--wp--preset--color--ink); font-weight: 500; }
 
-/* The footer newsletter row: on ink-800, a white pill field and the green Subscribe pill. */
-.footer-newsletter { display: grid; gap: 20px 48px; align-items: center; margin: 0 0 32px; padding: 32px 0; border-top: 1px solid rgb(255 255 255 / 0.08); border-bottom: 1px solid rgb(255 255 255 / 0.08); }
-@media (min-width: 1024px) { .footer-newsletter { grid-template-columns: 1fr 480px; } }
-.footer-newsletter .footer-newsletter__title { margin: 0 0 6px; font-family: var(--wp--preset--font-family--sora); font-size: 18px; font-weight: 600; color: var(--wp--preset--color--white); }
-.footer-newsletter p { margin: 0; font-size: 14px; line-height: 1.55; color: rgb(255 255 255 / 0.6); }
-.footer-newsletter a { color: var(--wp--preset--color--green); }
-.form-box--newsletter { color: var(--wp--preset--color--white); --form-error: #ff9b9b; --form-focus: var(--wp--preset--color--green); }
-.form-box--newsletter .frm-fluent-form fieldset { display: flex; flex-wrap: wrap; gap: 10px; }
-.form-box--newsletter .ff-el-group:not(.ff_submit_btn_wrapper) { flex: 1 1 220px; }
-.form-box--newsletter .ff-el-form-control { min-height: 48px; padding: 14px 22px; border: 0; border-radius: 9999px; font-size: 16px; }
-@media (min-width: 768px) { .form-box--newsletter .ff-el-form-control { font-size: 15px; } }
-.form-box--newsletter .ff-btn-submit { padding: 16px 26px; }
-.form-box--newsletter .ff-message-success { padding: 0; border: 0; background: none; text-align: left; }
-.form-box--newsletter .form-success__title { display: flex; align-items: center; gap: 8px; font-family: var(--wp--preset--font-family--inter); font-size: 15px; font-weight: 500; color: var(--wp--preset--color--green); }
-.form-box--newsletter .form-success__title::before { width: 20px; height: 20px; margin: 0; background: currentColor; }
-
 .g-squad-join { margin-top: 40px; }
 .g-squad-join .wp-block-heading { margin-bottom: 8px; }
