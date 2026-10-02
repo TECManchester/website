@@ -41,13 +41,18 @@ live wp-admin and is the source of truth there. Deploy **code only**, never the 
 
 ```bash
 git commit …                 # the package is built from the last commit
-./bin/package.sh             # dist/elevation.zip and dist/elevation-core.zip
+DEPLOY_URL=https://elevationmanchester.org DEPLOY_USER=<administrator> ./bin/deploy.sh
 ```
 
-Then in live wp-admin: Appearance → Themes → Add New Theme → Upload Theme → choose `dist/elevation.zip` →
-"Replace current with uploaded"; and Plugins → Add New Plugin → Upload Plugin → `dist/elevation-core.zip` →
-"Replace current with uploaded". A change to page content in `seed/pages/` has to be repeated by hand in the
-live page editor. Never run `bin/seed.sh` against live or restore a local backup over it.
+`bin/deploy.sh` runs `bin/package.sh` (→ `dist/elevation.zip`, `dist/elevation-core.zip`), signs in to wp-admin,
+uploads both with "Replace current with uploaded" and checks the site serves the new files. It asks for the
+password, or reads `DEPLOY_PASSWORD`; the three variables can also sit in `.env.deploy` (gitignored). It refuses
+to target `localhost`, where the theme and plugin folders *are* this working tree.
+
+By hand instead: Appearance → Themes → Add New Theme → Upload Theme → `dist/elevation.zip` → "Replace current
+with uploaded"; Plugins → Add New Plugin → Upload Plugin → `dist/elevation-core.zip` → "Replace current with
+uploaded". A change to page content in `seed/pages/` has to be repeated by hand in the live page editor. Never
+run `bin/seed.sh` against live or restore a local backup over it.
 
 ## Seeding
 
