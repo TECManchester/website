@@ -91,7 +91,7 @@ seed_post page watch pages/watch.html "Watch" \
 seed_post page get-involved pages/get-involved.html "Get Involved" \
   --meta-description="Connect Groups, serving on the G-Squad, The Seeds and 412 Nation, and the support ministries at {church.name}."
 seed_post page give pages/give.html "Give" \
-  --meta-description="Give to {church.name} online, by bank transfer or by cheque. UK taxpayers can Gift Aid their gift to add 25% at no extra cost."
+  --meta-description="Give to {church.name} online, by bank transfer or by cheque. Every gift, of every size, goes towards making greatness common in Manchester."
 seed_post page prayer pages/prayer.html "Prayer" \
   --meta-description="Send a prayer request to {church.name}. Our team will pray, and nothing you share is made public."
 seed_post page contact pages/contact.html "Contact" \

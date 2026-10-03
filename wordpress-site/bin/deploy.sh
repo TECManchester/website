@@ -38,12 +38,21 @@ jar=$(mktemp)
 trap 'rm -f "$jar"' EXIT
 # Live rejects sign-ins from non-browser user agents (WordPress redirects back to the login form), so look like one.
 ua="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36 elevation-deploy"
-curl_() { curl -sS -L -b "$jar" -c "$jar" -A "$ua" -e "$url/wp-admin/" "$@"; }
+curl_() {
+  curl -sS -L -b "$jar" -c "$jar" -A "$ua" -e "$url/wp-admin/" -H "Origin: $url" \
+    -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" -H "Accept-Language: en-GB,en;q=0.9" "$@"
+}
 
 # Sign in like a browser: the test cookie first, then the form.
 curl_ -o /dev/null "$url/wp-login.php"
-curl_ -o /dev/null -e "$url/wp-login.php" --data-urlencode "log=$DEPLOY_USER" --data-urlencode "pwd=$DEPLOY_PASSWORD" \
+login_page=$(mktemp)
+curl_ -o "$login_page" -e "$url/wp-login.php" --data-urlencode "log=$DEPLOY_USER" --data-urlencode "pwd=$DEPLOY_PASSWORD" \
   -d "testcookie=1" -d "wp-submit=Log In" -d "redirect_to=$url/wp-admin/" "$url/wp-login.php"
+if grep -q "One moment, please" "$login_page"; then
+  echo "The host's bot protection is holding this computer's address (\"One moment, please...\" page). Wait 10 minutes or so and try again; if it keeps happening, ask the parent church's IT to allow-list your IP." >&2
+  rm -f "$login_page"; exit 1
+fi
+rm -f "$login_page"
 if ! grep -q "wordpress_logged_in" "$jar"; then
   echo "Sign-in to $url failed: wrong username or password, or a security plugin blocks it." >&2
   exit 1

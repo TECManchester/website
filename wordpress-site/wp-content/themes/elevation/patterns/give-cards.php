@@ -3,13 +3,13 @@
  * Title: Giving cards
  * Slug: elevation/give-cards
  * Categories: elevation
- * Description: Online giving, Gift Aid, bank transfer and cheque.
+ * Description: Online giving, bank transfer and cheque.
  */
 ?>
 <!-- wp:group {"tagName":"section","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
-<section class="wp-block-group alignfull" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)"><!-- wp:group {"className":"grid-3-lg","layout":{"type":"default"}} -->
-<div class="wp-block-group grid-3-lg"><!-- wp:group {"className":"is-style-card-flat card--feature span-2","layout":{"type":"default"}} -->
-<div class="wp-block-group is-style-card-flat card--feature span-2"><!-- wp:elevation/icon {"name":"hand-coins","size":28} /-->
+<section class="wp-block-group alignfull" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)"><!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group"><!-- wp:group {"className":"is-style-card-flat card--feature","layout":{"type":"default"}} -->
+<div class="wp-block-group is-style-card-flat card--feature"><!-- wp:elevation/icon {"name":"hand-coins","size":28} /-->
 
 <!-- wp:heading -->
 <h2 class="wp-block-heading">Give online</h2>
@@ -29,28 +29,7 @@
 <p class="card-note">You'll be taken to PayPal's secure donation page. A PayPal account isn't required to give by card.</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
-
-<!-- wp:group {"className":"is-style-card-flat card--ink","layout":{"type":"default"}} -->
-<div class="wp-block-group is-style-card-flat card--ink"><!-- wp:elevation/icon {"name":"shield-check","size":28} /-->
-
-<!-- wp:heading {"textColor":"white"} -->
-<h2 class="wp-block-heading has-white-color has-text-color">Gift Aid</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>If you pay UK tax, Gift Aid adds <strong>25%</strong> to your gift at no extra cost to you — every £10 becomes £12.50.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>{church.legalName} is a registered charity in England and Wales, no. {church.charityNumber}.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:buttons -->
-<div class="wp-block-buttons"><!-- wp:button -->
-<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#gift-aid">Make your declaration</a></div>
-<!-- /wp:button --></div>
-<!-- /wp:buttons --></div>
-<!-- /wp:group --></div>
+</div>
 <!-- /wp:group -->
 
 <!-- wp:separator {"className":"give-separator"} -->
@@ -67,7 +46,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"className":"is-style-lead"} -->
-<p class="is-style-lead">Both of these work just as well, and Gift Aid still applies.</p>
+<p class="is-style-lead">Both of these work just as well.</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
