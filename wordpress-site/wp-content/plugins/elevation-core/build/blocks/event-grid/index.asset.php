@@ -5,5 +5,5 @@
 		'wp-blocks',
 		'wp-components'
 	),
-	'version' => '6464aa0d73a5fc4b231a'
+	'version' => '146f4cf5664da0cc1942'
 );

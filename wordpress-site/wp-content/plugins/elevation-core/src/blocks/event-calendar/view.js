@@ -1,6 +1,9 @@
 /**
  * Draws the events calendar from the server's London date keys (render.php). All text goes in through
  * textContent, never innerHTML, so event titles can't inject markup.
+ *
+ * A picked date is announced on the document as elevation:event-date ({ date } or { date: null }), which the
+ * events-page grid (event-grid/view.js) uses to filter its cards; elevation:event-date-clear asks us to unpick.
  */
 import model from './model.js';
 
@@ -34,6 +37,14 @@ document.querySelectorAll( '.wp-block-elevation-event-calendar' ).forEach( ( roo
 	const title = root.querySelector( '.event-calendar__title' );
 	const grid = root.querySelector( '.event-calendar__grid' );
 	const list = root.querySelector( '.event-calendar__list' );
+
+	function select( key ) {
+		if ( key === selected ) {
+			return;
+		}
+		selected = key;
+		document.dispatchEvent( new CustomEvent( 'elevation:event-date', { detail: { date: selected } } ) );
+	}
 
 	function renderList() {
 		const events = selected ? byDate.get( selected ) || [] : [];
@@ -72,7 +83,7 @@ document.querySelectorAll( '.wp-block-elevation-event-calendar' ).forEach( ( roo
 					inner.setAttribute( 'aria-pressed', String( key === selected ) );
 					inner.setAttribute( 'aria-label', `${ dayName.format( new Date( `${ key }T12:00:00Z` ) ) }: ${ events.length } event${ events.length > 1 ? 's' : '' }` );
 					inner.addEventListener( 'click', () => {
-						selected = selected === key ? null : key;
+						select( selected === key ? null : key );
 						render( key );
 					} );
 				}
@@ -96,9 +107,16 @@ document.querySelectorAll( '.wp-block-elevation-event-calendar' ).forEach( ( roo
 	root.querySelectorAll( '.event-calendar__step' ).forEach( ( button ) => {
 		button.addEventListener( 'click', () => {
 			month = shiftMonth( month, Number( button.dataset.step ) );
-			selected = null;
+			select( null );
 			render();
 		} );
+	} );
+
+	document.addEventListener( 'elevation:event-date-clear', () => {
+		if ( selected ) {
+			select( null );
+			render();
+		}
 	} );
 
 	card.hidden = false;

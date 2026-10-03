@@ -38,5 +38,5 @@ $elevation_first = $elevation_next ? max( EventTime::dateKey( elevation_event( $
 		<div class="event-calendar__grid" role="group" aria-label="<?php esc_attr_e( 'Events calendar', 'elevation-core' ); ?>"></div>
 		<div class="event-calendar__selection" aria-live="polite"><ul class="event-calendar__list" hidden></ul></div>
 	</div>
-	<p class="event-calendar__caption" hidden><?php esc_html_e( 'Dates with a marker have something on. Tap one to see what.', 'elevation-core' ); ?></p>
+	<p class="event-calendar__caption" hidden><?php esc_html_e( 'Dates with a marker have something on. Tap one to see what was, or is, on that day.', 'elevation-core' ); ?></p>
 </div>

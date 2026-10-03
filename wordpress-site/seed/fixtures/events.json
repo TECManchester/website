@@ -39,6 +39,20 @@
     "cta_url": "/contact"
   },
   {
+    "slug": "midweek-prayer-on-zoom",
+    "title": "Midweek Prayer on Zoom",
+    "summary": "Half an hour of prayer together from wherever you are.",
+    "description": "Every other Wednesday we pray together online. Join from your phone or laptop; cameras on or off, whatever suits you.\n\nThe link opens a few minutes before we start.",
+    "start": "+4 19:30",
+    "end": "+4 20:00",
+    "time_tbc": false,
+    "venue": "Zoom",
+    "image": "",
+    "cta_label": "",
+    "cta_url": "",
+    "online_url": "https://us02web.zoom.us/j/1234567890"
+  },
+  {
     "slug": "greatness-community-hangout",
     "title": "Greatness Community Hangout",
     "summary": "Food, games and music in the park — bring the whole family.",

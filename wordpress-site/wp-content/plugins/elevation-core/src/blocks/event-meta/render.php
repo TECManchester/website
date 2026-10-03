@@ -1,5 +1,6 @@
 <?php
 /** One part of the event being viewed (redesign events/[slug]/page.tsx). Nothing outside an event. */
+use Elevation\Core\EventFields;
 use Elevation\Core\EventTime;
 use Elevation\Core\Icons;
 
@@ -14,6 +15,7 @@ $elevation_part = (string) ( $attributes['part'] ?? 'details' );
 $elevation_wrap = static fn ( string $html ): string => '' === $html ? '' : '<div ' . get_block_wrapper_attributes( [ 'class' => 'event-meta event-meta--' . sanitize_html_class( $elevation_part ) ] ) . '>' . $html . '</div>';
 $elevation_past = ! EventTime::isUpcoming( $elevation_e['start'], $elevation_e['end'], new DateTimeImmutable( 'now' ) );
 $elevation_full = '' !== $elevation_e['venue'] ? $elevation_e['venue'] : (string) elevation_setting( 'location.full' );
+$elevation_ask  = '<div class="wp-block-button is-style-ghost"><a class="wp-block-button__link wp-element-button" href="/contact">' . esc_html__( 'Ask a question', 'elevation-core' ) . '</a></div>';
 
 switch ( $elevation_part ) {
 	case 'back':
@@ -33,7 +35,9 @@ switch ( $elevation_part ) {
 		$elevation_rows = [
 			[ 'calendar-days', $elevation_date ],
 			[ 'clock', EventTime::formatTime( $elevation_e['start'], $elevation_e['end'], $elevation_e['tbc'] ) ],
-			[ 'map-pin', $elevation_full ],
+			$elevation_e['online']
+				? [ 'monitor-play', '' !== $elevation_e['venue'] ? $elevation_e['venue'] : __( 'Online', 'elevation-core' ) ]
+				: [ 'map-pin', $elevation_full ],
 		];
 		$elevation_html = '';
 		foreach ( $elevation_rows as [ $elevation_icon, $elevation_text ] ) {
@@ -57,15 +61,41 @@ switch ( $elevation_part ) {
 		break;
 
 	case 'getting-there':
+		if ( $elevation_e['online'] ) {
+			// An online event: no address or directions. A Join button while the link is given and the event is still on.
+			$elevation_on    = '' !== $elevation_e['venue'] && ! preg_match( '/^online$/i', $elevation_e['venue'] ) ? $elevation_e['venue'] : '';
+			$elevation_where = '' !== $elevation_on
+				/* translators: %s: the service, e.g. Zoom */
+				? sprintf( __( 'This event is online, on %s.', 'elevation-core' ), $elevation_on )
+				: __( 'This event is online.', 'elevation-core' );
+			$elevation_join  = '';
+			if ( ! $elevation_past && '' !== $elevation_e['online_url'] ) {
+				$elevation_join = sprintf(
+					'<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="%s" target="_blank" rel="noreferrer noopener">%s</a></div>',
+					esc_url( $elevation_e['online_url'] ),
+					esc_html( EventFields::joinLabel( $elevation_e['online_url'] ) )
+				);
+			} elseif ( ! $elevation_past ) {
+				$elevation_where .= ' ' . __( 'The link to join will be shared nearer the time.', 'elevation-core' );
+			}
+			echo $elevation_wrap( sprintf(
+				'<aside class="event-getting-there event-getting-there--online"><h2>%s</h2><p>%s</p><div class="wp-block-buttons is-vertical">%s%s</div></aside>',
+				esc_html__( 'Joining online', 'elevation-core' ),
+				esc_html( $elevation_where ),
+				$elevation_join,
+				$elevation_ask
+			) );
+			break;
+		}
 		$elevation_lines = array_filter( array_map( 'trim', explode( ',', $elevation_full ) ) );
 		$elevation_addr  = implode( '', array_map( static fn ( $l ) => '<p>' . esc_html( $l ) . '</p>', $elevation_lines ) );
 		echo $elevation_wrap( sprintf(
-			'<aside class="event-getting-there"><h2>%s</h2><address>%s</address><div class="wp-block-buttons is-vertical"><div class="wp-block-button is-style-ghost"><a class="wp-block-button__link wp-element-button" href="%s" target="_blank" rel="noreferrer noopener">%s</a></div><div class="wp-block-button is-style-ghost"><a class="wp-block-button__link wp-element-button" href="/contact">%s</a></div></div></aside>',
+			'<aside class="event-getting-there"><h2>%s</h2><address>%s</address><div class="wp-block-buttons is-vertical"><div class="wp-block-button is-style-ghost"><a class="wp-block-button__link wp-element-button" href="%s" target="_blank" rel="noreferrer noopener">%s</a></div>%s</div></aside>',
 			esc_html__( 'Getting there', 'elevation-core' ),
 			$elevation_addr,
 			esc_url( elevation_event_maps_url( $elevation_e ) ),
 			esc_html__( 'Get directions', 'elevation-core' ),
-			esc_html__( 'Ask a question', 'elevation-core' )
+			$elevation_ask
 		) );
 		break;
 

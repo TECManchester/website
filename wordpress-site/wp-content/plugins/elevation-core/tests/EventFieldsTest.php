@@ -37,6 +37,35 @@ final class EventFieldsTest extends TestCase {
 		$this->assertSame( $out, EventFields::normaliseCtaUrl( $in ) );
 	}
 
+	public function test_online_links_must_be_https(): void {
+		$this->assertSame( 'https://us02web.zoom.us/j/123?pwd=abc', EventFields::normaliseOnlineUrl( ' https://us02web.zoom.us/j/123?pwd=abc ' ) );
+		foreach ( [ '/contact', 'http://zoom.us/j/1', 'zoom.us/j/1', 'javascript:alert(1)', '', null, [ 'x' ] ] as $bad ) {
+			$this->assertSame( '', EventFields::normaliseOnlineUrl( $bad ) );
+		}
+		$this->assertSame( [], EventFields::errors( [ 'start' => '2026-10-18T19:00', 'online_url' => 'https://zoom.us/j/1' ], true ) );
+		$this->assertSame( [ 'The online link must start with https://.' ], EventFields::errors( [ 'start' => '2026-10-18T19:00', 'online_url' => 'zoom.us/j/1' ], false ) );
+	}
+
+	public function test_an_event_is_online_when_it_has_a_link_or_the_venue_says_so(): void {
+		$this->assertTrue( EventFields::isOnline( '', 'https://zoom.us/j/1' ) );
+		$this->assertTrue( EventFields::isOnline( 'Zoom', '' ) );
+		$this->assertTrue( EventFields::isOnline( 'Online (Microsoft Teams)', '' ) );
+		$this->assertTrue( EventFields::isOnline( 'YouTube', '' ) );
+		$this->assertFalse( EventFields::isOnline( 'Mary Seacole Building', '' ) );
+		$this->assertFalse( EventFields::isOnline( 'Zoomtopia Hall', '' ), 'only whole words count' );
+		$this->assertFalse( EventFields::isOnline( '', '' ) );
+	}
+
+	public function test_the_join_button_names_the_service(): void {
+		$this->assertSame( 'Join on Zoom', EventFields::joinLabel( 'https://us02web.zoom.us/j/123' ) );
+		$this->assertSame( 'Join on Teams', EventFields::joinLabel( 'https://teams.microsoft.com/l/meetup-join/x' ) );
+		$this->assertSame( 'Join on YouTube', EventFields::joinLabel( 'https://youtu.be/abc' ) );
+		$this->assertSame( 'Join on YouTube', EventFields::joinLabel( 'https://www.youtube.com/watch?v=abc' ) );
+		$this->assertSame( 'Join on Google Meet', EventFields::joinLabel( 'https://meet.google.com/abc-defg-hij' ) );
+		$this->assertSame( 'Join online', EventFields::joinLabel( 'https://example.org/live' ) );
+		$this->assertSame( 'Join online', EventFields::joinLabel( '' ) );
+	}
+
 	public function test_a_valid_event_has_no_errors(): void {
 		$this->assertSame( [], EventFields::errors( [ 'start' => '2026-10-18T19:00:00', 'end' => '2026-10-20T16:00', 'cta_url' => '/contact' ], true ) );
 		$this->assertSame( [], EventFields::errors( [ 'start' => '2026-10-18T19:00', 'end' => '2026-10-18T19:00' ], true ), 'end may equal start' );

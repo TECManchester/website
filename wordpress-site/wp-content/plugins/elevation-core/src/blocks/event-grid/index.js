@@ -4,7 +4,7 @@ import { PanelBody, RangeControl, SelectControl, ToggleControl } from '@wordpres
 import metadata from './block.json';
 
 registerBlockType( metadata.name, {
-	edit: ( { attributes: { limit, columns, excludeCurrent }, setAttributes } ) => {
+	edit: ( { attributes: { limit, columns, excludeCurrent, showPast }, setAttributes } ) => {
 		const blockProps = useBlockProps();
 		const innerProps = useInnerBlocksProps( { style: { outline: '1px dashed #D7D9D6', padding: 12 } } );
 		return (
@@ -21,6 +21,13 @@ registerBlockType( metadata.name, {
 							onChange={ ( v ) => setAttributes( { columns: Number( v ) } ) }
 						/>
 						<ToggleControl __nextHasNoMarginBottom label="Leave out the event being viewed" checked={ excludeCurrent } onChange={ ( v ) => setAttributes( { excludeCurrent: v } ) } />
+						<ToggleControl
+							__nextHasNoMarginBottom
+							label="Let the calendar show past events"
+							help="Past events are kept on the page, hidden, so picking a date in the Events calendar block can show what was on."
+							checked={ showPast }
+							onChange={ ( v ) => setAttributes( { showPast: v } ) }
+						/>
 					</PanelBody>
 				</InspectorControls>
 				<p style={ { margin: '0 0 8px', fontSize: 13, color: '#676767' } }>

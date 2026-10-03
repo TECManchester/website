@@ -73,11 +73,12 @@ function elevation_fixture_event( array $row, DateTimeImmutable $today, int $ind
 			'event_venue'     => (string) ( $row['venue'] ?? '' ),
 			'event_cta_label' => (string) ( $row['cta_label'] ?? '' ),
 			'event_cta_url'   => (string) ( $row['cta_url'] ?? '' ),
+			'event_online_url' => (string) ( $row['online_url'] ?? '' ),
 		];
 	} catch ( \InvalidArgumentException $e ) {
 		WP_CLI::error( "$slug: " . $e->getMessage() );
 	}
-	$errors = EventFields::errors( [ 'start' => $meta['event_start'], 'end' => $meta['event_end'], 'cta_url' => $meta['event_cta_url'] ], true );
+	$errors = EventFields::errors( [ 'start' => $meta['event_start'], 'end' => $meta['event_end'], 'cta_url' => $meta['event_cta_url'], 'online_url' => $meta['event_online_url'] ], true );
 	if ( $errors ) {
 		WP_CLI::error( "$slug: " . implode( ' ', $errors ) );
 	}

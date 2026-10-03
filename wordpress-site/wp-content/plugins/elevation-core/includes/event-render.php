@@ -5,8 +5,11 @@ use Elevation\Core\Icons;
 
 defined( 'ABSPATH' ) || exit;
 
-function elevation_event_card( WP_Post $post ): string {
+/** @param bool $hidden Rendered with the hidden attribute: a past event the events-page calendar can reveal. */
+function elevation_event_card( WP_Post $post, bool $hidden = false ): string {
 	$e     = elevation_event( $post );
+	$past  = ! EventTime::isUpcoming( $e['start'], $e['end'], new DateTimeImmutable( 'now' ) );
+	$dates = implode( ',', EventTime::dayKeys( $e['start'], $e['end'] ) );
 	$image = $e['image'] ? wp_get_attachment_image( $e['image'], 'large', false, [
 		'alt'      => '',
 		'sizes'    => '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
@@ -15,10 +18,10 @@ function elevation_event_card( WP_Post $post ): string {
 	] ) : '';
 	$multi = EventTime::isMultiDay( $e['start'], $e['end'] );
 	$when  = $multi ? EventTime::formatRange( $e['start'], $e['end'] ) : EventTime::formatTime( $e['start'], $e['end'], $e['tbc'] );
-	$venue = '' !== $e['venue'] ? $e['venue'] : (string) elevation_setting( 'location.venue' );
+	$venue = '' !== $e['venue'] ? $e['venue'] : ( $e['online'] ? __( 'Online', 'elevation-core' ) : (string) elevation_setting( 'location.venue' ) );
 	ob_start();
 	?>
-	<article class="event-card reveal">
+	<article class="event-card reveal<?php echo $past ? ' is-past' : ''; ?>" data-dates="<?php echo esc_attr( $dates ); ?>"<?php echo $hidden ? ' hidden' : ''; ?>>
 		<a class="event-card__link" href="<?php echo esc_url( $e['url'] ); ?>">
 			<div class="event-card__media">
 				<?php echo $image ?: '<span class="event-card__placeholder" aria-hidden="true"></span>'; // wp_get_attachment_image() escapes. ?>
@@ -34,7 +37,10 @@ function elevation_event_card( WP_Post $post ): string {
 				<?php endif; ?>
 				<div class="event-card__meta">
 					<p><?php echo Icons::svg( $multi ? 'calendar-days' : 'clock' ); ?><?php echo esc_html( $when ); ?></p>
-					<p><?php echo Icons::svg( 'map-pin' ); ?><?php echo esc_html( $venue ); ?></p>
+					<p><?php echo Icons::svg( $e['online'] ? 'monitor-play' : 'map-pin' ); ?><?php echo esc_html( $venue ); ?></p>
+					<?php if ( $past ) : ?>
+						<p class="event-card__finished"><?php echo Icons::svg( 'circle-check' ); ?><?php esc_html_e( 'This event has finished', 'elevation-core' ); ?></p>
+					<?php endif; ?>
 				</div>
 			</div>
 		</a>

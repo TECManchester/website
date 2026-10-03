@@ -28,8 +28,30 @@ final class EventFields {
 		return preg_match( '#^https://[a-z0-9.-]+(?::\d+)?(?:[/?\#].*)?$#i', $url ) ? $url : '';
 	}
 
+	/** An https:// link to join an online event (Zoom, Teams, YouTube…); a site path or anything else becomes "". */
+	public static function normaliseOnlineUrl( mixed $value ): string {
+		$url = self::normaliseCtaUrl( $value );
+		return str_starts_with( $url, 'https://' ) ? $url : '';
+	}
+
+	/** Online when it has a join link, or the venue says so ("Zoom", "Online", "Teams", "Google Meet", "YouTube"). */
+	public static function isOnline( string $venue, string $onlineUrl ): bool {
+		return '' !== $onlineUrl || 1 === preg_match( '/\b(zoom|online|teams|google meet|meet\.google|youtube|livestream|webinar)\b/i', $venue );
+	}
+
+	/** The join button's label, naming the service when the link's host gives it away: "Join on Zoom", else "Join online". */
+	public static function joinLabel( string $onlineUrl ): string {
+		$host = strtolower( (string) parse_url( $onlineUrl, PHP_URL_HOST ) );
+		foreach ( [ 'zoom.' => 'Zoom', 'teams.' => 'Teams', 'youtube.' => 'YouTube', 'youtu.be' => 'YouTube', 'meet.google' => 'Google Meet' ] as $needle => $name ) {
+			if ( '' !== $host && str_contains( $host, $needle ) ) {
+				return "Join on $name";
+			}
+		}
+		return 'Join online';
+	}
+
 	/**
-	 * @param array{start?:mixed, end?:mixed, cta_url?:mixed} $raw Values as submitted, before sanitising.
+	 * @param array{start?:mixed, end?:mixed, cta_url?:mixed, online_url?:mixed} $raw Values as submitted, before sanitising.
 	 * @return list<string> Sentences for the editor, in field order.
 	 */
 	public static function errors( array $raw, bool $publishing ): array {
@@ -37,6 +59,7 @@ final class EventFields {
 		$startRaw = is_string( $raw['start'] ?? null ) ? trim( $raw['start'] ) : '';
 		$endRaw   = is_string( $raw['end'] ?? null ) ? trim( $raw['end'] ) : '';
 		$ctaRaw   = is_string( $raw['cta_url'] ?? null ) ? trim( $raw['cta_url'] ) : '';
+		$joinRaw  = is_string( $raw['online_url'] ?? null ) ? trim( $raw['online_url'] ) : '';
 		$start    = self::normaliseDateTime( $startRaw );
 		$end      = self::normaliseDateTime( $endRaw );
 
@@ -52,6 +75,9 @@ final class EventFields {
 		}
 		if ( '' !== $ctaRaw && '' === self::normaliseCtaUrl( $ctaRaw ) ) {
 			$errors[] = 'The button link must start with https:// or with / for a page on this site.';
+		}
+		if ( '' !== $joinRaw && '' === self::normaliseOnlineUrl( $joinRaw ) ) {
+			$errors[] = 'The online link must start with https://.';
 		}
 		return $errors;
 	}

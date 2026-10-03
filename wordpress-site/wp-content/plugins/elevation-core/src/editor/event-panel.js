@@ -69,12 +69,16 @@ function EventDetailsFields() {
 	const start = toMinutes( m.event_start );
 	const end = toMinutes( m.event_end );
 	const url = ( m.event_cta_url || '' ).trim();
+	const join = ( m.event_online_url || '' ).trim();
 	const problems = [];
 	if ( start && end && end < start ) {
 		problems.push( 'The end must be the same as or after the start.' );
 	}
 	if ( ! okUrl( url ) ) {
 		problems.push( 'The button link must start with https:// or with / for a page on this site.' );
+	}
+	if ( join && ! /^https:\/\/[a-z0-9.-]+(:\d+)?([/?#].*)?$/i.test( join ) ) {
+		problems.push( 'The online link must start with https://.' );
 	}
 	const blocked = problems.length > 0;
 
@@ -102,7 +106,15 @@ function EventDetailsFields() {
 				checked={ !! m.event_time_tbc }
 				onChange={ set( 'event_time_tbc' ) }
 			/>
-			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label="Venue" help="Leave empty for our usual venue." placeholder={ DEFAULT_VENUE } value={ m.event_venue || '' } onChange={ set( 'event_venue' ) } />
+			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label="Venue" help="Leave empty for our usual venue. For an online event, type where it happens, e.g. Zoom." placeholder={ DEFAULT_VENUE } value={ m.event_venue || '' } onChange={ set( 'event_venue' ) } />
+			<TextControl
+				__nextHasNoMarginBottom
+				__next40pxDefaultSize
+				label="Online link (Zoom, Teams, YouTube…)"
+				help="For online events only. Visitors see a Join button instead of directions. Leave empty for an in-person event."
+				value={ m.event_online_url || '' }
+				onChange={ set( 'event_online_url' ) }
+			/>
 			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label="Button label" placeholder="Register" value={ m.event_cta_label || '' } onChange={ set( 'event_cta_label' ) } />
 			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label="Button link" help="https://… or /page-on-this-site. Leave empty for no button." value={ m.event_cta_url || '' } onChange={ set( 'event_cta_url' ) } />
 		</PluginDocumentSettingPanel>

@@ -9,11 +9,13 @@
   "attributes": {
     "limit": { "type": "number", "default": 24 },
     "columns": { "type": "number", "enum": [ 2, 3 ], "default": 2 },
-    "excludeCurrent": { "type": "boolean", "default": false }
+    "excludeCurrent": { "type": "boolean", "default": false },
+    "showPast": { "type": "boolean", "default": false }
   },
   "usesContext": [ "postId" ],
   "supports": { "html": false },
   "textdomain": "elevation-core",
   "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
   "render": "file:./render.php"
 }

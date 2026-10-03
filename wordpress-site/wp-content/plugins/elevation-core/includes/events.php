@@ -12,6 +12,7 @@ const ELEVATION_EVENT_META = [
 	'event_venue'     => 'string',
 	'event_cta_label' => 'string',
 	'event_cta_url'   => 'string',
+	'event_online_url' => 'string',
 ];
 
 add_action( 'init', function () {
@@ -49,6 +50,7 @@ add_action( 'init', function () {
 		'event_venue'     => 'sanitize_text_field',
 		'event_cta_label' => 'sanitize_text_field',
 		'event_cta_url'   => [ EventFields::class, 'normaliseCtaUrl' ],
+		'event_online_url' => [ EventFields::class, 'normaliseOnlineUrl' ],
 	];
 	foreach ( ELEVATION_EVENT_META as $key => $type ) {
 		register_post_meta( 'event', $key, [
@@ -87,7 +89,7 @@ add_filter( 'rest_pre_insert_event', function ( $prepared, WP_REST_Request $requ
 	$value  = fn ( string $key ) => array_key_exists( $key, $meta ) ? $meta[ $key ] : ( $id ? get_post_meta( $id, $key, true ) : '' );
 	$status = $prepared->post_status ?? ( $id ? get_post_status( $id ) : 'draft' );
 	$errors = EventFields::errors(
-		[ 'start' => $value( 'event_start' ), 'end' => $value( 'event_end' ), 'cta_url' => $value( 'event_cta_url' ) ],
+		[ 'start' => $value( 'event_start' ), 'end' => $value( 'event_end' ), 'cta_url' => $value( 'event_cta_url' ), 'online_url' => $value( 'event_online_url' ) ],
 		in_array( $status, [ 'publish', 'future' ], true )
 	);
 	return $errors ? new WP_Error( 'elevation_event_invalid', implode( ' ', $errors ), [ 'status' => 400 ] ) : $prepared;
@@ -138,6 +140,24 @@ function elevation_upcoming_events( int $limit, int $exclude = 0 ): array {
 	] );
 }
 
+/** @return list<WP_Post> Published events that have finished (London time), most recent first — the calendar can show them. */
+function elevation_past_events( int $limit, int $exclude = 0 ): array {
+	return get_posts( [
+		'post_type'        => 'event',
+		'post_status'      => 'publish',
+		'has_password'     => false,
+		'posts_per_page'   => max( 1, $limit ),
+		'post__not_in'     => $exclude ? [ $exclude ] : [],
+		'meta_query'       => [
+			'until' => [ 'key' => '_event_until', 'value' => EventTime::todayKey( new DateTimeImmutable( 'now' ) ), 'compare' => '<', 'type' => 'CHAR' ],
+			'start' => [ 'key' => 'event_start', 'compare' => 'EXISTS' ],
+		],
+		'orderby'          => [ 'start' => 'DESC', 'title' => 'ASC' ],
+		'no_found_rows'    => true,
+		'suppress_filters' => false,
+	] );
+}
+
 /** @return list<WP_Post> Every published event with a start, past and future — for the calendar. */
 function elevation_calendar_events(): array {
 	return get_posts( [
@@ -154,7 +174,7 @@ function elevation_calendar_events(): array {
 /**
  * An event's fields as plain text (never HTML), for renderers.
  *
- * @return array{id:int,title:string,url:string,summary:string,start:string,end:string,tbc:bool,venue:string,cta_label:string,cta_url:string,image:int}
+ * @return array{id:int,title:string,url:string,summary:string,start:string,end:string,tbc:bool,venue:string,cta_label:string,cta_url:string,online_url:string,online:bool,image:int}
  */
 function elevation_event( WP_Post $post ): array {
 	$text = fn ( string $value ): string => trim( html_entity_decode( wp_strip_all_tags( $value ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
@@ -169,6 +189,8 @@ function elevation_event( WP_Post $post ): array {
 		'venue'     => (string) get_post_meta( $post->ID, 'event_venue', true ),
 		'cta_label' => (string) get_post_meta( $post->ID, 'event_cta_label', true ),
 		'cta_url'   => (string) get_post_meta( $post->ID, 'event_cta_url', true ),
+		'online_url' => (string) get_post_meta( $post->ID, 'event_online_url', true ),
+		'online'    => EventFields::isOnline( (string) get_post_meta( $post->ID, 'event_venue', true ), (string) get_post_meta( $post->ID, 'event_online_url', true ) ),
 		'image'     => (int) get_post_thumbnail_id( $post ),
 	];
 }
