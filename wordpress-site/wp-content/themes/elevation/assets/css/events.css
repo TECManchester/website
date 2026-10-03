@@ -67,7 +67,7 @@ button.event-calendar__day.is-selected::after { background: var(--wp--preset--co
 .event-calendar__caption { margin: 16px 0 0; padding: 0 4px; font-size: 12px; line-height: 1.6; color: var(--wp--preset--color--grey-500); }
 
 /* ---------- Events page (templates/archive-event.html) ---------- */
-.events-layout { display: grid; gap: 48px; margin-top: 3.5rem !important; }
+.events-layout { display: grid; gap: 48px; }
 .events-layout > * { margin-block: 0; min-width: 0; }
 @media (min-width: 1024px) {
 	.events-layout { grid-template-columns: minmax(0, 1fr) 340px; gap: 56px; }
